@@ -29,6 +29,7 @@ Once configured, the site will be accessible at:
 ```
 .
 ├── index.html              # Main homepage
+├── .nojekyll              # Prevents Jekyll processing (serves static HTML)
 ├── CNAME                   # Custom domain configuration
 ├── SETUP.md               # Detailed setup instructions
 ├── README.md              # This file
