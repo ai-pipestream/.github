@@ -72,7 +72,8 @@ Then visit http://localhost:8000
 
 ## 📚 Documentation
 
-For complete setup instructions, including DNS configuration and SSL setup, see [SETUP.md](SETUP.md).
+- [SETUP.md](SETUP.md) - Complete setup instructions including DNS configuration and SSL setup
+- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Common issues and solutions for GitHub Pages deployment
 
 ## 🤝 Contributing
 
