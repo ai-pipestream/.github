@@ -1,63 +1,93 @@
-# Pipestream AI - Organization Homepage
+# Welcome to Pipestream AI
 
-This repository serves as the official homepage for the Pipestream AI organization, deployed via GitHub Pages.
+**Open Source Document Processing Platform for Intelligent Search and Indexing**
+
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Website](https://img.shields.io/badge/website-pipestream.ai-blue)](https://pipestream.ai)
+
+Pipestream AI is an open-source platform that transforms documents into searchable knowledge using AI-powered processing. It provides a flexible, network-based architecture for ingesting, parsing, chunking, and embedding documents for intelligent search and indexing.
+
+## 📚 Documentation
+
+### Getting Started
+
+- **[Document Journey Guide](docs/design/document-journey.md)** - Comprehensive guide to how documents flow through the Pipestream Platform, from ingestion to indexing. Includes examples, network topologies, and technical details.
+
+### Architecture & Design
+
+- **[Documentation Index](docs/README.md)** - Overview of all platform documentation
+- **[Document Journey](docs/design/document-journey.md)** - End-to-end document processing flow
+
+### Platform Components
+
+*Links to project-specific documentation will be added as features are documented:*
+
+- **Pipeline Engine** - Core orchestration engine that routes documents through processing modules
+- **Connectors** - Document ingestion services (S3, file system, API, etc.)
+- **Repository Service** - Document storage in S3 and metadata management
+- **Processing Modules**:
+  - **Parser** - Extract text and metadata from various document formats (PDF, video, images, etc.)
+  - **Chunker** - Split text into semantic chunks using multiple strategies
+  - **Embedder** - Generate vector embeddings using multiple models
+  - **Sink** - Index documents to OpenSearch with full-text, vector, and hybrid search
+
+### Development & Setup
+
+- **[Site Setup Guide](SETUP.md)** - Instructions for deploying the homepage via GitHub Pages
+- **[Troubleshooting](TROUBLESHOOTING.md)** - Common issues and solutions
+
+## 🏗️ Architecture Overview
+
+The Pipestream Platform operates as a **network graph**, not a linear pipeline. The Pipeline Engine acts as the central routing hub, orchestrating data flow between processing nodes:
+
+1. **Data Loading** - Digital assets are ingested through connectors, direct API calls, or Kafka events
+2. **Data Transformation** - Assets are transformed to text using parsers (Apache Tika, specialized parsers)
+3. **Data Enhancement** - Text is enhanced with chunking, embeddings, and AI processing
+4. **Sink** - Data is indexed to OpenSearch with full-text, vector, and hybrid search capabilities
+
+### Key Features
+
+- **Network Graph Architecture** - Fan-in and fan-out capabilities for flexible routing
+- **Multiple Entry Points** - Connectors, direct API, or Kafka events
+- **Flexible Storage** - S3 repository or in-memory processing
+- **Multiple Chunking Strategies** - Apply different chunking approaches to accumulate chunks
+- **Multiple Embedding Models** - Generate vector embeddings using multiple models simultaneously
+- **Transport Flexibility** - gRPC for low latency, Kafka for high throughput
+- **Dynamic Routing** - Runtime routing decisions based on configuration
+
+## 🤝 Contributing
+
+Pipestream AI is open source under the MIT License. We welcome contributions!
+
+1. Check out our [documentation](docs/)
+2. Review the [architecture guide](docs/design/document-journey.md)
+3. Open issues or pull requests in the relevant repositories
+
+## 📦 Repositories
+
+This organization contains multiple repositories for different components of the platform. See the [organization profile](profile/README.md) for more information.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file in each repository for details.
+
+---
 
 ## 🌐 Live Site
 
-Once configured, the site will be accessible at:
+The Pipestream AI homepage is deployed via GitHub Pages:
+
 - **Primary Domain**: https://pipestream.ai
-- **Alternative**: https://docs.pipestream.ai (if you prefer a subdomain)
-- **GitHub Pages URL**: https://ai-pipestream.github.io/.github/
+- **GitHub Pages URL**: https://ai-pipestream.github.io/ai-pipestream-homepage/
 
-## 🚀 Quick Start
+### Site Setup & Development
 
-1. **Enable GitHub Pages** (one-time setup):
-   - Go to [Repository Settings → Pages](https://github.com/ai-pipestream/.github/settings/pages)
-   - Under "Source", select **GitHub Actions**
-   - The workflow will automatically deploy on push to `main`
+For information about setting up and deploying the homepage:
 
-2. **Configure Custom Domain**:
-   - See [SETUP.md](SETUP.md) for detailed DNS configuration instructions
-   - GitHub will automatically provide free SSL certificates via Let's Encrypt
+- **[SETUP.md](SETUP.md)** - Complete setup instructions including DNS configuration and SSL setup
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Common issues and solutions for GitHub Pages deployment
 
-3. **Make Updates**:
-   - Edit `index.html` to update the homepage
-   - Push to `main` branch - changes deploy automatically within 1-2 minutes
-
-## 📁 Repository Structure
-
-```
-.
-├── index.html              # Main homepage
-├── .nojekyll              # Prevents Jekyll processing (serves static HTML)
-├── CNAME                   # Custom domain configuration
-├── SETUP.md               # Detailed setup instructions
-├── README.md              # This file
-└── .github/
-    └── workflows/
-        └── pages.yml      # GitHub Actions deployment workflow
-```
-
-## 🔒 SSL/HTTPS
-
-GitHub Pages provides **automatic HTTPS** with Let's Encrypt certificates:
-- ✅ Free and automatic
-- ✅ Auto-renewing
-- ✅ Supports custom domains
-- ✅ No manual certificate management needed
-
-If you have a custom wildcard SSL certificate you want to use, see the "Custom SSL Certificate" section in [SETUP.md](SETUP.md) for alternative approaches using Cloudflare or other CDN providers.
-
-## 📝 Customization
-
-The homepage is built with vanilla HTML/CSS for simplicity and fast loading. To customize:
-
-1. Open `index.html`
-2. Modify content, styling, or structure
-3. Commit and push to `main`
-4. GitHub Actions will automatically deploy your changes
-
-## 🛠️ Development
+### Quick Development
 
 Preview changes locally:
 ```bash
@@ -70,15 +100,6 @@ npx http-server
 
 Then visit http://localhost:8000
 
-## 📚 Documentation
+---
 
-- [SETUP.md](SETUP.md) - Complete setup instructions including DNS configuration and SSL setup
-- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Common issues and solutions for GitHub Pages deployment
-
-## 🤝 Contributing
-
-This is the organization's public face. For changes to the homepage, please open a pull request with your proposed updates.
-
-## 📄 License
-
-Content © 2025 Pipestream AI. All rights reserved.
+**Building the future of intelligent document processing.** 🚀
