@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Pipestream AI - Transform your data workflows with intelligent AI-powered streaming and processing">
-    <meta name="keywords" content="AI, data streaming, data processing, machine learning, real-time data, pipelines">
-    <title>Pipestream AI - Intelligent Data Streaming Platform</title>
+    <meta name="description" content="Pipestream AI - Open source document processing platform for intelligent search and indexing with AI-powered chunking and embeddings">
+    <meta name="keywords" content="document processing, search engine, vector search, embeddings, chunking, OpenSearch, AI, open source, MIT license">
+    <title>Pipestream AI - Open Source Document Processing Platform</title>
     <style>
         * {
             margin: 0;
@@ -78,6 +78,19 @@
             color: #667eea;
         }
         
+        .license-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 20px;
+            color: #667eea;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
         /* Hero Section */
         .hero {
             max-width: 1200px;
@@ -101,7 +114,7 @@
         .tagline {
             font-size: 1.5rem;
             color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 30px;
+            margin-bottom: 15px;
             animation: fadeInUp 1s ease-out 0.2s backwards;
         }
         
@@ -184,16 +197,21 @@
             padding: 40px 30px;
             transition: all 0.3s ease;
             animation: fadeInUp 1s ease-out backwards;
+            cursor: pointer;
         }
         
         .feature-card:nth-child(1) { animation-delay: 0.8s; }
         .feature-card:nth-child(2) { animation-delay: 1s; }
         .feature-card:nth-child(3) { animation-delay: 1.2s; }
+        .feature-card:nth-child(4) { animation-delay: 1.4s; }
+        .feature-card:nth-child(5) { animation-delay: 1.6s; }
+        .feature-card:nth-child(6) { animation-delay: 1.8s; }
         
         .feature-card:hover {
             transform: translateY(-10px);
             background: rgba(255, 255, 255, 0.08);
             box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.3);
         }
         
         .feature-icon {
@@ -212,11 +230,12 @@
             line-height: 1.8;
         }
         
-        /* Use Cases Section */
-        .use-cases {
+        /* Architecture Section */
+        .architecture {
             max-width: 1200px;
             margin: 0 auto;
             padding: 80px 40px;
+            text-align: center;
         }
         
         .section-title {
@@ -225,6 +244,58 @@
             color: #fff;
             margin-bottom: 60px;
             animation: fadeInUp 1s ease-out backwards;
+        }
+        
+        .architecture-content {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 40px;
+        }
+        
+        .architecture-content h3 {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        
+        .architecture-content p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        
+        .architecture-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .arch-feature {
+            text-align: left;
+        }
+        
+        .arch-feature h4 {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .arch-feature p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+        
+        /* Use Cases Section */
+        .use-cases {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 40px;
         }
         
         .use-case-grid {
@@ -255,6 +326,34 @@
         .use-case p {
             color: rgba(255, 255, 255, 0.6);
             font-size: 0.95rem;
+        }
+        
+        /* Open Source Section */
+        .open-source {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 40px;
+            text-align: center;
+        }
+        
+        .open-source-content {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 20px;
+            padding: 50px;
+        }
+        
+        .open-source-content h2 {
+            color: #fff;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .open-source-content p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
         }
         
         /* Footer */
@@ -323,8 +422,12 @@
                 padding: 60px 20px;
             }
             
-            .features, .use-cases {
+            .features, .use-cases, .architecture, .open-source {
                 padding: 60px 20px;
+            }
+            
+            .architecture-content {
+                padding: 30px 20px;
             }
         }
         
@@ -352,6 +455,7 @@
         <div class="logo">Pipestream AI</div>
         <nav>
             <a href="#features">Features</a>
+            <a href="#architecture">Architecture</a>
             <a href="#use-cases">Use Cases</a>
             <a href="https://github.com/ai-pipestream">GitHub</a>
         </nav>
@@ -360,73 +464,178 @@
     <main>
         <section class="hero">
             <h1>Pipestream AI</h1>
-            <p class="tagline">Transform Your Data Workflows with Intelligent AI-Powered Streaming</p>
+            <p class="tagline">Open Source Document Processing Platform</p>
+            <div class="license-badge">MIT Licensed • Open Source</div>
             <p class="description">
-                Build, deploy, and scale intelligent data pipelines that learn and adapt. 
-                Pipestream AI combines the power of real-time streaming with advanced machine learning 
-                to deliver insights at the speed of your business.
+                Transform documents into searchable knowledge with AI-powered processing. 
+                Pipestream AI provides a flexible, network-based architecture for ingesting, 
+                parsing, chunking, and embedding documents for intelligent search and indexing.
             </p>
             <div class="cta-buttons">
-                <a href="https://github.com/ai-pipestream" class="btn">Get Started</a>
-                <a href="https://github.com/ai-pipestream/.github" class="btn secondary">Learn More</a>
+                <a href="https://github.com/ai-pipestream" class="btn">View on GitHub</a>
+                <a href="#architecture" class="btn secondary">Learn More</a>
             </div>
         </section>
         
         <section class="features" id="features">
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3>Real-Time Processing</h3>
+            <div class="feature-card" onclick="scrollToSection('architecture')">
+                <div class="feature-icon">🌐</div>
+                <h3>Network Graph Architecture</h3>
                 <p>
-                    Process streaming data in real-time with ultra-low latency. 
-                    Build responsive systems that react to events as they happen.
+                    Not a linear pipeline—a flexible network graph with fan-in and fan-out capabilities. 
+                    Route documents dynamically through processing modules based on runtime configuration.
                 </p>
             </div>
             
-            <div class="feature-card">
-                <div class="feature-icon">🧠</div>
-                <h3>AI-Powered Intelligence</h3>
+            <div class="feature-card" onclick="scrollToSection('architecture')">
+                <div class="feature-icon">⚙️</div>
+                <h3>Pipeline Engine Orchestration</h3>
                 <p>
-                    Leverage machine learning models directly in your data streams. 
-                    Automatically detect patterns, anomalies, and insights.
+                    Central orchestration engine routes documents through processing steps, 
+                    managing transport (gRPC or Kafka) and coordinating between modules seamlessly.
                 </p>
             </div>
             
-            <div class="feature-card">
-                <div class="feature-icon">🔄</div>
-                <h3>Seamless Integration</h3>
+            <div class="feature-card" onclick="scrollToSection('architecture')">
+                <div class="feature-icon">📄</div>
+                <h3>Multi-Format Document Support</h3>
                 <p>
-                    Connect to your existing data sources and destinations effortlessly. 
-                    Works with popular databases, APIs, and cloud platforms.
+                    Process PDFs, videos, images, and more. Extract text, metadata, and content 
+                    using Apache Tika and specialized parsers for various document types.
+                </p>
+            </div>
+            
+            <div class="feature-card" onclick="scrollToSection('architecture')">
+                <div class="feature-icon">🧩</div>
+                <h3>Flexible Chunking Strategies</h3>
+                <p>
+                    Apply multiple chunking strategies to the same document. Accumulate chunks 
+                    from different strategies for comprehensive semantic processing.
+                </p>
+            </div>
+            
+            <div class="feature-card" onclick="scrollToSection('architecture')">
+                <div class="feature-icon">🔢</div>
+                <h3>Multiple Embedding Models</h3>
+                <p>
+                    Generate vector embeddings using multiple models simultaneously. 
+                    Support A/B testing and model comparison with parallel embedding generation.
+                </p>
+            </div>
+            
+            <div class="feature-card" onclick="scrollToSection('architecture')">
+                <div class="feature-icon">🔍</div>
+                <h3>OpenSearch Integration</h3>
+                <p>
+                    Index documents with full-text search, vector search, and hybrid search capabilities. 
+                    Automatic index management and field mapping for optimal search performance.
                 </p>
             </div>
         </section>
         
+        <section class="architecture" id="architecture">
+            <h2 class="section-title">Architecture</h2>
+            <div class="architecture-content">
+                <h3>Network-Based Document Processing</h3>
+                <p>
+                    Pipestream AI operates as a network graph, not a linear pipeline. The Pipeline Engine 
+                    acts as the central routing hub, orchestrating data flow between processing nodes. 
+                    Documents can enter through multiple entry points and be routed through various 
+                    processing paths based on configuration.
+                </p>
+                
+                <div class="architecture-features">
+                    <div class="arch-feature">
+                        <h4>Multiple Entry Points</h4>
+                        <p>Connectors, direct API calls, or Kafka events</p>
+                    </div>
+                    <div class="arch-feature">
+                        <h4>Flexible Storage</h4>
+                        <p>S3 repository or in-memory processing</p>
+                    </div>
+                    <div class="arch-feature">
+                        <h4>Transport Options</h4>
+                        <p>gRPC for low latency, Kafka for high throughput</p>
+                    </div>
+                    <div class="arch-feature">
+                        <h4>Dynamic Routing</h4>
+                        <p>Runtime routing decisions based on configuration</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="architecture-content">
+                <h3>Processing Flow</h3>
+                <p>
+                    Documents flow through four main stages: <strong>Data Loading</strong> (ingestion), 
+                    <strong>Data Transformation</strong> (parsing to text), <strong>Data Enhancement</strong> 
+                    (chunking, embeddings, AI processing), and <strong>Sink</strong> (indexing to search engine).
+                </p>
+            </div>
+            
+            <div class="architecture-content">
+                <h3>Core Services</h3>
+                <div class="architecture-features">
+                    <div class="arch-feature">
+                        <h4>Connectors</h4>
+                        <p>Discover, authenticate, and stream documents from various sources</p>
+                    </div>
+                    <div class="arch-feature">
+                        <h4>Repository Service</h4>
+                        <p>Manages S3 storage and metadata, publishes events</p>
+                    </div>
+                    <div class="arch-feature">
+                        <h4>Pipeline Engine</h4>
+                        <p>Orchestrates routing and transport between modules</p>
+                    </div>
+                    <div class="arch-feature">
+                        <h4>Processing Modules</h4>
+                        <p>Parsers, chunkers, embedders, and specialized processors</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
         <section class="use-cases" id="use-cases">
-            <h2 class="section-title">Built for Modern Data Challenges</h2>
+            <h2 class="section-title">Use Cases</h2>
             <div class="use-case-grid">
                 <div class="use-case">
-                    <h4>Real-Time Analytics</h4>
-                    <p>Analyze streaming data with AI-powered insights for instant business intelligence</p>
+                    <h4>Enterprise Search</h4>
+                    <p>Index internal documents, wikis, and knowledge bases with semantic search capabilities</p>
                 </div>
                 <div class="use-case">
-                    <h4>Anomaly Detection</h4>
-                    <p>Automatically identify unusual patterns and outliers in your data streams</p>
+                    <h4>Content Discovery</h4>
+                    <p>Make large document repositories searchable with AI-powered content understanding</p>
                 </div>
                 <div class="use-case">
-                    <h4>Predictive Processing</h4>
-                    <p>Use ML models to predict and preprocess data before it reaches downstream systems</p>
+                    <h4>Multi-Strategy Indexing</h4>
+                    <p>Apply multiple chunking and embedding strategies to optimize search across different query types</p>
                 </div>
                 <div class="use-case">
-                    <h4>Event-Driven Architecture</h4>
-                    <p>Build responsive microservices that react intelligently to streaming events</p>
+                    <h4>Document Intelligence</h4>
+                    <p>Extract and index metadata, text, and semantic information from diverse document formats</p>
                 </div>
                 <div class="use-case">
-                    <h4>Data Transformation</h4>
-                    <p>Apply complex transformations and enrichment with AI-assisted processing</p>
+                    <h4>Vector Search</h4>
+                    <p>Enable semantic search with vector embeddings for natural language queries</p>
                 </div>
                 <div class="use-case">
-                    <h4>Smart Routing</h4>
-                    <p>Intelligently route data streams based on content, patterns, and ML predictions</p>
+                    <h4>Hybrid Search</h4>
+                    <p>Combine full-text and vector search for comprehensive document retrieval</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="open-source">
+            <div class="open-source-content">
+                <h2>Open Source & MIT Licensed</h2>
+                <p>
+                    Pipestream AI is fully open source under the MIT License. 
+                    Use it freely in your projects, contribute improvements, or customize it for your needs.
+                </p>
+                <div class="cta-buttons">
+                    <a href="https://github.com/ai-pipestream" class="btn">Contribute on GitHub</a>
+                    <a href="https://github.com/ai-pipestream" class="btn secondary">View Documentation</a>
                 </div>
             </div>
         </section>
@@ -435,12 +644,18 @@
     <footer>
         <div class="footer-links">
             <a href="https://github.com/ai-pipestream">GitHub Organization</a>
-            <a href="https://github.com/ai-pipestream/.github/blob/main/SETUP.md">Documentation</a>
+            <a href="https://github.com/ai-pipestream">Documentation</a>
             <a href="https://github.com/ai-pipestream/.github/issues">Support</a>
         </div>
         <div class="copyright">
-            &copy; 2025 Pipestream AI. Building the future of intelligent data streaming.
+            &copy; 2025 Pipestream AI. Open source under MIT License.
         </div>
     </footer>
+    
+    <script>
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>
