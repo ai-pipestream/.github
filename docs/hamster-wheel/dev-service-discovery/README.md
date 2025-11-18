@@ -105,6 +105,8 @@ service.registration.tags=connector,intake,core-service
 ```
 The above configuration is used by the `SelfRegistrationService` to register the service `connector-intake-service` with the platform.  We just need to add to the tags for self-registration. In the docker setup, we can use the `SERVICE_REGISTRATION_TAGS` environment variable to set the tags.  Otherwise dev services can add the tag for the dev mode instance tag.
 
+#### Implementation details
+
 **Method**: Use `quarkus.application.name` from `application.properties`
 
 ```properties
@@ -159,6 +161,7 @@ private String detectDeploymentType() {
 ```
 
 ### Container Service Definition
+Production tags automatically deploy new instances of the services to docker.io. This makes it easy to use the latest version of the service without having to build locally.
 
 Add to `compose-devservices.yml`:
 
@@ -203,6 +206,9 @@ Create new runtime recorder/processor that:
 7. Stops container
 
 **Consul Query Example:**
+
+TODO: need to use the mutiny consul client.  See platform-libraries for example.
+
 ```java
 @Inject
 ConsulClient consulClient;
