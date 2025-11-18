@@ -138,27 +138,77 @@ Consul can store service metadata via tags. We will use tags to differentiate be
 
 **Implementation in Self-Registration:**
 
-Modify `SelfRegistrationService.buildServiceRequest()`:
+Two approaches for adding deployment tags:
+
+**Option 1: Environment Variable (Containers)**
+- Containers use `SERVICE_REGISTRATION_TAGS=deployment:container` environment variable
+- This is already parsed by `SelfRegistrationService` from `service.registration.tags` config
+- Compose file sets: `SERVICE_REGISTRATION_TAGS=deployment:container`
+
+**Option 2: Dev Mode Detection (Dev Services)**
+- Modify `SelfRegistrationService.buildServiceRequest()` to detect dev mode
+- Add `deployment:dev` tag automatically when in dev mode
+- Check for dev mode indicators (Quarkus dev profile, environment variables, etc.)
+
+**Recommended Implementation:**
 ```java
+// In SelfRegistrationService.buildServiceRequest()
 private ServiceRegistrationRequest buildServiceRequest() {
     ServiceRegistrationRequest.Builder builder = ServiceRegistrationRequest.newBuilder()
         .setServiceName(serviceName)
         // ... other fields ...
     
-    // Detect deployment type
-    String deploymentType = detectDeploymentType(); // "container" or "dev"
-    builder.addTags("deployment:" + deploymentType);
+    // Add existing tags from config (includes deployment:container if set via env var)
+    if (!tags.isEmpty()) {
+        Arrays.stream(tags.split(","))
+            .map(String::trim)
+            .filter(s -> !s.isEmpty())
+            .forEach(builder::addTags);
+    }
+    
+    // If no deployment tag found, detect and add it
+    boolean hasDeploymentTag = tags.contains("deployment:container") || 
+                               tags.contains("deployment:dev");
+    
+    if (!hasDeploymentTag) {
+        String deploymentType = detectDeploymentType(); // "container" or "dev"
+        builder.addTags("deployment:" + deploymentType);
+    }
     
     return builder.build();
 }
 
 private String detectDeploymentType() {
     // Check if running in Quarkus dev mode
-    // Dev mode: quarkus.devservices.enabled or specific dev mode indicator
-    // Container: default or explicit container environment
-    return isDevMode() ? "dev" : "container";
+    // Option 1: Check profile
+    if ("dev".equals(profile) && !isContainer()) {
+        return "dev";
+    }
+    
+    // Option 2: Check environment variable
+    String devMode = System.getenv("QUARKUS_DEV_MODE");
+    if ("true".equals(devMode)) {
+        return "dev";
+    }
+    
+    // Option 3: Check system property (set by extension)
+    String devServices = System.getProperty("quarkus.devservices.enabled");
+    if ("true".equals(devServices)) {
+        return "dev";
+    }
+    
+    // Default to container
+    return "container";
+}
+
+private boolean isContainer() {
+    // Check for container-specific indicators
+    return System.getenv("CONTAINER") != null 
+        || Files.exists(Path.of("/.dockerenv"));
 }
 ```
+
+**Note**: The `service.registration.tags` config property already supports comma-separated tags, so containers can set `SERVICE_REGISTRATION_TAGS=deployment:container` and it will be included automatically.
 
 ### Container Service Definition
 Production tags automatically deploy new instances of the services to docker.io. This makes it easy to use the latest version of the service without having to build locally.
@@ -207,28 +257,53 @@ Create new runtime recorder/processor that:
 
 **Consul Query Example:**
 
-TODO: need to use the mutiny consul client.  See platform-libraries for example.
+Using Mutiny Consul Client from `io.vertx.mutiny.ext.consul.ConsulClient`:
 
 ```java
 @Inject
-ConsulClient consulClient;
+ConsulClient consulClient;  // io.vertx.mutiny.ext.consul.ConsulClient
 
 // Wait for container registration
-Uni<ServiceList> containerServices = consulClient
-    .healthService(serviceName, true, new ServiceQueryOptions()
-        .setTag("deployment:container"))
-    .onFailure().retry().atMost(30).withDelay(Duration.ofSeconds(2));
+Uni<ServiceList> waitForContainerRegistration(String serviceName) {
+    return consulClient
+        .healthService(serviceName, true, new ServiceQueryOptions()
+            .setTag("deployment:container"))
+        .onFailure().retry()
+            .atMost(30)
+            .withDelay(Duration.ofSeconds(2))
+        .onItem().invoke(services -> {
+            if (services.getList().isEmpty()) {
+                throw new RuntimeException("Container not registered yet");
+            }
+        });
+}
 
 // Wait for dev mode registration
-Uni<ServiceList> devServices = consulClient
-    .healthService(serviceName, true, new ServiceQueryOptions()
-        .setTag("deployment:dev"))
-    .onFailure().retry().atMost(30).withDelay(Duration.ofSeconds(2));
+Uni<ServiceList> waitForDevModeRegistration(String serviceName) {
+    return consulClient
+        .healthService(serviceName, true, new ServiceQueryOptions()
+            .setTag("deployment:dev"))
+        .onFailure().retry()
+            .atMost(30)
+            .withDelay(Duration.ofSeconds(2));
+}
 
 // Deregister container
-String containerServiceId = findContainerServiceId(containerServices);
-consulClient.deregisterService(containerServiceId);
+Uni<Void> deregisterContainer(String serviceId) {
+    return consulClient.deregisterService(serviceId);
+}
+
+// Find container service ID from service list
+String findContainerServiceId(ServiceList services) {
+    return services.getList().stream()
+        .filter(service -> service.getService().getTags().contains("deployment:container"))
+        .map(service -> service.getService().getId())
+        .findFirst()
+        .orElseThrow(() -> new RuntimeException("Container service not found"));
+}
 ```
+
+**Reference**: See `platform-registration-service/src/main/java/ai/pipestream/registration/consul/ConsulRegistrar.java` and `ConsulClientProducer.java` for examples of using Mutiny Consul Client.
 
 ### Extension Architecture
 
@@ -251,52 +326,85 @@ consulClient.deregisterService(containerServiceId);
 
 ## Development Phases
 
-### Phase 1: Platform-Registration Service (MVP)
+### Phase 1: Platform-Registration Service + All Platform Containers (MVP)
 
-**Goal**: Validate the pattern with a single service
+**Goal**: Validate the pattern with platform-registration in dev mode, all other services as containers
+
+**Key Insight**: When running `quarkus dev` on platform-registration-service, start ALL platform service containers (mapping-service, connector-admin, account-service, opensearch-manager, etc.) so the full platform is available. Only platform-registration-service itself will be replaced by dev mode.
 
 **Tasks:**
-1. Add `platform-registration-service` container to `compose-devservices.yml`
-2. Enhance `SelfRegistrationService` to add deployment tags
-3. Create runtime orchestration component
-4. Implement container → dev mode handoff
-5. Test with platform-registration-service
+1. Add ALL platform service containers to `compose-devservices.yml`:
+   - `platform-registration-service` (will be replaced by dev mode)
+   - `mapping-service`
+   - `connector-admin`
+   - `account-service`
+   - `opensearch-manager`
+   - Any other core services needed
+2. Configure containers with `SERVICE_REGISTRATION_TAGS=deployment:container` environment variable
+3. Enhance `SelfRegistrationService` to detect dev mode and add `deployment:dev` tag (or use `SERVICE_REGISTRATION_TAGS` env var for containers)
+4. Create runtime orchestration component that:
+   - Starts all platform containers
+   - Only manages handoff for the service running in dev mode
+5. Implement container → dev mode handoff for platform-registration-service
+6. Test with platform-registration-service in dev mode, all others as containers
 
 **Success Criteria:**
 - Developer runs `quarkus dev` on platform-registration-service
-- Container starts automatically
-- Dev mode starts and replaces container
+- ALL platform containers start automatically
+- Platform-registration container registers with `deployment:container` tag
+- Dev mode starts and registers with `deployment:dev` tag
+- Platform-registration container is removed, dev mode instance remains
+- All other containers continue running
+- Full platform is available for development
 - No manual intervention required
 
-### Phase 2: Foundational Services
+### Phase 2: Frontend Support (Immediate Next Step)
 
-**Goal**: Extend to other core services
+**Goal**: Enable frontend development with minimal setup, always have frontend available
 
-**Services to Add:**
+**Why Phase 2 (Not Phase 3)**: Frontend only needs platform-registration running. Once Phase 1 is complete, frontend can bootstrap immediately. This allows developers to always have a working frontend while developing backend services.
+
+**Requirements:**
+- Frontend needs platform-registration running (from Phase 1)
+- Can discover other services via Consul
+- Simple startup script or compose file
+- No Quarkus extension needed (Node.js)
+
+**Implementation Options:**
+1. **Simple Startup Script**: Check if platform-registration is available, start if not
+2. **Docker Compose**: Add frontend service to compose file with dependency on platform-registration
+3. **Hybrid**: Frontend startup script that uses compose for platform-registration if needed
+
+**Recommended Approach**: Simple Node.js startup script that:
+- Checks Consul for platform-registration service
+- If not found, starts it via docker-compose (or waits if dev mode is starting)
+- Once available, frontend can query Consul for all other services
+- Frontend starts normally
+
+**Success Criteria:**
+- Developer can start frontend with single command
+- Frontend automatically ensures platform-registration is available
+- Frontend can discover all services via Consul
+- Works whether platform-registration is in dev mode or container
+
+### Phase 3: Additional Services (Future)
+
+**Goal**: Extend orchestration to other services for multi-service development
+
+**Services to Add Orchestration For:**
 - `mapping-service`
 - `connector-admin`
 - `account-service`
-- `opensearch-manager` (optional)
+- `opensearch-manager`
+- Any other services developers want to work on
 
 **Tasks:**
-1. Add each service container to compose file
-2. Test multi-service scenarios
-3. Validate independent service orchestration
+1. Each service can independently run in dev mode
+2. Extension handles handoff for whichever service is in dev mode
+3. Other services continue as containers
+4. Multiple services can be in dev mode simultaneously
 
-### Phase 3: Frontend Support
-
-**Goal**: Enable frontend development with minimal setup
-
-**Requirements:**
-- Frontend only needs platform-registration running
-- Can discover other services via Consul
-- Simple startup script or compose file
-
-**Implementation:**
-- Create separate compose file for frontend
-- Or enhance existing compose with frontend service
-- Frontend startup checks for platform-registration
-- Once available, frontend can query Consul for other services
+**Note**: This phase is less critical since Phase 1 + 2 provide a complete development environment. Phase 3 is for developers who need to work on multiple services simultaneously.
 
 ## State Management
 
@@ -400,9 +508,9 @@ service.registration.enabled=true
 **Status**: Planning Phase
 
 **Next Steps**:
-1. Create LLM context document for implementation
-2. Implement Phase 1 (platform-registration-service)
+1. ✅ Create LLM context document for implementation
+2. Implement Phase 1 (platform-registration-service + all platform containers)
 3. Test and validate pattern
-4. Extend to Phase 2 (foundational services)
-5. Implement Phase 3 (frontend support)
+4. Implement Phase 2 (frontend support) - enables always-on frontend
+5. Extend to Phase 3 (additional services) as needed
 

@@ -95,37 +95,48 @@ String serviceName;
 
 ### Implementation Requirements
 
-#### Phase 1: Platform-Registration Service (MVP)
+#### Phase 1: Platform-Registration Service + All Platform Containers (MVP)
 
-**Goal**: Validate pattern with single service
+**Goal**: Validate pattern with platform-registration in dev mode, all other services as containers
+
+**Key Insight**: When running `quarkus dev` on platform-registration-service, start ALL platform service containers (mapping-service, connector-admin, account-service, opensearch-manager, etc.) so the full platform is available. Only platform-registration-service itself will be replaced by dev mode.
 
 **Tasks**:
 
 1. **Enhance Compose File**
    - File: `platform-libraries/devservices/devservices/src/main/resources/compose-devservices.yml`
-   - Add `platform-registration-service` service definition
-   - Configure environment variables for deployment tagging
-   - Set up health checks
-   - Configure dependencies (Consul must be healthy)
+   - Add ALL platform service container definitions:
+     - `platform-registration-service` (will be replaced by dev mode)
+     - `mapping-service`
+     - `connector-admin`
+     - `account-service`
+     - `opensearch-manager`
+     - Any other core services needed
+   - Configure environment variables for deployment tagging: `SERVICE_REGISTRATION_TAGS=deployment:container`
+   - Set up health checks for each service
+   - Configure dependencies (Consul must be healthy for all services)
 
 2. **Modify Self-Registration Service**
    - File: `platform-registration-service/src/main/java/ai/pipestream/registration/startup/SelfRegistrationService.java`
    - Method: `buildServiceRequest()`
-   - Add logic to detect deployment type (container vs dev mode)
-   - Add tag: `deployment:container` or `deployment:dev`
-   - Detection method: Check for dev mode indicators (e.g., `quarkus.devservices.enabled`, environment variables, or system properties)
+   - **Two approaches**:
+     - **Containers**: Use `SERVICE_REGISTRATION_TAGS=deployment:container` environment variable (already parsed from `service.registration.tags` config)
+     - **Dev Mode**: Detect dev mode and automatically add `deployment:dev` tag
+   - Detection method: Check for dev mode indicators (profile, `QUARKUS_DEV_MODE` env var, `quarkus.devservices.enabled` system property)
+   - If no deployment tag found in config, auto-detect and add it
 
 3. **Create Runtime Orchestration Component**
    - New file: `platform-libraries/devservices/devservices/src/main/java/ai/pipestream/quarkus/devservices/runtime/ServiceOrchestrationRecorder.java`
    - Responsibilities:
-     - Detect service name from config
+     - Detect service name from config (`quarkus.application.name`)
      - Check if service exists in compose file
-     - Start container (via Quarkus Compose Dev Services or direct Docker API)
-     - Monitor Consul for container registration
+     - Start ALL platform containers (not just the one in dev mode)
+     - Monitor Consul for container registration of the dev mode service
      - Wait for dev mode registration
-     - Deregister container from Consul
-     - Stop container
+     - Deregister only the container instance of the service in dev mode
+     - Stop only that container (other containers continue running)
    - Use `@Recorder` annotation for Quarkus runtime recording
+   - Use Mutiny Consul Client: `io.vertx.mutiny.ext.consul.ConsulClient`
 
 4. **Create Build Step Processor**
    - New file: `platform-libraries/devservices/devservices-deployment/src/main/java/ai/pipestream/quarkus/devservices/deployment/ServiceOrchestrationProcessor.java`
@@ -136,11 +147,12 @@ String serviceName;
    - Use `@BuildStep` annotation
 
 5. **Consul Integration**
-   - Inject `ConsulClient` in runtime recorder
-   - Query Consul API: `GET /v1/health/service/{serviceName}?tag=deployment:container`
-   - Poll until container registers (with timeout/retry)
-   - Query for dev mode: `GET /v1/health/service/{serviceName}?tag=deployment:dev`
-   - Deregister container: `DELETE /v1/agent/service/deregister/{serviceId}`
+   - Inject `ConsulClient` (Mutiny version: `io.vertx.mutiny.ext.consul.ConsulClient`)
+   - See `platform-registration-service/src/main/java/ai/pipestream/registration/consul/ConsulClientProducer.java` for example
+   - Query Consul API using Mutiny: `consulClient.healthService(serviceName, true, new ServiceQueryOptions().setTag("deployment:container"))`
+   - Poll until container registers (with timeout/retry using Mutiny retry)
+   - Query for dev mode: `consulClient.healthService(serviceName, true, new ServiceQueryOptions().setTag("deployment:dev"))`
+   - Deregister container: `consulClient.deregisterService(serviceId)` (returns `Uni<Void>`)
 
 #### Technical Details
 
@@ -327,8 +339,13 @@ Phase 1 is complete when:
 
 1. Test and validate pattern
 2. Document learnings
-3. Extend to other services (mapping-service, connector-admin, account-service)
-4. Implement frontend support
+3. **Implement Phase 2: Frontend Support** (immediate next step)
+   - Frontend only needs platform-registration running
+   - Simple Node.js startup script that checks Consul
+   - Enables always-on frontend for development
+4. **Phase 3: Additional Services** (future, less critical)
+   - Extend orchestration to other services for multi-service development
+   - Each service can independently run in dev mode
 5. Add smart container restore (future enhancement)
 
 ### Questions to Resolve
