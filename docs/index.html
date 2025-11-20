@@ -15,7 +15,50 @@
   </style>
 </head>
 <body>
+  <!-- Theme toggle button -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+    <span id="themeIcon">🌙</span>
+  </button>
+  
   <div id="app">Loading Docs...</div>
+  
+  <!-- Theme toggle script (must run before Docsify) -->
+  <script>
+    (function() {
+      // Check for saved theme preference or default to system preference
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+      
+      // Apply theme immediately to prevent flash
+      if (isDark) {
+        document.body.classList.add('dark-mode');
+      }
+      
+      // Wait for DOM to be ready
+      document.addEventListener('DOMContentLoaded', function() {
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        
+        // Update icon based on current theme
+        function updateIcon() {
+          const isDarkMode = document.body.classList.contains('dark-mode');
+          themeIcon.textContent = isDarkMode ? '☀️' : '🌙';
+        }
+        
+        updateIcon();
+        
+        // Toggle theme on button click
+        themeToggle.addEventListener('click', function() {
+          document.body.classList.toggle('dark-mode');
+          const isDarkMode = document.body.classList.contains('dark-mode');
+          localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+          updateIcon();
+        });
+      });
+    })();
+  </script>
+  
   <script>
     window.$docsify = {
       name: 'PipStream Engine',
@@ -31,6 +74,91 @@
       }
     }
   </script>
+  
+  <!-- Custom sidebar collapse behavior -->
+  <script>
+    // Fix sidebar collapse behavior - make all sections consistently toggleable
+    (function() {
+      // Wait for Docsify to load and render the sidebar
+      window.$docsify = window.$docsify || {};
+      const originalMounted = window.$docsify.mounted;
+      
+      window.$docsify.mounted = function() {
+        if (originalMounted) originalMounted.apply(this, arguments);
+        
+        // Initialize sidebar collapse behavior after a short delay
+        setTimeout(function() {
+          const sidebar = document.querySelector('.sidebar');
+          if (!sidebar) return;
+          
+          // Find all parent items (those with child lists)
+          const parentItems = sidebar.querySelectorAll('li');
+          
+          parentItems.forEach(function(item) {
+            const childList = item.querySelector('ul');
+            if (!childList) return;
+            
+            // Find the link/strong element that should be clickable
+            const toggle = item.querySelector('a, strong');
+            if (!toggle) return;
+            
+            // Mark this item as collapsible
+            item.classList.add('collapsible');
+            
+            // Check if this section should be initially expanded
+            // (contains the active page or is a bold link)
+            const isActive = item.querySelector('.active') || 
+                           item.classList.contains('active') ||
+                           toggle.tagName === 'A';
+            
+            if (!isActive) {
+              item.classList.add('collapsed');
+            }
+            
+            // Add click handler for toggling
+            toggle.addEventListener('click', function(e) {
+              // If it's a link that points to a real page, let it navigate
+              // But still toggle the collapse state
+              const href = toggle.getAttribute('href');
+              if (href && href !== '#' && !href.startsWith('javascript:')) {
+                // Let the navigation happen, but also toggle
+                setTimeout(function() {
+                  item.classList.toggle('collapsed');
+                }, 10);
+              } else {
+                // No navigation, just toggle
+                e.preventDefault();
+                item.classList.toggle('collapsed');
+              }
+            });
+          });
+          
+          // Add CSS for collapse behavior
+          if (!document.getElementById('sidebar-collapse-styles')) {
+            const style = document.createElement('style');
+            style.id = 'sidebar-collapse-styles';
+            style.textContent = `
+              .sidebar li.collapsible.collapsed > ul {
+                display: none;
+              }
+              .sidebar li.collapsible > a::before,
+              .sidebar li.collapsible > strong::before {
+                content: '▼ ';
+                display: inline-block;
+                transition: transform 0.2s ease;
+              }
+              .sidebar li.collapsible.collapsed > a::before,
+              .sidebar li.collapsible.collapsed > strong::before {
+                transform: rotate(-90deg);
+              }
+            `;
+            document.head.appendChild(style);
+          }
+        }, 100);
+      };
+    })();
+  </script>
+  
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
