@@ -106,6 +106,21 @@
             // Mark this item as collapsible
             item.classList.add('collapsible');
             
+            // Add collapse arrow indicator
+            const arrow = document.createElement('span');
+            arrow.className = 'collapse-arrow';
+            arrow.textContent = '▼';
+            arrow.style.cssText = 'display: inline-block; margin-right: 5px; transition: transform 0.2s ease; cursor: pointer;';
+            
+            // Insert arrow at the beginning of the toggle element
+            if (toggleElement.tagName === 'STRONG') {
+              // For strong elements, insert before the first child
+              toggleElement.insertBefore(arrow, toggleElement.firstChild);
+            } else {
+              // For link elements, insert before the first child
+              toggleElement.insertBefore(arrow, toggleElement.firstChild);
+            }
+            
             // Check if this section should be initially expanded
             // (contains the active page or is a bold link)
             const isActive = item.querySelector('.active') || 
@@ -113,6 +128,7 @@
             
             if (!isActive) {
               item.classList.add('collapsed');
+              arrow.style.transform = 'rotate(-90deg)';
             }
             
             // Function to handle toggle
@@ -123,6 +139,13 @@
                 e.preventDefault();
                 e.stopPropagation();
                 item.classList.toggle('collapsed');
+                
+                // Update arrow rotation
+                if (item.classList.contains('collapsed')) {
+                  arrow.style.transform = 'rotate(-90deg)';
+                } else {
+                  arrow.style.transform = 'rotate(0deg)';
+                }
               }
               // If no children or empty children list, allow navigation as normal
             }
@@ -145,20 +168,15 @@
               .sidebar li.collapsible.collapsed > ul {
                 display: none;
               }
-              .sidebar li.collapsible > a::before,
-              .sidebar li.collapsible > strong::before {
-                content: '▼ ';
-                display: inline-block;
-                transition: transform 0.2s ease;
-              }
-              .sidebar li.collapsible.collapsed > a::before,
-              .sidebar li.collapsible.collapsed > strong::before {
-                transform: rotate(-90deg);
-              }
               /* Make sure nested links in strong elements are styled correctly */
               .sidebar li.collapsible > strong > a {
                 text-decoration: inherit;
                 color: inherit;
+              }
+              /* Style for collapse arrow */
+              .sidebar .collapse-arrow {
+                user-select: none;
+                -webkit-user-select: none;
               }
             `;
             document.head.appendChild(style);
