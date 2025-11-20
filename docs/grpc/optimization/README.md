@@ -4,7 +4,7 @@ This directory contains documentation about gRPC performance optimizations imple
 
 ## Documents
 
-### [GRPC_PERFORMANCE_OPTIMIZATION.md](GRPC_PERFORMANCE_OPTIMIZATION.md)
+### [GRPC_PERFORMANCE_OPTIMIZATION.md](#/grpc/optimization/GRPC_PERFORMANCE_OPTIMIZATION)
 
 Comprehensive guide on gRPC flow control window optimization:
 - Problem statement and solution overview
@@ -14,7 +14,7 @@ Comprehensive guide on gRPC flow control window optimization:
 - Performance benchmarks
 - Troubleshooting guide
 
-### [GRPC_OPTIMIZATION_SUMMARY.md](GRPC_OPTIMIZATION_SUMMARY.md)
+### [GRPC_OPTIMIZATION_SUMMARY.md](#/grpc/optimization/GRPC_OPTIMIZATION_SUMMARY)
 
 High-level summary of the system-wide implementation:
 - What was done
@@ -23,7 +23,7 @@ High-level summary of the system-wide implementation:
 - Services status
 - Next steps
 
-### [UNIFIED_SERVER_LIMITATIONS.md](UNIFIED_SERVER_LIMITATIONS.md)
+### [UNIFIED_SERVER_LIMITATIONS.md](#/grpc/optimization/UNIFIED_SERVER_LIMITATIONS)
 
 Analysis of unified vs separate server mode limitations:
 - Why unified server mode doesn't support flow control window configuration
