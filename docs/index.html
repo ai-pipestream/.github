@@ -99,34 +99,65 @@
             if (!childList) return;
             
             // Find the link/strong element that should be clickable
-            const toggle = item.querySelector('a, strong');
-            if (!toggle) return;
+            // Handle both <a> and <strong> as direct children, and <a> inside <strong>
+            const toggleElement = item.querySelector(':scope > a, :scope > strong');
+            if (!toggleElement) return;
             
             // Mark this item as collapsible
             item.classList.add('collapsible');
             
+            // Add collapse arrow indicator
+            const arrow = document.createElement('span');
+            arrow.className = 'collapse-arrow';
+            arrow.textContent = '▼';
+            arrow.style.cssText = 'display: inline-block; margin-right: 5px; transition: transform 0.2s ease; cursor: pointer;';
+            
+            // Insert arrow at the beginning of the toggle element
+            if (toggleElement.tagName === 'STRONG') {
+              // For strong elements, insert before the first child
+              toggleElement.insertBefore(arrow, toggleElement.firstChild);
+            } else {
+              // For link elements, insert before the first child
+              toggleElement.insertBefore(arrow, toggleElement.firstChild);
+            }
+            
             // Check if this section should be initially expanded
             // (contains the active page or is a bold link)
             const isActive = item.querySelector('.active') || 
-                           item.classList.contains('active') ||
-                           toggle.tagName === 'A';
+                           item.classList.contains('active');
             
             if (!isActive) {
               item.classList.add('collapsed');
+              arrow.style.transform = 'rotate(-90deg)';
             }
             
-            // Add click handler for toggling
-            toggle.addEventListener('click', function(e) {
-              // Always toggle the collapsed state
-              item.classList.toggle('collapsed');
-              
-              // If it's not a navigable link, prevent default
-              const href = toggle.getAttribute('href');
-              if (!href || href === '#' || href.startsWith('javascript:')) {
+            // Function to handle toggle
+            function handleToggle(e) {
+              // Check if this item has children - if so, treat it as a collapsible section
+              if (childList && childList.children.length > 0) {
+                // Prevent navigation and just toggle collapse
                 e.preventDefault();
+                e.stopPropagation();
+                item.classList.toggle('collapsed');
+                
+                // Update arrow rotation
+                if (item.classList.contains('collapsed')) {
+                  arrow.style.transform = 'rotate(-90deg)';
+                } else {
+                  arrow.style.transform = 'rotate(0deg)';
+                }
               }
-              // If it's a navigable link, let the default navigation happen
-            });
+              // If no children or empty children list, allow navigation as normal
+            }
+            
+            // Add click handler for toggling to the main element
+            toggleElement.addEventListener('click', handleToggle);
+            
+            // Also add handler to any nested <a> inside <strong>
+            const nestedLink = toggleElement.querySelector('a');
+            if (nestedLink) {
+              nestedLink.addEventListener('click', handleToggle);
+            }
           });
           
           // Add CSS for collapse behavior
@@ -137,15 +168,15 @@
               .sidebar li.collapsible.collapsed > ul {
                 display: none;
               }
-              .sidebar li.collapsible > a::before,
-              .sidebar li.collapsible > strong::before {
-                content: '▼ ';
-                display: inline-block;
-                transition: transform 0.2s ease;
+              /* Make sure nested links in strong elements are styled correctly */
+              .sidebar li.collapsible > strong > a {
+                text-decoration: inherit;
+                color: inherit;
               }
-              .sidebar li.collapsible.collapsed > a::before,
-              .sidebar li.collapsible.collapsed > strong::before {
-                transform: rotate(-90deg);
+              /* Style for collapse arrow */
+              .sidebar .collapse-arrow {
+                user-select: none;
+                -webkit-user-select: none;
               }
             `;
             document.head.appendChild(style);
