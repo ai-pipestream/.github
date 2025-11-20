@@ -1,17 +1,19 @@
 - [Home](/)
-
+- **Architecture**
+  - [System Overview](/architecture/system-overview)
+- **Grpc**
+  - [Platform Features](/grpc/platform-features)
+  - **[Optimization](/grpc/optimization/README)**
+    - [Overview](/grpc/optimization/README)
+    - [Grpc Optimization Summary](/grpc/optimization/GRPC_OPTIMIZATION_SUMMARY)
+    - [Grpc Performance Optimization](/grpc/optimization/GRPC_PERFORMANCE_OPTIMIZATION)
+    - [Unified Server Limitations](/grpc/optimization/UNIFIED_SERVER_LIMITATIONS)
 - **Design**
   - [Document Journey](/design/document-journey)
-
-- **Grpc**
-  - [Grpc Optimization Summary](/grpc/optimization/GRPC_OPTIMIZATION_SUMMARY)
-  - [Grpc Performance Optimization](/grpc/optimization/GRPC_PERFORMANCE_OPTIMIZATION)
-  - [Platform Features](/grpc/platform-features)
-  - [Readme](/grpc/optimization/README)
-  - [Unified Server Limitations](/grpc/optimization/UNIFIED_SERVER_LIMITATIONS)
-
 - **Hamster Wheel**
-  - [Connector Upload Methods](/hamster-wheel/connector/connector-upload-methods)
-  - [Implementation Status](/hamster-wheel/connector/implementation-status)
-  - [Llm Implementation Context](/hamster-wheel/dev-service-discovery/LLM-IMPLEMENTATION-CONTEXT)
-  - [Readme](/hamster-wheel/dev-service-discovery/README)
+  - **Connector**
+    - [Connector Upload Methods](/hamster-wheel/connector/connector-upload-methods)
+    - [Implementation Status](/hamster-wheel/connector/implementation-status)
+  - **[Dev Service Discovery](/hamster-wheel/dev-service-discovery/README)**
+    - [Overview](/hamster-wheel/dev-service-discovery/README)
+    - [Llm Implementation Context](/hamster-wheel/dev-service-discovery/LLM-IMPLEMENTATION-CONTEXT)

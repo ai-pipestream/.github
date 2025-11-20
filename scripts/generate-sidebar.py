@@ -2,132 +2,155 @@
 """
 Generate Docsify sidebar for the docs/ directory.
 
-Rules:
-- Recursively scan docs/ for .md files
-- Ignore docs/README.md and docs/_sidebar.md
-- Group links by first-level subdirectory under docs/
-  - Top-level .md files (except README and _sidebar) appear as top-level bullets
-  - For each immediate subdirectory of docs/, add a bold heading and list all
-    .md files found anywhere under that directory (recursively)
-- Link titles are derived from the filename (without extension):
-  - Replace '-' and '_' with spaces
-  - Title Case each word
-- Links should be absolute from docs root as Docsify expects, e.g. /design/architecture
-- Sort directories alphabetically and files within each group alphabetically by title
-
-Idempotent: running multiple times yields the same output for the same inputs.
+Features:
+- Recursive scanning: Creates a nested sidebar structure matching the filesystem.
+- Configurable ordering: Uses docs/sidebar-config.json to control top-level section order.
+- Smart defaults: 
+  - "Home" is always first.
+  - "README.md" in a directory is treated as the index/overview for that section.
+  - Unconfigured directories are sorted alphabetically after configured ones.
 """
 
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Union
 
 DOCS_DIR = Path(__file__).resolve().parents[1] / "docs"
 SIDEBAR_FILE = DOCS_DIR / "_sidebar.md"
+CONFIG_FILE = DOCS_DIR / "sidebar-config.json"
+
+
+def load_config() -> Dict[str, List[str]]:
+    """Load sidebar configuration if present."""
+    if CONFIG_FILE.exists():
+        try:
+            return json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            print(f"Warning: Could not parse {CONFIG_FILE}. Using default sorting.")
+    return {"section_order": [], "forced_top_files": []}
 
 
 def to_title(name: str) -> str:
-    """Convert a filename (without extension) to Title Case per rules."""
+    """Convert a filename/dirname to Title Case."""
     # Normalize hyphens/underscores to spaces
     normalized = name.replace("-", " ").replace("_", " ")
     # Title Case words
     return " ".join(word.capitalize() for word in normalized.split())
 
 
-def collect_markdown_files(base: Path) -> List[Path]:
-    """Collect all .md files under docs/ except the ignored ones."""
-    files: List[Path] = []
-    for path in base.rglob("*.md"):
-        # Ignore the sidebar itself and the root README.md only
-        if path.name == "_sidebar.md":
-            continue
-        if path == base / "README.md":
-            continue
-        files.append(path)
-    return files
+def get_link_path(file_path: Path, base_dir: Path) -> str:
+    """Generate absolute Docsify link path (e.g., /folder/file)."""
+    rel_path = file_path.relative_to(base_dir)
+    # Remove suffix for clean URLs if desired, or keep .md. Docsify usually handles no extension well.
+    # Using no extension for cleaner URLs.
+    return "/" + str(rel_path.with_suffix("")).replace(os.sep, "/")
 
 
-def group_files(files: List[Path], base: Path) -> Tuple[List[Tuple[str, str]], Dict[str, List[Tuple[str, str]]]]:
+def scan_directory(current_dir: Path, base_dir: Path, config: Dict) -> List[str]:
     """
-    Group files by first-level subdirectory under docs/.
-
-    Returns:
-      top_level: list of tuples (title, link)
-      by_dir: dict mapping section name (Title Case dir) to list of tuples (title, link)
+    Recursively scan a directory and return lines for the sidebar.
     """
-    top_level: List[Tuple[str, str]] = []
-    by_dir: Dict[str, List[Tuple[str, str]]] = {}
-
-    for file_path in files:
-        rel = file_path.relative_to(base)
-        # Build the Docsify-style absolute link (no .md extension)
-        link = "/" + str(rel.with_suffix("")).replace(os.sep, "/")
-        title = to_title(file_path.stem)
-
-        # Determine if this is top-level or within a subdirectory
-        if len(rel.parts) == 1:
-            top_level.append((title, link))
-        else:
-            section_raw = rel.parts[0]  # first-level directory under docs/
-            section_name = to_title(section_raw)
-            by_dir.setdefault(section_name, []).append((title, link))
-
-    # Sort top-level files by title
-    top_level.sort(key=lambda x: x[0].lower())
-    # Sort directories and files within
-    sorted_by_dir: Dict[str, List[Tuple[str, str]]] = {}
-    for section in sorted(by_dir.keys(), key=lambda s: s.lower()):
-        items = sorted(by_dir[section], key=lambda x: x[0].lower())
-        sorted_by_dir[section] = items
-
-    return top_level, sorted_by_dir
-
-
-def render_sidebar(top_level: List[Tuple[str, str]], by_dir: Dict[str, List[Tuple[str, str]]]) -> str:
     lines: List[str] = []
-    # Always include Home at the top
-    lines.append("- [Home](/)")
+    indent = "  " * (len(current_dir.relative_to(base_dir).parts) if current_dir != base_dir else 0)
 
-    # Top-level files
-    for title, link in top_level:
-        lines.append(f"- [{title}]({link})")
+    # 1. Collect items
+    files: List[Path] = []
+    subdirs: List[Path] = []
 
-    # Blank line between sections if there are any directories
-    if by_dir:
-        lines.append("")
+    for item in current_dir.iterdir():
+        if item.name.startswith(".") or item.name == "_sidebar.md" or item.name == "index.html" or item.name == "style.css" or item.name == "sidebar-config.json":
+            continue
+        
+        if item.is_file() and item.suffix == ".md":
+            files.append(item)
+        elif item.is_dir():
+            subdirs.append(item)
 
-    # Sections
-    first = True
-    for section, items in by_dir.items():
-        if not first:
-            lines.append("")  # blank line between sections
-        first = False
-        lines.append(f"- **{section}**")
-        for title, link in items:
-            lines.append(f"  - [{title}]({link})")
+    # 2. Sort Files
+    # README.md comes first as the "Overview" or section link
+    files.sort(key=lambda f: (f.name != "README.md", f.name.lower()))
 
-    lines.append("")  # trailing newline
-    return "\n".join(lines)
+    # 3. Generate File Links
+    for f in files:
+        title = to_title(f.stem)
+        link = get_link_path(f, base_dir)
+        
+        # Special case: If it's the root README, we handle it separately in main() as "Home"
+        if f == base_dir / "README.md":
+            continue
+            
+        # If it's a README inside a subdir, name it "Overview" or the Dir Name
+        if f.name == "README.md":
+            title = "Overview"
+        
+        lines.append(f"{indent}- [{title}]({link})")
+
+    # 4. Sort Subdirectories
+    # Use config order for current level if applicable
+    section_order = config.get("section_order", [])
+    
+    def dir_sort_key(d: Path) -> tuple:
+        name = d.name
+        try:
+            # If explicitly ordered, use its index
+            return (0, section_order.index(name))
+        except ValueError:
+            # Otherwise sort alphabetically at the end
+            return (1, name.lower())
+
+    # Only apply section_order to the root docs directory
+    if current_dir == base_dir:
+        subdirs.sort(key=dir_sort_key)
+    else:
+        subdirs.sort(key=lambda d: d.name.lower())
+
+    # 5. Recurse into Subdirectories
+    for d in subdirs:
+        title = to_title(d.name)
+        
+        # Check if there's a README in the subdir to link the folder title to
+        readme_path = d / "README.md"
+        if readme_path.exists():
+             link = get_link_path(readme_path, base_dir)
+             lines.append(f"{indent}- **[{title}]({link})**")
+        else:
+             lines.append(f"{indent}- **{title}**")
+             
+        lines.extend(scan_directory(d, base_dir, config))
+
+    return lines
 
 
 def main() -> None:
     if not DOCS_DIR.exists():
         raise SystemExit(f"docs directory not found at {DOCS_DIR}")
 
-    files = collect_markdown_files(DOCS_DIR)
-    top_level, by_dir = group_files(files, DOCS_DIR)
-    content = render_sidebar(top_level, by_dir)
+    config = load_config()
+    
+    # Start content
+    lines = []
+    lines.append("- [Home](/)")
+    
+    # Recursively scan
+    # We process the root DOCS_DIR. 
+    # Note: scan_directory handles the indentation logic.
+    root_content = scan_directory(DOCS_DIR, DOCS_DIR, config)
+    lines.extend(root_content)
+
+    content = "\n".join(lines) + "\n"
 
     SIDEBAR_FILE.parent.mkdir(parents=True, exist_ok=True)
     existing = SIDEBAR_FILE.read_text(encoding="utf-8") if SIDEBAR_FILE.exists() else None
 
     if existing == content:
-        # Idempotent: no rewrite needed
+        print("Sidebar is up to date.")
         return
 
     SIDEBAR_FILE.write_text(content, encoding="utf-8")
+    print(f"Sidebar generated at {SIDEBAR_FILE}")
 
 
 if __name__ == "__main__":
