@@ -1,0 +1,12 @@
+:root {
+  --theme-color: #42b983; /* placeholder, will be replaced with brand color */
+}
+
+.docs-link {
+  color: var(--theme-color);
+}
+
+/* Optional: small Docsify tweaks you can extend later */
+.sidebar {
+  border-right: 1px solid rgba(0,0,0,0.06);
+}
