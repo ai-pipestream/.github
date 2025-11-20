@@ -1,202 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Pipestream AI Docs</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
-  <link rel="stylesheet" href="style.css">
-  <style>
-    /* Optional: Customize to match pipstream brand */
-    :root {
-      --theme-color: #42b983; /* Change this to your brand color */
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pipestream AI - The Operating System for High-Throughput Vector Data. Open Source, Reactive, and Built for RAG.">
+    <meta name="keywords" content="RAG, Vector Search, ETL, Kafka, Quarkus, gRPC, OpenSearch, AI, open source">
+    <title>Pipestream AI - High-Throughput Vector Data OS</title>
+    <link rel="stylesheet" href="docs/style.css">
+    <style>
+        /* Additional overrides for the new content structure */
+        .hero h1 { font-size: 4rem; letter-spacing: -1px; }
+
+        /* Tech Stack Grid */
+        .tech-stack-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        .tech-badge {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+
+        /* Problem/Solution Grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 40px 0;
+        }
+        .comparison-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .comparison-card.problem { border-left: 3px solid #e53e3e; }
+        .comparison-card.solution { border-left: 3px solid #48bb78; }
+        .comparison-card h3 { font-size: 1.4rem; margin-bottom: 15px; }
+        .comparison-card ul { list-style: none; padding: 0; }
+        .comparison-card li { margin-bottom: 15px; color: rgba(255,255,255,0.7); position: relative; padding-left: 25px; }
+        .comparison-card.problem li:before { content: "✖"; color: #e53e3e; position: absolute; left: 0; }
+        .comparison-card.solution li:before { content: "✔"; color: #48bb78; position: absolute; left: 0; }
+
+        @media (max-width: 768px) {
+            .comparison-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.5rem; }
+        }
+    </style>
 </head>
 <body>
-  <!-- Theme toggle button -->
-  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-    <span id="themeIcon">🌙</span>
-  </button>
-  
-  <div id="app">Loading Docs...</div>
-  
-  <!-- Theme toggle script (must run before Docsify) -->
-  <script>
-    (function() {
-      // Check for saved theme preference or default to system preference
-      const savedTheme = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
-      
-      // Apply theme immediately to prevent flash
-      if (isDark) {
-        document.body.classList.add('dark-mode');
-      }
-      
-      // Wait for DOM to be ready
-      document.addEventListener('DOMContentLoaded', function() {
-        const themeToggle = document.getElementById('themeToggle');
-        const themeIcon = document.getElementById('themeIcon');
-        
-        // Update icon based on current theme
-        function updateIcon() {
-          const isDarkMode = document.body.classList.contains('dark-mode');
-          themeIcon.textContent = isDarkMode ? '☀️' : '🌙';
-        }
-        
-        updateIcon();
-        
-        // Toggle theme on button click
-        themeToggle.addEventListener('click', function() {
-          document.body.classList.toggle('dark-mode');
-          const isDarkMode = document.body.classList.contains('dark-mode');
-          localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-          updateIcon();
-        });
-      });
-    })();
-  </script>
-  
-  <script>
-    window.$docsify = {
-      name: 'Pipestream Engine',
-      repo: '', // or 'https://github.com/ai-pipestream' if you want a github corner icon
-      loadSidebar: true,  // Enables the 'Explorer' file tree
-      subMaxLevel: 3,     // Auto-generates Table of Contents from headers
-      auto2top: true,     // Scrolls to top when changing pages
-      search: 'auto',     // Enables search box
-      // Mermaid configuration (renders ```mermaid code blocks)
-      mermaid: {
-        theme: 'default',
-        startOnLoad: true
-      }
+<div class="bg-animation"></div>
+
+<header>
+    <div class="logo">Pipestream AI</div>
+    <nav>
+        <a href="/docs/" class="docs-link">Documentation</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#features">Features</a>
+        <a href="https://github.com/ai-pipestream">GitHub</a>
+    </nav>
+</header>
+
+<main>
+    <section class="hero">
+        <h1>The Operating System for<br>High-Throughput Vector Data</h1>
+        <p class="tagline">Ingest Terabytes of unstructured data without the "ETL Hell"</p>
+        <div class="license-badge">MIT Licensed • Reactive Core • Quarkus & Kafka</div>
+        <p class="description">
+            Pipestream AI is an open-source platform designed to solve the "Kafka Bottleneck."
+            We separate the Control Plane from the Data Plane using a <strong>Claim-Check Architecture</strong>
+            to process, chunk, and index massive datasets for RAG and Vector Search at scale.
+        </p>
+        <div class="cta-buttons">
+            <a href="https://github.com/ai-pipestream" class="btn">View on GitHub</a>
+            <a href="/docs/design/document-journey" class="btn secondary">See the Document Journey</a>
+        </div>
+
+        <div class="tech-stack-grid">
+            <div class="tech-badge">⚡ Quarkus</div>
+            <div class="tech-badge">📨 Kafka (SmallRye)</div>
+            <div class="tech-badge">🚀 gRPC</div>
+            <div class="tech-badge">📦 S3 / MinIO</div>
+            <div class="tech-badge">🔎 OpenSearch</div>
+        </div>
+    </section>
+
+    <section class="architecture">
+        <h2 class="section-title">The Problem: "ETL Hell"</h2>
+        <div class="architecture-content" style="text-align: left;">
+            <p>Traditional data engineering tools (like AWS Glue or Nifi) were built for rows and columns. They choke on the unstructured chaos of the AI era.</p>
+
+            <div class="comparison-grid">
+                <div class="comparison-card problem">
+                    <h3>The "Glue" Trap</h3>
+                    <ul>
+                        <li><strong>The Thundering Herd:</strong> Sequential pipelines block on slow steps (like OCR), causing backpressure that halts the system.</li>
+                        <li><strong>The Kafka Bottleneck:</strong> Pushing heavy payloads (PDFs, Images) through brokers kills throughput and explodes retention costs.</li>
+                        <li><strong>Schema Drift:</strong> Automated crawlers guess data types incorrectly, creating brittle pipelines that break silently.</li>
+                    </ul>
+                </div>
+                <div class="comparison-card solution">
+                    <h3>The Pipestream Way</h3>
+                    <ul>
+                        <li><strong>Reactive & Non-Blocking:</strong> Built on Quarkus and Mutiny. A single pod handles thousands of concurrent streams.</li>
+                        <li><strong>Claim-Check Pattern:</strong> Kafka carries the envelope (metadata). S3 & gRPC carry the heavy payload.</li>
+                        <li><strong>Strict Typing:</strong> We use 16-byte UUIDs for keys and Apicurio Registry for Protobuf enforcement. No magic strings.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="feature-card" onclick="scrollToSection('architecture')">
+            <div class="feature-icon">🎟️</div>
+            <h3>Claim-Check Architecture</h3>
+            <p>
+                We separate the Control Plane (Kafka) from the Data Plane (S3 + gRPC).
+                Process 40TB of corporate data without ever clogging your message brokers.
+            </p>
+        </div>
+
+        <div class="feature-card" onclick="scrollToSection('architecture')">
+            <div class="feature-icon">⏪</div>
+            <h3>Time Travel & Rewind</h3>
+            <p>
+                Updated your embedding model? Reset the consumer offset.
+                The pipeline replays the state instantly, skipping expensive ingestion steps by fetching raw text from S3.
+            </p>
+        </div>
+
+        <div class="feature-card" onclick="scrollToSection('architecture')">
+            <div class="feature-icon">⚡</div>
+            <h3>High-Speed gRPC</h3>
+            <p>
+                Processing steps communicate via strictly typed, internal gRPC streams.
+                No JSON parsing overhead. Optimized flow control for 300MB/s+ throughput per stream.
+            </p>
+        </div>
+
+        <div class="feature-card" onclick="scrollToSection('architecture')">
+            <div class="feature-icon">🛠️</div>
+            <h3>Democratized Config</h3>
+            <p>
+                Dynamic JSON Forms allow Data Scientists to tweak NLP parameters (like LLM temperature)
+                via the UI without touching backend code.
+            </p>
+        </div>
+
+        <div class="feature-card" onclick="scrollToSection('architecture')">
+            <div class="feature-icon">🕸️</div>
+            <h3>Dynamic Graph</h3>
+            <p>
+                Fan-in from multiple sources, Fan-out to multiple embedding models (A/B testing).
+                The pipeline is a graph, not a linear line.
+            </p>
+        </div>
+
+        <div class="feature-card" onclick="scrollToSection('architecture')">
+            <div class="feature-icon">📈</div>
+            <h3>Auto-Scaling Topics</h3>
+            <p>
+                The Orchestrator Engine monitors pressure. If a specific step (e.g., Tika Parsing) lags,
+                the system can dynamically provision resources.
+            </p>
+        </div>
+    </section>
+
+    <section class="architecture" id="architecture">
+        <h2 class="section-title">Architecture Overview</h2>
+        <div class="architecture-content">
+            <h3>The Document Hop</h3>
+            <p>
+                Pipestream operates on a "Document Hop" model. The Engine is the central router, moving <strong>PipeDocs</strong> (rich metadata envelopes) between specialized modules.
+            </p>
+
+            <div class="architecture-features">
+                <div class="arch-feature">
+                    <h4>1. Data Loading</h4>
+                    <p>Assets are ingested via Connectors. Heavy data goes to S3; metadata goes to the Engine.</p>
+                </div>
+                <div class="arch-feature">
+                    <h4>2. Transformation</h4>
+                    <p>Assets are transformed to text (Parsing). This step is skippable on "Rewind" operations.</p>
+                </div>
+                <div class="arch-feature">
+                    <h4>3. Enhancement</h4>
+                    <p>Text is chunked and embedded. Fan-out to multiple models simultaneously for comparison.</p>
+                </div>
+                <div class="arch-feature">
+                    <h4>4. Sink</h4>
+                    <p>Vectors and Metadata are indexed into OpenSearch for retrieval.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="open-source">
+        <div class="open-source-content">
+            <h2>Open Source & MIT Licensed</h2>
+            <p>
+                Pipestream AI bridges the gap between Backend Engineering and Data Science.
+                Run it on a local workstation or scale it to index a Fortune 500's entire history.
+            </p>
+            <div class="cta-buttons">
+                <a href="https://github.com/ai-pipestream" class="btn">Contribute on GitHub</a>
+                <a href="/docs/" class="btn secondary">Read the Docs</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-links">
+        <a href="https://github.com/ai-pipestream">GitHub Organization</a>
+        <a href="/docs/">Documentation</a>
+        <a href="https://github.com/ai-pipestream/.github/issues">Support</a>
+    </div>
+    <div class="copyright">
+        &copy; 2025 Pipestream AI. Open source under MIT License.
+    </div>
+</footer>
+
+<script>
+    function scrollToSection(id) {
+        document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
     }
-  </script>
-  
-  <!-- Custom sidebar collapse behavior -->
-  <script>
-    // Fix sidebar collapse behavior - make all sections consistently toggleable
-    (function() {
-      // Wait for Docsify to load and render the sidebar
-      window.$docsify = window.$docsify || {};
-      const originalMounted = window.$docsify.mounted;
-      
-      window.$docsify.mounted = function() {
-        if (originalMounted) originalMounted.apply(this, arguments);
-        
-        // Initialize sidebar collapse behavior after a short delay
-        setTimeout(function() {
-          const sidebar = document.querySelector('.sidebar');
-          if (!sidebar) return;
-          
-          // Find all parent items (those with child lists)
-          const parentItems = sidebar.querySelectorAll('li');
-          
-          parentItems.forEach(function(item) {
-            const childList = item.querySelector('ul');
-            if (!childList) return;
-            
-            // Find the link/strong element that should be clickable
-            // Handle both <a> and <strong> as direct children, and <a> inside <strong>
-            const toggleElement = item.querySelector(':scope > a, :scope > strong');
-            if (!toggleElement) return;
-            
-            // Mark this item as collapsible
-            item.classList.add('collapsible');
-            
-            // Add collapse arrow indicator
-            const arrow = document.createElement('span');
-            arrow.className = 'collapse-arrow';
-            arrow.textContent = '▼';
-            arrow.style.cssText = 'display: inline-block; margin-right: 5px; transition: transform 0.2s ease; cursor: pointer;';
-            
-            // Insert arrow at the beginning of the toggle element
-            if (toggleElement.tagName === 'STRONG') {
-              // For strong elements, insert before the first child
-              toggleElement.insertBefore(arrow, toggleElement.firstChild);
-            } else {
-              // For link elements, insert before the first child
-              toggleElement.insertBefore(arrow, toggleElement.firstChild);
-            }
-            
-            // Check if this section should be initially expanded
-            // (contains the active page or is a bold link)
-            const isActive = item.querySelector('.active') || 
-                           item.classList.contains('active');
-            
-            if (!isActive) {
-              item.classList.add('collapsed');
-              arrow.style.transform = 'rotate(-90deg)';
-            }
-            
-            // Function to handle toggle
-            function handleToggle(e) {
-              // Check if this item has children - if so, treat it as a collapsible section
-              if (childList && childList.children.length > 0) {
-                // Prevent navigation and just toggle collapse
-                e.preventDefault();
-                e.stopPropagation();
-                item.classList.toggle('collapsed');
-                
-                // Update arrow rotation
-                if (item.classList.contains('collapsed')) {
-                  arrow.style.transform = 'rotate(-90deg)';
-                } else {
-                  arrow.style.transform = 'rotate(0deg)';
-                }
-                return false; // Extra safety to prevent default behavior
-              }
-              // If no children or empty children list, allow navigation as normal
-            }
-            
-            // Add click handler for toggling to the main element
-            toggleElement.addEventListener('click', handleToggle, true); // Use capture phase
-            
-            // Also add handler to any nested <a> inside <strong>
-            const nestedLink = toggleElement.querySelector('a');
-            if (nestedLink) {
-              nestedLink.addEventListener('click', handleToggle, true); // Use capture phase
-            }
-          });
-          
-          // Add CSS for collapse behavior
-          if (!document.getElementById('sidebar-collapse-styles')) {
-            const style = document.createElement('style');
-            style.id = 'sidebar-collapse-styles';
-            style.textContent = `
-              .sidebar li.collapsible.collapsed > ul {
-                display: none;
-              }
-              /* Make sure nested links in strong elements are styled correctly */
-              .sidebar li.collapsible > strong > a {
-                text-decoration: inherit;
-                color: inherit;
-              }
-              /* Style for collapse arrow */
-              .sidebar .collapse-arrow {
-                user-select: none;
-                -webkit-user-select: none;
-                color: var(--text-color);
-                opacity: 0.7;
-              }
-              .sidebar .collapse-arrow:hover {
-                opacity: 1;
-              }
-            `;
-            document.head.appendChild(style);
-          }
-        }, 100);
-      };
-    })();
-  </script>
-  
-  <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
-  <!-- Mermaid support -->
-  <script src="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-mermaid/dist/docsify-mermaid.min.js"></script>
+</script>
 </body>
 </html>
