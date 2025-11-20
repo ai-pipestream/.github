@@ -117,19 +117,15 @@
             
             // Add click handler for toggling
             toggle.addEventListener('click', function(e) {
-              // If it's a link that points to a real page, let it navigate
-              // But still toggle the collapse state
+              // Always toggle the collapsed state
+              item.classList.toggle('collapsed');
+              
+              // If it's not a navigable link, prevent default
               const href = toggle.getAttribute('href');
-              if (href && href !== '#' && !href.startsWith('javascript:')) {
-                // Let the navigation happen, but also toggle
-                setTimeout(function() {
-                  item.classList.toggle('collapsed');
-                }, 10);
-              } else {
-                // No navigation, just toggle
+              if (!href || href === '#' || href.startsWith('javascript:')) {
                 e.preventDefault();
-                item.classList.toggle('collapsed');
               }
+              // If it's a navigable link, let the default navigation happen
             });
           });
           
