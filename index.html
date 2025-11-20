@@ -3,237 +3,660 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Pipestream AI - The Operating System for High-Throughput Vector Data. Open Source, Reactive, and Built for RAG.">
-    <meta name="keywords" content="RAG, Vector Search, ETL, Kafka, Quarkus, gRPC, OpenSearch, AI, open source">
-    <title>Pipestream AI - High-Throughput Vector Data OS</title>
-    <link rel="stylesheet" href="docs/style.css">
+    <meta name="description" content="Pipestream AI - Open source document processing platform for intelligent search and indexing with AI-powered chunking and embeddings">
+    <meta name="keywords" content="document processing, search engine, vector search, embeddings, chunking, OpenSearch, AI, open source, MIT license">
+    <title>Pipestream AI - Open Source Document Processing Platform</title>
     <style>
-        /* Additional overrides for the new content structure */
-        .hero h1 { font-size: 4rem; letter-spacing: -1px; }
-
-        /* Tech Stack Grid */
-        .tech-stack-grid {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #0a0e27;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        }
+        
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(180deg); }
+        }
+        
+        /* Header */
+        header {
+            padding: 20px 40px;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        nav a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            margin-left: 30px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        nav a:hover {
+            color: #667eea;
+        }
+        
+        .license-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 20px;
+            color: #667eea;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        /* Hero Section */
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 40px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 4.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            letter-spacing: -2px;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 15px;
+            animation: fadeInUp 1s ease-out 0.2s backwards;
+        }
+        
+        .description {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 50px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+            animation: fadeInUp 1s ease-out 0.4s backwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* CTA Buttons */
+        .cta-buttons {
+            display: flex;
             gap: 20px;
+            justify-content: center;
             flex-wrap: wrap;
+            margin-bottom: 80px;
+            animation: fadeInUp 1s ease-out 0.6s backwards;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+        
+        .btn.secondary {
+            background: transparent;
+            border: 2px solid #667eea;
+            box-shadow: none;
+        }
+        
+        .btn.secondary:hover {
+            background: rgba(102, 126, 234, 0.1);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+        
+        /* Features Section */
+        .features {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out backwards;
+            cursor: pointer;
+        }
+        
+        .feature-card:nth-child(1) { animation-delay: 0.8s; }
+        .feature-card:nth-child(2) { animation-delay: 1s; }
+        .feature-card:nth-child(3) { animation-delay: 1.2s; }
+        .feature-card:nth-child(4) { animation-delay: 1.4s; }
+        .feature-card:nth-child(5) { animation-delay: 1.6s; }
+        .feature-card:nth-child(6) { animation-delay: 1.8s; }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.8;
+        }
+        
+        /* Architecture Section */
+        .architecture {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 40px;
+            text-align: center;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 60px;
+            animation: fadeInUp 1s ease-out backwards;
+        }
+        
+        .architecture-content {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 40px;
+        }
+        
+        .architecture-content h3 {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        
+        .architecture-content p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        
+        .architecture-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
             margin-top: 40px;
         }
-        .tech-badge {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            color: #a0aec0;
+        
+        .arch-feature {
+            text-align: left;
+        }
+        
+        .arch-feature h4 {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .arch-feature p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+        
+        /* Use Cases Section */
+        .use-cases {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 40px;
+        }
+        
+        .use-case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .use-case {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .use-case:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+        
+        .use-case h4 {
+            color: #667eea;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .use-case p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+        
+        /* Open Source Section */
+        .open-source {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 40px;
+            text-align: center;
+        }
+        
+        .open-source-content {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 20px;
+            padding: 50px;
+        }
+        
+        .open-source-content h2 {
+            color: #fff;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .open-source-content p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        
+        /* Footer */
+        footer {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 40px 40px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 80px;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: #667eea;
+        }
+        
+        .copyright {
+            color: rgba(255, 255, 255, 0.4);
             font-size: 0.9rem;
         }
-
-        /* Problem/Solution Grid */
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin: 40px 0;
-        }
-        .comparison-card {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 15px;
-            padding: 30px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .comparison-card.problem { border-left: 3px solid #e53e3e; }
-        .comparison-card.solution { border-left: 3px solid #48bb78; }
-        .comparison-card h3 { font-size: 1.4rem; margin-bottom: 15px; }
-        .comparison-card ul { list-style: none; padding: 0; }
-        .comparison-card li { margin-bottom: 15px; color: rgba(255,255,255,0.7); position: relative; padding-left: 25px; }
-        .comparison-card.problem li:before { content: "✖"; color: #e53e3e; position: absolute; left: 0; }
-        .comparison-card.solution li:before { content: "✔"; color: #48bb78; position: absolute; left: 0; }
-
+        
+        /* Responsive */
         @media (max-width: 768px) {
-            .comparison-grid { grid-template-columns: 1fr; }
-            .hero h1 { font-size: 2.5rem; }
+            h1 {
+                font-size: 3rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .description {
+                font-size: 1rem;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            nav {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            nav a {
+                margin: 0 15px;
+            }
+            
+            .hero {
+                padding: 60px 20px;
+            }
+            
+            .features, .use-cases, .architecture, .open-source {
+                padding: 60px 20px;
+            }
+            
+            .architecture-content {
+                padding: 30px 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2.5rem;
+                letter-spacing: -1px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
-<div class="bg-animation"></div>
-
-<header>
-    <div class="logo">Pipestream AI</div>
-    <nav>
-        <a href="/docs/" class="docs-link">Documentation</a>
-        <a href="#architecture">Architecture</a>
-        <a href="#features">Features</a>
-        <a href="https://github.com/ai-pipestream">GitHub</a>
-    </nav>
-</header>
-
-<main>
-    <section class="hero">
-        <h1>The Operating System for<br>High-Throughput Vector Data</h1>
-        <p class="tagline">Ingest Terabytes of unstructured data without the "ETL Hell"</p>
-        <div class="license-badge">MIT Licensed • Reactive Core • Quarkus & Kafka</div>
-        <p class="description">
-            Pipestream AI is an open-source platform designed to solve the "Kafka Bottleneck."
-            We separate the Control Plane from the Data Plane using a <strong>Claim-Check Architecture</strong>
-            to process, chunk, and index massive datasets for RAG and Vector Search at scale.
-        </p>
-        <div class="cta-buttons">
-            <a href="https://github.com/ai-pipestream" class="btn">View on GitHub</a>
-            <a href="/docs/design/document-journey" class="btn secondary">See the Document Journey</a>
-        </div>
-
-        <div class="tech-stack-grid">
-            <div class="tech-badge">⚡ Quarkus</div>
-            <div class="tech-badge">📨 Kafka (SmallRye)</div>
-            <div class="tech-badge">🚀 gRPC</div>
-            <div class="tech-badge">📦 S3 / MinIO</div>
-            <div class="tech-badge">🔎 OpenSearch</div>
-        </div>
-    </section>
-
-    <section class="architecture">
-        <h2 class="section-title">The Problem: "ETL Hell"</h2>
-        <div class="architecture-content" style="text-align: left;">
-            <p>Traditional data engineering tools (like AWS Glue or Nifi) were built for rows and columns. They choke on the unstructured chaos of the AI era.</p>
-
-            <div class="comparison-grid">
-                <div class="comparison-card problem">
-                    <h3>The "Glue" Trap</h3>
-                    <ul>
-                        <li><strong>The Thundering Herd:</strong> Sequential pipelines block on slow steps (like OCR), causing backpressure that halts the system.</li>
-                        <li><strong>The Kafka Bottleneck:</strong> Pushing heavy payloads (PDFs, Images) through brokers kills throughput and explodes retention costs.</li>
-                        <li><strong>Schema Drift:</strong> Automated crawlers guess data types incorrectly, creating brittle pipelines that break silently.</li>
-                    </ul>
-                </div>
-                <div class="comparison-card solution">
-                    <h3>The Pipestream Way</h3>
-                    <ul>
-                        <li><strong>Reactive & Non-Blocking:</strong> Built on Quarkus and Mutiny. A single pod handles thousands of concurrent streams.</li>
-                        <li><strong>Claim-Check Pattern:</strong> Kafka carries the envelope (metadata). S3 & gRPC carry the heavy payload.</li>
-                        <li><strong>Strict Typing:</strong> We use 16-byte UUIDs for keys and Apicurio Registry for Protobuf enforcement. No magic strings.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="features" id="features">
-        <div class="feature-card" onclick="scrollToSection('architecture')">
-            <div class="feature-icon">🎟️</div>
-            <h3>Claim-Check Architecture</h3>
-            <p>
-                We separate the Control Plane (Kafka) from the Data Plane (S3 + gRPC).
-                Process 40TB of corporate data without ever clogging your message brokers.
-            </p>
-        </div>
-
-        <div class="feature-card" onclick="scrollToSection('architecture')">
-            <div class="feature-icon">⏪</div>
-            <h3>Time Travel & Rewind</h3>
-            <p>
-                Updated your embedding model? Reset the consumer offset.
-                The pipeline replays the state instantly, skipping expensive ingestion steps by fetching raw text from S3.
-            </p>
-        </div>
-
-        <div class="feature-card" onclick="scrollToSection('architecture')">
-            <div class="feature-icon">⚡</div>
-            <h3>High-Speed gRPC</h3>
-            <p>
-                Processing steps communicate via strictly typed, internal gRPC streams.
-                No JSON parsing overhead. Optimized flow control for 300MB/s+ throughput per stream.
-            </p>
-        </div>
-
-        <div class="feature-card" onclick="scrollToSection('architecture')">
-            <div class="feature-icon">🛠️</div>
-            <h3>Democratized Config</h3>
-            <p>
-                Dynamic JSON Forms allow Data Scientists to tweak NLP parameters (like LLM temperature)
-                via the UI without touching backend code.
-            </p>
-        </div>
-
-        <div class="feature-card" onclick="scrollToSection('architecture')">
-            <div class="feature-icon">🕸️</div>
-            <h3>Dynamic Graph</h3>
-            <p>
-                Fan-in from multiple sources, Fan-out to multiple embedding models (A/B testing).
-                The pipeline is a graph, not a linear line.
-            </p>
-        </div>
-
-        <div class="feature-card" onclick="scrollToSection('architecture')">
-            <div class="feature-icon">📈</div>
-            <h3>Auto-Scaling Topics</h3>
-            <p>
-                The Orchestrator Engine monitors pressure. If a specific step (e.g., Tika Parsing) lags,
-                the system can dynamically provision resources.
-            </p>
-        </div>
-    </section>
-
-    <section class="architecture" id="architecture">
-        <h2 class="section-title">Architecture Overview</h2>
-        <div class="architecture-content">
-            <h3>The Document Hop</h3>
-            <p>
-                Pipestream operates on a "Document Hop" model. The Engine is the central router, moving <strong>PipeDocs</strong> (rich metadata envelopes) between specialized modules.
-            </p>
-
-            <div class="architecture-features">
-                <div class="arch-feature">
-                    <h4>1. Data Loading</h4>
-                    <p>Assets are ingested via Connectors. Heavy data goes to S3; metadata goes to the Engine.</p>
-                </div>
-                <div class="arch-feature">
-                    <h4>2. Transformation</h4>
-                    <p>Assets are transformed to text (Parsing). This step is skippable on "Rewind" operations.</p>
-                </div>
-                <div class="arch-feature">
-                    <h4>3. Enhancement</h4>
-                    <p>Text is chunked and embedded. Fan-out to multiple models simultaneously for comparison.</p>
-                </div>
-                <div class="arch-feature">
-                    <h4>4. Sink</h4>
-                    <p>Vectors and Metadata are indexed into OpenSearch for retrieval.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="open-source">
-        <div class="open-source-content">
-            <h2>Open Source & MIT Licensed</h2>
-            <p>
-                Pipestream AI bridges the gap between Backend Engineering and Data Science.
-                Run it on a local workstation or scale it to index a Fortune 500's entire history.
+    <div class="bg-animation"></div>
+    
+    <header>
+        <div class="logo">Pipestream AI</div>
+        <nav>
+            <a href="/docs/" class="docs-link">Documentation</a>
+            <a href="#features">Features</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#use-cases">Use Cases</a>
+            <a href="https://github.com/ai-pipestream">GitHub</a>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="hero">
+            <h1>Pipestream AI</h1>
+            <p class="tagline">Open Source Document Processing Platform</p>
+            <div class="license-badge">MIT Licensed • Open Source</div>
+            <p class="description">
+                Transform documents into searchable knowledge with AI-powered processing. 
+                Pipestream AI provides a flexible, network-based architecture for ingesting, 
+                parsing, chunking, and embedding documents for intelligent search and indexing.
             </p>
             <div class="cta-buttons">
-                <a href="https://github.com/ai-pipestream" class="btn">Contribute on GitHub</a>
-                <a href="/docs/" class="btn secondary">Read the Docs</a>
+                <a href="https://github.com/ai-pipestream" class="btn">View on GitHub</a>
+                <a href="#architecture" class="btn secondary">Learn More</a>
             </div>
+        </section>
+        
+        <section class="features" id="features">
+            <div class="feature-card" onclick="scrollToSection('architecture')">
+                <div class="feature-icon">🌐</div>
+                <h3>Network Graph Architecture</h3>
+                <p>
+                    Not a linear pipeline—a flexible network graph with fan-in and fan-out capabilities. 
+                    Route documents dynamically through processing modules based on runtime configuration.
+                </p>
+            </div>
+            
+            <div class="feature-card" onclick="scrollToSection('architecture')">
+                <div class="feature-icon">⚙️</div>
+                <h3>Pipeline Engine Orchestration</h3>
+                <p>
+                    Central orchestration engine routes documents through processing steps, 
+                    managing transport (gRPC or Kafka) and coordinating between modules seamlessly.
+                </p>
+            </div>
+            
+            <div class="feature-card" onclick="scrollToSection('architecture')">
+                <div class="feature-icon">📄</div>
+                <h3>Multi-Format Document Support</h3>
+                <p>
+                    Process PDFs, videos, images, and more. Extract text, metadata, and content 
+                    using Apache Tika and specialized parsers for various document types.
+                </p>
+            </div>
+            
+            <div class="feature-card" onclick="scrollToSection('architecture')">
+                <div class="feature-icon">🧩</div>
+                <h3>Flexible Chunking Strategies</h3>
+                <p>
+                    Apply multiple chunking strategies to the same document. Accumulate chunks 
+                    from different strategies for comprehensive semantic processing.
+                </p>
+            </div>
+            
+            <div class="feature-card" onclick="scrollToSection('architecture')">
+                <div class="feature-icon">🔢</div>
+                <h3>Multiple Embedding Models</h3>
+                <p>
+                    Generate vector embeddings using multiple models simultaneously. 
+                    Support A/B testing and model comparison with parallel embedding generation.
+                </p>
+            </div>
+            
+            <div class="feature-card" onclick="scrollToSection('architecture')">
+                <div class="feature-icon">🔍</div>
+                <h3>OpenSearch Integration</h3>
+                <p>
+                    Index documents with full-text search, vector search, and hybrid search capabilities. 
+                    Automatic index management and field mapping for optimal search performance.
+                </p>
+            </div>
+        </section>
+        
+        <section class="architecture" id="architecture">
+            <h2 class="section-title">Architecture</h2>
+            <div class="architecture-content">
+                <h3>Network-Based Document Processing</h3>
+                <p>
+                    Pipestream AI operates as a network graph, not a linear pipeline. The Pipeline Engine 
+                    acts as the central routing hub, orchestrating data flow between processing nodes. 
+                    Documents can enter through multiple entry points and be routed through various 
+                    processing paths based on configuration.
+                </p>
+                
+                <div class="architecture-features">
+                    <div class="arch-feature">
+                        <h4>Multiple Entry Points</h4>
+                        <p>Connectors, direct API calls, or Kafka events</p>
+                    </div>
+                    <div class="arch-feature">
+                        <h4>Flexible Storage</h4>
+                        <p>S3 repository or in-memory processing</p>
+                    </div>
+                    <div class="arch-feature">
+                        <h4>Transport Options</h4>
+                        <p>gRPC for low latency, Kafka for high throughput</p>
+                    </div>
+                    <div class="arch-feature">
+                        <h4>Dynamic Routing</h4>
+                        <p>Runtime routing decisions based on configuration</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="architecture-content">
+                <h3>Processing Flow</h3>
+                <p>
+                    Documents flow through four main stages: <strong>Data Loading</strong> (ingestion), 
+                    <strong>Data Transformation</strong> (parsing to text), <strong>Data Enhancement</strong> 
+                    (chunking, embeddings, AI processing), and <strong>Sink</strong> (indexing to search engine).
+                </p>
+            </div>
+            
+            <div class="architecture-content">
+                <h3>Core Services</h3>
+                <div class="architecture-features">
+                    <div class="arch-feature">
+                        <h4>Connectors</h4>
+                        <p>Discover, authenticate, and stream documents from various sources</p>
+                    </div>
+                    <div class="arch-feature">
+                        <h4>Repository Service</h4>
+                        <p>Manages S3 storage and metadata, publishes events</p>
+                    </div>
+                    <div class="arch-feature">
+                        <h4>Pipeline Engine</h4>
+                        <p>Orchestrates routing and transport between modules</p>
+                    </div>
+                    <div class="arch-feature">
+                        <h4>Processing Modules</h4>
+                        <p>Parsers, chunkers, embedders, and specialized processors</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="use-cases" id="use-cases">
+            <h2 class="section-title">Use Cases</h2>
+            <div class="use-case-grid">
+                <div class="use-case">
+                    <h4>Enterprise Search</h4>
+                    <p>Index internal documents, wikis, and knowledge bases with semantic search capabilities</p>
+                </div>
+                <div class="use-case">
+                    <h4>Content Discovery</h4>
+                    <p>Make large document repositories searchable with AI-powered content understanding</p>
+                </div>
+                <div class="use-case">
+                    <h4>Multi-Strategy Indexing</h4>
+                    <p>Apply multiple chunking and embedding strategies to optimize search across different query types</p>
+                </div>
+                <div class="use-case">
+                    <h4>Document Intelligence</h4>
+                    <p>Extract and index metadata, text, and semantic information from diverse document formats</p>
+                </div>
+                <div class="use-case">
+                    <h4>Vector Search</h4>
+                    <p>Enable semantic search with vector embeddings for natural language queries</p>
+                </div>
+                <div class="use-case">
+                    <h4>Hybrid Search</h4>
+                    <p>Combine full-text and vector search for comprehensive document retrieval</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="open-source">
+            <div class="open-source-content">
+                <h2>Open Source & MIT Licensed</h2>
+                <p>
+                    Pipestream AI is fully open source under the MIT License. 
+                    Use it freely in your projects, contribute improvements, or customize it for your needs.
+                </p>
+                <div class="cta-buttons">
+                    <a href="https://github.com/ai-pipestream" class="btn">Contribute on GitHub</a>
+                    <a href="/docs/" class="btn secondary">View Documentation</a>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-links">
+            <a href="https://github.com/ai-pipestream">GitHub Organization</a>
+            <a href="/docs/">Documentation</a>
+            <a href="https://github.com/ai-pipestream/.github/issues">Support</a>
         </div>
-    </section>
-</main>
-
-<footer>
-    <div class="footer-links">
-        <a href="https://github.com/ai-pipestream">GitHub Organization</a>
-        <a href="/docs/">Documentation</a>
-        <a href="https://github.com/ai-pipestream/.github/issues">Support</a>
-    </div>
-    <div class="copyright">
-        &copy; 2025 Pipestream AI. Open source under MIT License.
-    </div>
-</footer>
-
-<script>
-    function scrollToSection(id) {
-        document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-    }
-</script>
+        <div class="copyright">
+            &copy; 2025 Pipestream AI. Open source under MIT License.
+        </div>
+    </footer>
+    
+    <script>
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>
