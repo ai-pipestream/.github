@@ -1,12 +1,142 @@
+/* Light mode (default) */
 :root {
-  --theme-color: #42b983; /* placeholder, will be replaced with brand color */
+  --theme-color: #42b983;
+  --bg-color: #ffffff;
+  --text-color: #2c3e50;
+  --sidebar-bg: #ffffff;
+  --sidebar-border: rgba(0, 0, 0, 0.07);
+  --link-color: #42b983;
+  --link-hover-color: #33a06f;
+  --code-bg: #f8f8f8;
+  --code-text: #e96900;
+  --blockquote-border: #42b983;
+  --blockquote-bg: #f8f8f8;
+  --table-border: #dfe2e5;
+  --table-row-bg: #f6f8fa;
+  --search-bg: #f5f5f5;
+  --search-border: #ccc;
+}
+
+/* Dark mode */
+body.dark-mode {
+  --bg-color: #1e1e1e;
+  --text-color: #e0e0e0;
+  --sidebar-bg: #252526;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --link-color: #4ec9b0;
+  --link-hover-color: #6fddbc;
+  --code-bg: #2d2d2d;
+  --code-text: #ce9178;
+  --blockquote-border: #4ec9b0;
+  --blockquote-bg: #2d2d2d;
+  --table-border: #404040;
+  --table-row-bg: #2a2a2a;
+  --search-bg: #2d2d2d;
+  --search-border: #404040;
+}
+
+/* Apply theme colors */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.sidebar {
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+}
+
+.sidebar ul li a {
+  color: var(--text-color);
+}
+
+.sidebar ul li a:hover {
+  color: var(--link-color);
+}
+
+.sidebar ul li.active > a {
+  color: var(--link-color);
+  border-right-color: var(--link-color);
+}
+
+.content {
+  background-color: var(--bg-color);
+}
+
+.markdown-section {
+  color: var(--text-color);
+}
+
+.markdown-section a {
+  color: var(--link-color);
+}
+
+.markdown-section a:hover {
+  color: var(--link-hover-color);
+}
+
+.markdown-section code {
+  background-color: var(--code-bg);
+  color: var(--code-text);
+}
+
+.markdown-section pre {
+  background-color: var(--code-bg);
+}
+
+.markdown-section pre > code {
+  color: var(--text-color);
+}
+
+.markdown-section blockquote {
+  border-left-color: var(--blockquote-border);
+  background-color: var(--blockquote-bg);
+  color: var(--text-color);
+}
+
+.markdown-section table {
+  border-color: var(--table-border);
+}
+
+.markdown-section table tr {
+  border-color: var(--table-border);
+}
+
+.markdown-section table tr:nth-child(2n) {
+  background-color: var(--table-row-bg);
+}
+
+.markdown-section table th,
+.markdown-section table td {
+  border-color: var(--table-border);
+}
+
+.search input {
+  background-color: var(--search-bg);
+  border-color: var(--search-border);
+  color: var(--text-color);
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: var(--sidebar-bg);
+  border: 1px solid var(--sidebar-border);
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background: var(--code-bg);
 }
 
 .docs-link {
   color: var(--theme-color);
-}
-
-/* Optional: small Docsify tweaks you can extend later */
-.sidebar {
-  border-right: 1px solid rgba(0,0,0,0.06);
 }
