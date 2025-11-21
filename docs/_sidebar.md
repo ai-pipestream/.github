@@ -1,6 +1,8 @@
 - [Home](/)
 - **Architecture**
   - [System Overview](/architecture/system-overview)
+- **[Developer](/developer/README)**
+  - [Kafka & Apicurio Guide](/developer/kafka-apicurio-guide)
 - **Grpc**
   - [Platform Features](/grpc/platform-features)
   - **[Optimization](/grpc/optimization/README)**
