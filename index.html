@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Pipestream AI - The Operating System for High-Throughput Vector Data. Open Source, Reactive, and Built for RAG.">
     <meta name="keywords" content="RAG, Vector Search, ETL, Kafka, Quarkus, gRPC, OpenSearch, AI, open source">
-    <title>Pipestream AI - High-Throughput Vector Data OS</title>
+    <title>Pipestream AI - High Speed Anywhere Language Agnostic Pipeline Processor</title>
     <style>
         * {
             margin: 0;
@@ -567,25 +567,26 @@
 <main>
     <!-- Hero Section -->
     <section class="hero">
-        <h1>The Operating System for<br>High-Throughput Vector Data</h1>
-        <p class="tagline">Ingest Terabytes of unstructured data without the "ETL Hell"</p>
-        <div class="license-badge">MIT Licensed • Reactive Core • Quarkus & Kafka</div>
+        <h1>The Modern Pipeline Processor for<br>High-Throughput Vector Data</h1>
+        <p class="tagline">Ingest Terabytes of unstructured data with scalable rewindable pipelines in any language</p>
+        <div class="license-badge">MIT Licensed • Always Free • Container Based</div>
         <p class="description">
-            Pipestream AI is an open-source platform designed to solve the "Kafka Bottleneck."
-            We separate the Control Plane from the Data Plane using a <strong>Claim-Check Architecture</strong>
-            to process, chunk, and index massive datasets for RAG and Vector Search at scale.
+            Pipestream AI is an open-source platform designed to solve the headaches of massive unstructured data processing.
+            Payloads are streamed and processed in a reactive, claim-check architecture, with async checkpoints stored in S3 and processed by Kafka.
+            Process, chunk, and index massive datasets for RAG and Vector Search at scale.
         </p>
         <div class="cta-buttons">
             <a href="https://github.com/ai-pipestream" class="btn">View on GitHub</a>
-            <a href="/docs/#/design/document-journey" class="btn secondary">See the Document Journey</a>
+            <a href="/docs/#/design/document-journey" class="btn secondary">From Document to Search Engine - a Document Journey</a>
         </div>
 
         <div class="tech-stack-grid">
             <div class="tech-badge">⚡ Quarkus</div>
             <div class="tech-badge">📨 Kafka (SmallRye)</div>
             <div class="tech-badge">🚀 gRPC</div>
-            <div class="tech-badge">📦 S3 / MinIO</div>
+            <div class="tech-badge">📦 S3 / MinIO / Garage</div>
             <div class="tech-badge">🔎 OpenSearch</div>
+            <div class="tech-badge">🧬 Apicurio</div>
         </div>
     </section>
 
@@ -598,15 +599,15 @@
                 <p style="margin-bottom: 20px; color: rgba(255,255,255,0.6);">Traditional tools built for rows and columns choke on the unstructured chaos of the AI era.</p>
                 <ul>
                     <li>
-                        <strong>The Thundering Herd</strong>
+                        <strong>Real Scaling</strong>
                         Sequential pipelines block on slow steps (like OCR), causing backpressure that halts the system.
                     </li>
                     <li>
-                        <strong>The Kafka Bottleneck</strong>
+                        <strong>Fast and Low Cost</strong>
                         Pushing heavy payloads (PDFs, Images) through brokers kills throughput and explodes retention costs.
                     </li>
                     <li>
-                        <strong>Schema Drift</strong>
+                        <strong>Data intact, no Schema Drift</strong>
                         Automated crawlers guess data types incorrectly, creating brittle pipelines that break silently.
                     </li>
                 </ul>
@@ -639,7 +640,8 @@
             <h3>Multi-Strategy Intelligence</h3>
             <p>
                 Apply <strong>any number of</strong> chunking strategies and embedding models in a single crawl.
-                Store all resulting vectors in the same <strong>OpenSearch</strong> record.
+                Store all resulting vectors in the same <strong>OpenSearch</strong> record, opening the door for true AB testing.
+                <strong>Reindex your data</strong> without crawling it again.
             </p>
         </div>
 
@@ -648,7 +650,7 @@
             <h3>Claim-Check Architecture</h3>
             <p>
                 We separate the Control Plane (Kafka) from the Data Plane (S3 + gRPC).
-                Process 40TB of corporate data without ever clogging your message brokers.
+                Process terabytes of data in a horizontally scaled cluster without ever clogging your message brokers.
             </p>
         </div>
 
@@ -666,7 +668,7 @@
             <h3>High-Speed gRPC</h3>
             <p>
                 Processing steps communicate via strictly typed, internal gRPC streams.
-                Optimized flow control for 300MB/s+ throughput per stream.
+                Optimized raw flow control for hundreds of MB per-second throughput per stream.
             </p>
         </div>
 
@@ -674,7 +676,7 @@
             <div class="feature-icon">🛠️</div>
             <h3>Democratized Config</h3>
             <p>
-                Dynamic JSON Forms allow Data Scientists to tweak NLP parameters (like LLM temperature)
+                Dynamic JSON Forms create front ends without coding.  This allows admins and Data Scientists to tweak NLP parameters (like LLM temperature)
                 via the UI without touching backend code.
             </p>
         </div>
@@ -683,8 +685,8 @@
             <div class="feature-icon">🕸️</div>
             <h3>Dynamic Graph</h3>
             <p>
-                Fan-in from multiple sources, Fan-out to multiple embedding models (A/B testing).
-                The pipeline is a graph, not a linear line.
+                Fan-in from multiple pipeline steps, Fan-out to multiple pipeline steps (A/B testing).
+                The pipeline is a graph, not a linear line.  So you can branch and share data between steps.
             </p>
         </div>
     </section>
@@ -695,13 +697,13 @@
         <div class="architecture-content">
             <h3>The Document Hop</h3>
             <p>
-                Pipestream operates on a "Document Hop" model. The Engine is the central router, moving <strong>PipeDocs</strong> (rich metadata envelopes) between specialized modules.
+                Pipestream operates on a "Document Hop" model. The Engine is the central router, moving <strong>PipeDocs</strong> (rich metadata envelopes) between specialized modules.  This of it as the TCP protocol for search processing.
             </p>
 
             <div class="architecture-features">
                 <div class="arch-feature">
                     <h4>1. Data Loading</h4>
-                    <p>Assets are ingested via Connectors. Heavy data goes to S3; metadata goes to the Engine.</p>
+                    <p>Assets are ingested via Connectors. Data can be saved to S3 at any time; metadata tracked through the Engine.</p>
                 </div>
                 <div class="arch-feature">
                     <h4>2. Transformation</h4>
