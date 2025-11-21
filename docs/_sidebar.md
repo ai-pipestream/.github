@@ -9,11 +9,13 @@
     - [Grpc Performance Optimization](/grpc/optimization/GRPC_PERFORMANCE_OPTIMIZATION)
     - [Unified Server Limitations](/grpc/optimization/UNIFIED_SERVER_LIMITATIONS)
 - **Design**
-  - [Document Journey](/design/document-journey)
-- **Hamster Wheel**
+  - [Document Journey](/design/document-jonurney)
+- **[Hamster Wheel](/hamster-wheel/README)**
+  - [RFC-001: Custom Kafka MessageConverter](/hamster-wheel/RFC-001-custom-kafka-message-converter)
   - **Connector**
     - [Connector Upload Methods](/hamster-wheel/connector/connector-upload-methods)
     - [Implementation Status](/hamster-wheel/connector/implementation-status)
   - **[Dev Service Discovery](/hamster-wheel/dev-service-discovery/README)**
     - [Overview](/hamster-wheel/dev-service-discovery/README)
     - [Llm Implementation Context](/hamster-wheel/dev-service-discovery/LLM-IMPLEMENTATION-CONTEXT)
+    - [Research](/hamster-wheel/dev-service-discovery/research)
