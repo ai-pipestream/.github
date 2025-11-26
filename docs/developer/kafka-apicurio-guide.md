@@ -8,6 +8,40 @@ This guide provides the standard, platform-approved method for configuring and t
 
 The Apicurio Schema Registry is used to manage schemas for our Protobuf messages. This is not optional; it is a core part of the platform. It prevents serialization issues, allows for safe schema evolution over time, and provides a central source of truth for our event-driven architecture. When a message's schema is updated, that change is recorded in the registry, allowing us to handle different message versions without breaking consumers.
 
+### The Zero-Config Kafka Extension
+
+The Pipeline Platform includes a **Quarkus extension** (`pipeline-kafka-quarkus-extension`) that automatically handles all Kafka configuration. This extension provides:
+
+- **Automatic topic mapping** from channel names to Kafka topics
+- **Automatic connector configuration** for producers and consumers
+- **Automatic Protobuf deserialization** with correct return types
+- **Zero manual configuration** - just use channel names in your code
+
+The extension enforces platform standards (UUID keys, Protobuf values, Apicurio integration) without requiring developers to configure serializers, deserializers, or registry URLs.
+
+## What You Need to Do (Quick Start)
+
+**To add Kafka messaging to your Quarkus service:**
+
+1. **Add dependency:**
+   ```groovy
+   implementation 'ai.pipestream:pipeline-kafka-quarkus-extension'
+   ```
+
+2. **Configure infrastructure URLs:**
+   ```properties
+   kafka.bootstrap.servers=${KAFKA_BOOTSTRAP_SERVERS}
+   mp.messaging.connector.smallrye-kafka.apicurio.registry.url=${APICURIO_REGISTRY_URL}
+   ```
+
+3. **Use channel names in your code:**
+   ```java
+   @Channel("my-events-producer") MutinyEmitter<MyEvent> emitter;
+   @Incoming("my-events-consumer") ConsumerRecord<UUID, MyEvent> consume(record);
+   ```
+
+**That's it!** The extension handles all the complex Kafka configuration automatically.
+
 ## Part 1: The Test Environment Foundation
 
 All services that use Kafka must be tested against a real Kafka and Apicurio instance. We do not use in-memory messaging. The standard way to manage this is with a `docker-compose.yml` file located in `src/test/resources/`.
@@ -29,72 +63,106 @@ services:
     image: redpandadata/redpanda:latest
     # ... (service details for redpanda/kafka) ...
   apicurio-registry-test:
-    image: apicurio/apicurio-registry:3.0.11
+    image: apicurio/apicurio-registry:3.1.2
     # ... (service details for apicurio) ...
 ```
 *(**Note:** For brevity, the full YAML is not shown here but should be the standard test environment file used across projects.)*
 
-## Part 2: `application.properties` Configuration (The Modern Standard)
+## Part 2: Dependencies
 
-The Pipeline Platform uses a centralized `PipelineKafkaConfigSource` from the `pipeline-commons` library. This means you **do not** need to manually define serializers, deserializers, or the Apicurio URL. These are configured globally to enforce the platform standard.
+Add the Pipeline Kafka extension to your `build.gradle`:
 
-Your channel configuration should be minimal and clean.
+```groovy
+dependencies {
+    // Pipeline BOM for consistent versions
+    implementation platform('ai.pipestream:pipeline-bom:0.2.10') //or later
 
-**Producer Requirements (Example):**
-```properties
-# --- For an outgoing channel named "account-events" ---
-# 1. Define the connector (this enables all the platform defaults)
-mp.messaging.outgoing.account-events.connector=smallrye-kafka
+    // The Kafka extension - handles all configuration automatically
+    implementation 'ai.pipestream:pipeline-kafka-quarkus-extension'
 
-# 2. Define the topic
-mp.messaging.outgoing.account-events.topic=account-events
+    // Your Protobuf message types
+    implementation 'ai.pipestream:grpc-stubs'
+}
 ```
-That's it. The `UUIDSerializer` for the key and `ProtobufKafkaSerializer` for the value are applied automatically.
 
-**Consumer Requirements (Example):**
+## Part 3: `application.properties` Configuration
+
+The Pipeline Kafka extension automates most configuration, but you still need to configure your infrastructure endpoints.
+
+### Required Infrastructure Configuration
+
 ```properties
-# --- For an incoming channel named "drive-updates-in" ---
-# 1. Define the connector
-mp.messaging.incoming.drive-updates-in.connector=smallrye-kafka
+# --- REQUIRED: Infrastructure Settings ---
+# Kafka bootstrap servers (required for all environments)
+kafka.bootstrap.servers=${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
 
-# 2. Define the topic
-mp.messaging.incoming.drive-updates-in.topic=drive-updates
+# Apicurio Registry URL (required for all environments)
+mp.messaging.connector.smallrye-kafka.apicurio.registry.url=${APICURIO_REGISTRY_URL:http://localhost:8082/apis/registry/v3}
 ```
-**CRITICAL:** When you write your consumer code, you must use the type `ConsumerRecord<UUID, YourProtobufClass>` to correctly receive the UUID key and the deserialized Protobuf message.
 
-## Part 3: Application Code
+The extension automatically handles:
+- ✅ UUID keys and Protobuf values
+- ✅ Apicurio Registry integration settings
+- ✅ Platform reliability and performance settings
+- ✅ Automatic topic mapping from channel names
+- ✅ Connector configuration for detected channels
+- ✅ Return-class inference for deserialization
 
-### Producer Code (`AccountEventPublisher.java`)
+### Optional: Custom Topic Mapping
 
-The producer code is simple. You inject an `Emitter` for your specific Protobuf type. The framework handles key generation and serialization.
+If you need a channel to use a different topic name, override the automatic mapping:
+
+```properties
+# Example: channel "internal-events" should use topic "public-events-v1"
+mp.messaging.outgoing.internal-events.topic=public-events-v1
+mp.messaging.incoming.internal-events.topic=public-events-v1
+```
+
+## Part 4: Application Code
+
+### Automatic Topic Mapping
+
+The extension automatically maps channel names to Kafka topics. For producer/consumer pairs, use directional suffixes that map to the same topic:
+
+- `@Channel("validation-events-producer")` → produces to topic `"validation-events"`
+- `@Incoming("validation-events-consumer")` → consumes from topic `"validation-events"`
+
+**Note:** SmallRye Reactive Messaging prevents using the same channel name for both @Channel (producer) and @Incoming (consumer) simultaneously. This conflict only occurs when you have BOTH directions configured with identical names. Single-direction usage (producer-only or consumer-only) works fine.
+
+### Producer Code (`ValidationEventPublisher.java`)
+
+The producer code is simple. Just inject an `Emitter` with your channel name. The extension handles all serialization automatically.
+
 ```java
-import io.pipeline.repository.account.AccountEvent;
+import io.pipeline.validation.ValidationEvent;
+import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.reactive.messaging.Channel;
-import org.eclipse.microprofile.reactive.messaging.Emitter;
+import io.smallrye.reactive.messaging.MutinyEmitter;
 
 @ApplicationScoped
-public class AccountEventPublisher {
+public class ValidationEventPublisher {
 
-    @Channel("account-events")
-    Emitter<AccountEvent> emitter;
+    @Channel("validation-events-producer")  // Automatically maps to topic "validation-events"
+    MutinyEmitter<ValidationEvent> emitter;
 
-    public void publishAccountCreatedEvent(AccountEvent event) {
-        // The channel name "account-events" links this emitter
-        // to the properties in application.properties.
-        emitter.send(event).subscribe().with(
-            success -> LOG.infof("Message sent successfully!"),
-            failure -> LOG.errorf(failure, "Failed to send message")
-        );
+    public Uni<Void> publishValidationResult(ValidationEvent event) {
+        // The extension automatically:
+        // - Uses UUID keys
+        // - Serializes ValidationEvent as Protobuf
+        // - Registers schema with Apicurio
+        return emitter.send(event);
     }
 }
 ```
 
-### Consumer Code (`DriveUpdateConsumer.java`)
-The consumer signature is the most critical part of adhering to the standard.
+### Consumer Code (`ValidationEventConsumer.java`)
+
+The consumer uses the standard `ConsumerRecord<UUID, YourProtobufType>` signature. The extension automatically configures the Apicurio deserializer with the correct return type.
 
 ```java
-import io.pipeline.repository.filesystem.DriveUpdateNotification;
+import io.pipeline.validation.ValidationEvent;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -102,119 +170,109 @@ import org.eclipse.microprofile.reactive.messaging.Incoming;
 import java.util.UUID;
 
 @ApplicationScoped
-public class DriveUpdateConsumer {
+public class ValidationEventConsumer {
 
-    @Incoming("drive-updates-in")
-    public Uni<Void> consume(ConsumerRecord<UUID, DriveUpdateNotification> record) {
+    @Incoming("validation-events-consumer")  // Automatically maps to topic "validation-events"
+    public Uni<Void> consume(ConsumerRecord<UUID, ValidationEvent> record) {
         UUID messageKey = record.key();
-        DriveUpdateNotification notification = record.value();
+        ValidationEvent event = record.value();
 
-        LOG.infof("Received event with key %s for drive: %s", messageKey, notification.getDrive().getName());
+        LOG.infof("Received validation event with key %s: %s",
+                 messageKey, event.getMessage());
 
-        // Your business logic returns a Uni.
-        // The framework handles message acknowledgment on success.
-        return doBusinessLogic(notification);
+        // The extension automatically:
+        // - Deserializes UUID keys
+        // - Deserializes ValidationEvent from Protobuf
+        // - Handles schema evolution via Apicurio
+        return processValidationEvent(event);
     }
 }
 ```
 
-## Part 4: Testing
+## Part 5: Testing
 
-Testing against real services is required. This section shows the standard patterns for testing producers and consumers.
+Testing against real Kafka/Apicurio services is required. The extension simplifies testing by handling all the complex configuration automatically.
+
+### Test Infrastructure Setup
+
+**`src/test/resources/compose-test-services.yml`** (same as before)
+```yaml
+version: '3.8'
+services:
+  kafka-test:
+    image: redpandadata/redpanda:latest
+    # ... standard kafka configuration ...
+  apicurio-registry-test:
+    image: apicurio/apicurio-registry:3.0.12
+    # ... standard apicurio configuration ...
+```
+
+**`src/test/resources/application.properties`**
+```properties
+# Enable test infrastructure
+%test.quarkus.compose.devservices.enabled=true
+%test.quarkus.compose.devservices.files=src/test/resources/compose-test-services.yml
+
+# Infrastructure URLs (provided by compose-devservices)
+%test.kafka.bootstrap.servers=${KAFKA_BOOTSTRAP_SERVERS:localhost:9095}
+%test.mp.messaging.connector.smallrye-kafka.apicurio.registry.url=${APICURIO_REGISTRY_URL:http://localhost:8082/apis/registry/v3}
+
+# The extension automatically handles ALL other Kafka config!
+# No manual serializers, deserializers, connector settings, etc. needed!
+```
 
 ### How to Test a PRODUCER
 
-To test a producer, you create a manual `KafkaConsumer` in your test to verify that the correct message was sent to the topic.
+The extension makes producer testing much simpler - you don't need to manually configure serializers anymore.
+
 ```java
 @QuarkusTest
 public class AccountEventPublisherTest {
 
-    @GrpcClient("account-manager") // Example: your service is a gRPC service
-    AccountServiceGrpc.AccountServiceBlockingStub accountService;
-
-    // Inject config to build the test consumer
-    @ConfigProperty(name = "kafka.bootstrap.servers")
-    String bootstrapServers;
-    @ConfigProperty(name = "mp.messaging.connector.smallrye-kafka.apicurio.registry.url")
-    String apicurioRegistryUrl;
-
-    // This helper creates a manual consumer for testing purposes.
-    // Because it's manual, it needs full configuration.
-    private KafkaConsumer<UUID, AccountEvent> createConsumer() {
-        Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "test-group-" + UUID.randomUUID());
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, UUIDDeserializer.class.getName()); // Correct
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ProtobufKafkaDeserializer.class.getName());
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        props.put("apicurio.registry.url", apicurioRegistryUrl);
-        props.put("apicurio.registry.deserializer.value.return-class", AccountEvent.class.getName()); // Correct
-        return new KafkaConsumer<>(props);
-    }
+    @Inject
+    AccountEventPublisher publisher;  // Your service with @Channel injection
 
     @Test
     public void testAccountCreatedEventIsPublished() {
-        try (KafkaConsumer<UUID, AccountEvent> consumer = createConsumer()) {
-            consumer.subscribe(Collections.singletonList("account-events"));
+        // ARRANGE
+        AccountEvent event = AccountEvent.newBuilder()...build();
 
-            // ACT: Call the service method that triggers the producer
-            accountService.createAccount(...);
+        // ACT: Call your service method
+        publisher.publishAccountCreatedEvent(event);
 
-            // ASSERT: Use Awaitility to poll for the specific message
-            Awaitility.await().atMost(10, TimeUnit.SECONDS).untilAsserted(() -> {
-                ConsumerRecords<UUID, AccountEvent> records = consumer.poll(Duration.ofMillis(100));
-                // ... logic to find your specific record ...
-                assertNotNull(foundRecord);
-            });
-        }
+        // ASSERT: The extension handles all the complex Kafka setup automatically
+        // You can use @Inject to get a test consumer if needed, or verify via downstream effects
     }
 }
 ```
 
 ### How to Test a CONSUMER
 
-To test a consumer, you create a manual `KafkaProducer` to send a test message. You then `@InjectMock` any downstream service your consumer calls and verify that the mock was invoked correctly.
+Consumer testing is also simplified - the extension handles deserializer configuration automatically.
 
 ```java
 @QuarkusTest
 public class DriveUpdateConsumerTest {
 
     @InjectMock
-    OpenSearchIndexingService indexingService; // Mock the downstream service
-
-    // Inject config to build the test producer
-    @ConfigProperty(name = "kafka.bootstrap.servers")
-    String bootstrapServers;
-    @ConfigProperty(name = "mp.messaging.connector.smallrye-kafka.apicurio.registry.url")
-    String apicurioRegistryUrl;
-
-    // This helper creates a manual producer for testing purposes.
-    private KafkaProducer<UUID, Object> createProducer() {
-        Properties props = new Properties();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, UUIDSerializer.class.getName()); // Correct
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ProtobufKafkaSerializer.class.getName());
-        props.put("apicurio.registry.url", apicurioRegistryUrl);
-        return new KafkaProducer<>(props);
-    }
+    OpenSearchIndexingService indexingService; // Mock downstream services
 
     @Test
     public void testConsumer_indexesDrive() {
-        // ARRANGE: Mock the service behavior
+        // ARRANGE: Mock the downstream behavior
         when(indexingService.indexDrive(any())).thenReturn(Uni.createFrom().voidItem());
-        DriveUpdateNotification notification = DriveUpdateNotification.newBuilder()...build();
-        
-        // Use the standard factory to generate the UUID key
-        UUID key = KafkaProtobufKeys.uuid(notification);
 
-        // ACT: Send the message
-        try (KafkaProducer<UUID, Object> producer = createProducer()) {
-            producer.send(new ProducerRecord<>("drive-updates", key, notification));
-        }
+        // ACT: The consumer will automatically receive messages from the test topic
+        // The extension configures the consumer with correct deserialization
 
-        // ASSERT: Use Awaitility to wait until the mock is called
+        DriveUpdateNotification expectedNotification = DriveUpdateNotification.newBuilder()...build();
+
+        // Send test message (you can use a test producer utility)
+        sendTestMessage("drive-updates", expectedNotification);
+
+        // ASSERT: Verify your consumer called the mocked service
         Awaitility.await().atMost(5, TimeUnit.SECONDS).untilAsserted(() -> {
-            verify(indexingService, Mockito.times(1)).indexDrive(any());
+            verify(indexingService, times(1)).indexDrive(expectedNotification);
         });
     }
 }
@@ -222,10 +280,87 @@ public class DriveUpdateConsumerTest {
 
 ## Final Best Practices
 
-1.  **The Standard is Not Optional.** All Kafka messages **MUST** use a `UUID` key and a specific, compiled `Protobuf` message value.
-2.  **Use `compose-devservices` for All Tests.** All Kafka-related tests **MUST** run against a real Kafka and Apicurio instance provided by the Docker Compose file. In-memory messaging is not an approved alternative.
-3.  **`ConsumerRecord<UUID, T>` is the Contract.** Your consumer method signature is the primary enforcement of the standard.
-4.  **Test Producers and Consumers Correctly.**
-    -   When testing a **producer**, you create a manual **consumer** to verify its output.
-    -   When testing a **consumer**, you create a manual **producer** to provide its input, and you **mock** its downstream dependencies.
+1.  **Add the Extension Dependency.** Include `ai.pipestream:pipeline-kafka-quarkus-extension` in your build.gradle - it handles most configuration automatically.
+
+2.  **Configure Infrastructure URLs.** Always set `kafka.bootstrap.servers` and `apicurio.registry.url` for all environments.
+
+3.  **Use Directional Channel Names.** Use directional suffixes for producer/consumer pairs to avoid SmallRye conflicts:
+    - ✅ `validation-events-producer` + `validation-events-consumer` (both map to `validation-events` topic)
+    - ⚠️ Single-direction usage (producer-only or consumer-only) works fine with any channel name
+    - ❌ Don't use identical channel names for both producer AND consumer simultaneously
+
+4.  **The Standard is Automatic.** The extension enforces UUID keys, Protobuf values, and Apicurio integration - you don't configure serializers/deserializers manually.
+
+5.  **Test Against Real Services.** Use `compose-devservices` with real Kafka/Apicurio containers for all tests.
+
+6.  **Consumer Signature is Critical.** Always use `ConsumerRecord<UUID, YourProtobufType>` - the extension infers the return class automatically.
+
+7.  **Don't Touch Low-Level Config.** Don't manually configure serializers, deserializers, or connector settings - the extension handles these automatically.
+
+## Troubleshooting
+
+### My messages aren't being sent/received
+
+**Check:**
+1. **Infrastructure URLs configured?** Verify `kafka.bootstrap.servers` and `apicurio.registry.url` are set
+2. **Channel names conflict?** Don't use the same channel name for both `@Channel` and `@Incoming`
+3. **Extension dependency added?** Make sure `pipeline-kafka-quarkus-extension` is in your `build.gradle`
+
+### Getting serialization/deserialization errors
+
+**Check:**
+1. **Using Protobuf messages?** The extension only works with Protobuf messages from `grpc-stubs`
+2. **Correct consumer signature?** Use `ConsumerRecord<UUID, YourProtobufType>` for consumers
+3. **Extension applied?** The extension must be able to detect your `@Channel` and `@Incoming` annotations
+
+### Build-time errors about connectors
+
+**Check:**
+1. **Channel names correct?** Use directional suffixes (e.g., `-producer`, `-consumer`)
+2. **No conflicting channels?** Same channel name cannot be used for both producer and consumer
+
+### Need different topic names
+
+**Override automatic mapping:**
+```properties
+mp.messaging.outgoing.my-channel.topic=custom-topic-name
+mp.messaging.incoming.my-channel.topic=custom-topic-name
+```
+
+### Still having issues?
+
+1. Check that `pipeline-commons` and `grpc-stubs` are also in your dependencies
+2. Verify your Protobuf classes are in the `ai.pipestream.*` package
+3. Run `./gradlew build` to see build-time extension logs
+4. Check runtime logs for Kafka connection issues
+
+## Important: What NOT to Configure
+
+❌ **DO NOT manually configure:**
+- Kafka serializers/deserializers
+- Apicurio registry settings (except the URL)
+- Connector configurations
+- Schema registration settings
+
+✅ **ONLY configure:**
+- `kafka.bootstrap.servers`
+- `mp.messaging.connector.smallrye-kafka.apicurio.registry.url`
+- Optional custom topic mappings
+- Your channel names in code
+
+The extension handles all platform-standard Kafka configuration automatically. Manual configuration will conflict with the extension.
+
+## Summary: How the Extension Works
+
+When you add `@Channel("my-events-producer")` and `@Incoming("my-events-consumer")` to your code:
+
+1. **Build-time:** The extension detects your annotations and generates automatic configuration
+2. **Runtime:** The extension applies platform standards:
+   - UUID keys with automatic key generation
+   - Protobuf serialization/deserialization
+   - Apicurio schema registration and validation
+   - Reliable producer/consumer settings
+   - Automatic topic mapping from channel names
+
+**Result:** You write minimal code and configuration, but get production-ready, standards-compliant Kafka messaging automatically.
 
