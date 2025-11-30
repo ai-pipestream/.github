@@ -3,10 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Pipestream AI - The Operating System for High-Throughput Vector Data. Open Source, Reactive, and Built for RAG.">
-    <meta name="keywords" content="RAG, Vector Search, ETL, Kafka, Quarkus, gRPC, OpenSearch, AI, open source">
-    <title>Pipestream AI - High Speed Anywhere Language Agnostic Pipeline Processor</title>
+    <meta name="description" content="Pipestream AI - The Document Processing Mesh. gRPC latency, Kafka durability, and strict schema governance.">
+    <title>Pipestream AI: Document Processing Mesh for text processing</title>
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-dark: #0a0e27;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.7);
+            --accent: #667eea;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -17,7 +25,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
             color: #333;
-            background: #0a0e27;
+            background: var(--bg-dark);
             overflow-x: hidden;
         }
 
@@ -54,20 +62,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: relative;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
         nav a {
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--text-muted);
             text-decoration: none;
             margin-left: 30px;
             font-weight: 500;
@@ -75,392 +84,201 @@
         }
 
         nav a:hover {
-            color: #667eea;
-        }
-
-        .license-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 12px;
-            background: rgba(102, 126, 234, 0.1);
-            border: 1px solid rgba(102, 126, 234, 0.3);
-            border-radius: 20px;
-            color: #667eea;
-            font-size: 0.85rem;
-            font-weight: 600;
+            color: var(--accent);
         }
 
         /* Hero Section */
         .hero {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 100px 40px;
+            padding: 100px 20px 60px;
             text-align: center;
         }
 
         h1 {
-            font-size: 4.5rem;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 25px;
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             font-weight: 800;
-            letter-spacing: -2px;
-            animation: fadeInUp 1s ease-out;
+            letter-spacing: -1px;
         }
 
-        .tagline {
-            font-size: 1.5rem;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 15px;
-            animation: fadeInUp 1s ease-out 0.2s backwards;
-        }
-
-        .description {
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.6);
-            margin-bottom: 50px;
-            max-width: 700px;
+        .lead {
+            font-size: 1.35rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            max-width: 800px;
             margin-left: auto;
             margin-right: auto;
-            line-height: 1.8;
-            animation: fadeInUp 1s ease-out 0.4s backwards;
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* CTA Buttons */
-        .cta-buttons {
+        /* Buttons */
+        .cta-group {
             display: flex;
             gap: 20px;
             justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 80px;
-            animation: fadeInUp 1s ease-out 0.6s backwards;
+            margin-bottom: 60px;
         }
 
         .btn {
-            display: inline-block;
-            padding: 15px 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-decoration: none;
+            padding: 15px 35px;
             border-radius: 50px;
             font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            text-decoration: none;
+            transition: transform 0.2s;
         }
 
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
-        }
-
-        .btn.secondary {
-            background: transparent;
-            border: 2px solid #667eea;
-            box-shadow: none;
-        }
-
-        .btn.secondary:hover {
-            background: rgba(102, 126, 234, 0.1);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
-        }
-
-        /* --- NEW STYLES FOR TECH STACK & PROBLEM GRID --- */
-
-        /* Tech Stack Grid */
-        .tech-stack-grid {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: -20px; /* Pull closer to CTA */
-            margin-bottom: 40px;
-            animation: fadeInUp 1s ease-out 0.8s backwards;
-        }
-        .tech-badge {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-        .tech-badge:hover {
-            background: rgba(102, 126, 234, 0.1);
-            border-color: rgba(102, 126, 234, 0.3);
-            color: #fff;
             transform: translateY(-2px);
         }
 
-        /* Comparison Grid */
-        .comparison-section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 40px 80px;
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
         }
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            animation: fadeInUp 1s ease-out backwards;
-            animation-delay: 0.5s;
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: white;
         }
-        .comparison-card {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 20px;
-            padding: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+
+        /* Tech Stack Badges */
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 80px;
         }
-        .comparison-card:hover {
+
+        .badge {
             background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-        .comparison-card.problem {
-            border-left: 4px solid #e53e3e;
-        }
-        .comparison-card.solution {
-            border-left: 4px solid #48bb78;
-        }
-        .comparison-card h3 {
-            color: #fff;
-            font-size: 1.8rem;
-            margin-bottom: 25px;
-        }
-        .comparison-card ul {
-            list-style: none;
-            padding: 0;
-        }
-        .comparison-card li {
-            margin-bottom: 20px;
-            color: rgba(255, 255, 255, 0.7);
-            position: relative;
-            padding-left: 30px;
-            font-size: 1.05rem;
-        }
-        .comparison-card li strong {
-            color: #fff;
-            display: block;
-            margin-bottom: 5px;
-        }
-        .comparison-card.problem li:before {
-            content: "✖";
-            color: #e53e3e;
-            position: absolute;
-            left: 0;
-            font-weight: bold;
-        }
-        .comparison-card.solution li:before {
-            content: "✔";
-            color: #48bb78;
-            position: absolute;
-            left: 0;
-            font-weight: bold;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
-        /* ------------------------------------------------ */
-
-        /* Features Section */
-        .features {
+        /* Features Grid */
+        .section-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 80px 40px;
+            padding: 80px 20px;
+        }
+
+        .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
         }
 
         .feature-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--bg-card);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 40px 30px;
-            transition: all 0.3s ease;
-            animation: fadeInUp 1s ease-out backwards;
-            cursor: pointer;
+            border-radius: 16px;
+            padding: 40px;
+            transition: transform 0.3s ease;
         }
-
-        .feature-card:nth-child(1) { animation-delay: 0.8s; }
-        .feature-card:nth-child(2) { animation-delay: 1s; }
-        .feature-card:nth-child(3) { animation-delay: 1.2s; }
-        .feature-card:nth-child(4) { animation-delay: 1.4s; }
-        .feature-card:nth-child(5) { animation-delay: 1.6s; }
-        .feature-card:nth-child(6) { animation-delay: 1.8s; }
 
         .feature-card:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
-            border-color: rgba(102, 126, 234, 0.3);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
+            transform: translateY(-5px);
+            border-color: var(--accent);
         }
 
         .feature-card h3 {
-            color: #fff;
+            color: var(--text-main);
             font-size: 1.5rem;
             margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .feature-card p {
-            color: rgba(255, 255, 255, 0.6);
-            line-height: 1.8;
+            color: var(--text-muted);
+            font-size: 1.05rem;
         }
 
-        /* Architecture Section */
-        .architecture {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 80px 40px;
-            text-align: center;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            color: #fff;
-            margin-bottom: 60px;
-            animation: fadeInUp 1s ease-out backwards;
-        }
-
-        .architecture-content {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        /* Comparison Table */
+        .comparison-table-wrapper {
+            background: var(--bg-card);
             border-radius: 20px;
-            padding: 50px;
-            margin-bottom: 40px;
-            text-align: left; /* Improve readability for long blocks */
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
         }
 
-        .architecture-content h3 {
-            color: #667eea;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--text-muted);
+            min-width: 800px; /* Prevent crushing on mobile */
         }
 
-        .architecture-content p {
-            color: rgba(255, 255, 255, 0.7);
+        th, td {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        th {
+            color: var(--accent);
             font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .architecture-features {
+        .highlight-col {
+            background: rgba(102, 126, 234, 0.1);
+            color: white;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+        
+        td.highlight-col {
+            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        /* Architecture Steps */
+        .steps-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 30px;
             margin-top: 40px;
         }
 
-        .arch-feature {
+        .step-card {
             text-align: left;
+            padding: 20px;
+            border-left: 2px solid var(--accent);
+            background: linear-gradient(90deg, rgba(102,126,234,0.05) 0%, transparent 100%);
         }
 
-        .arch-feature h4 {
-            color: #fff;
-            font-size: 1.2rem;
+        .step-card h4 {
+            color: white;
             margin-bottom: 10px;
-        }
-
-        .arch-feature p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.95rem;
-            margin-bottom: 0;
-        }
-
-        /* Use Cases Section */
-        .use-cases {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 80px 40px;
-        }
-
-        .use-case-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-        }
-
-        .use-case {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 30px 25px;
-            transition: all 0.3s ease;
-        }
-
-        .use-case:hover {
-            background: rgba(102, 126, 234, 0.1);
-            border-color: rgba(102, 126, 234, 0.3);
-        }
-
-        .use-case h4 {
-            color: #667eea;
             font-size: 1.2rem;
-            margin-bottom: 10px;
         }
 
-        .use-case p {
-            color: rgba(255, 255, 255, 0.6);
+        .step-card p {
+            color: var(--text-muted);
             font-size: 0.95rem;
-        }
-
-        /* Open Source Section */
-        .open-source {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 80px 40px;
-            text-align: center;
-        }
-
-        .open-source-content {
-            background: rgba(102, 126, 234, 0.1);
-            border: 2px solid rgba(102, 126, 234, 0.3);
-            border-radius: 20px;
-            padding: 50px;
-        }
-
-        .open-source-content h2 {
-            color: #fff;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-
-        .open-source-content p {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1.2rem;
-            line-height: 1.8;
-            margin-bottom: 30px;
         }
 
         /* Footer */
         footer {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 60px 40px 40px;
             text-align: center;
+            padding: 60px 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             margin-top: 80px;
         }
@@ -468,199 +286,173 @@
         .footer-links {
             display: flex;
             justify-content: center;
-            gap: 40px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 20px;
         }
 
         .footer-links a {
-            color: rgba(255, 255, 255, 0.6);
+            color: var(--text-muted);
             text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: #667eea;
         }
 
         .copyright {
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.3);
             font-size: 0.9rem;
         }
 
-        /* Responsive */
+        /* Responsive Tweaks */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 3rem;
-            }
-
-            .tagline {
-                font-size: 1.2rem;
-            }
-
-            .description {
-                font-size: 1rem;
-            }
-
-            .comparison-grid {
-                grid-template-columns: 1fr;
-            }
-
-            header {
-                flex-direction: column;
-                gap: 20px;
-            }
-
-            nav {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            nav a {
-                margin: 0 15px;
-            }
-
-            .hero {
-                padding: 60px 20px;
-            }
-
-            .features, .use-cases, .architecture, .open-source {
-                padding: 60px 20px;
-            }
-
-            .architecture-content {
-                padding: 30px 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 2.5rem;
-                letter-spacing: -1px;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-                text-align: center;
-            }
+            h1 { font-size: 2.8rem; }
+            .hero { padding-top: 60px; }
+            .cta-group { flex-direction: column; }
+            header { flex-direction: column; gap: 20px; }
+            nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+            nav a { margin: 0; }
         }
     </style>
 </head>
 <body>
-<div class="bg-animation"></div>
+    <div class="bg-animation"></div>
 
-<header>
-    <div class="logo">Pipestream AI</div>
-    <nav>
-        <a href="/docs/" class="docs-link">Documentation</a>
-        <a href="#architecture">Architecture</a>
-        <a href="#features">Features</a>
-        <a href="https://github.com/ai-pipestream">GitHub</a>
-    </nav>
-</header>
+    <header>
+        <div class="logo">Pipestream AI</div>
+        <nav>
+            <a href="docs/architecture/system-overview.md">Architecture</a>
+            <a href="https://buf.build/pipestreamai/platform" target="_blank">Proto Registry</a>
+            <a href="docs/developer/README.md">Docs</a>
+            <a href="https://github.com/ai-pipestream" target="_blank">GitHub</a>
+        </nav>
+    </header>
 
-<main>
-    <section class="hero-section">
-    <div class="container">
-        <h1>The Document Processing Mesh <br>for Serious Data Engineering</h1>
-        <p class="lead">
-            Stop building fragile Python script chains. Pipestream is a high-performance orchestration engine 
-            that combines <strong>gRPC real-time latency</strong> with <strong>Kafka-based durability</strong>. 
-            Type-safe, polyglot, and schema-first.
-        </p>
-        <div class="cta-group">
-            <a href="docs/architecture/system-overview.md" class="btn btn-primary">Read the Architecture</a>
-            <a href="https://buf.build/pipestreamai/platform" class="btn btn-secondary">View Proto Contracts</a>
+    <main>
+        <section class="hero">
+            <h1>The Document Processing Mesh <br>for Serious Data Engineering</h1>
+            <p class="lead">
+                Stop building fragile Python script chains. Pipestream is a high-performance orchestration engine 
+                that combines <strong>gRPC real-time processing</strong> with <strong>Kafka-based durability</strong>. 
+                Type-safe, polyglot, and schema-first.
+            </p>
+            
+            <div class="cta-group">
+                <a href="docs/architecture/system-overview.md" class="btn btn-primary">Read the Architecture</a>
+                <a href="https://github.com/ai-pipestream" class="btn btn-secondary">View on GitHub</a>
+            </div>
+
+            <div class="tech-stack">
+                <span class="badge">⚡ Quarkus Engine</span>
+                <span class="badge">📨 Kafka Streams</span>
+                <span class="badge">🚀 gRPC Mesh</span>
+                <span class="badge">🛡️ Protobuf / Buf</span>
+                <span class="badge">📦 S3 Claim-Check</span>
+                <span class="badge">🔎 OpenSearch</span>
+            </div>
+        </section>
+
+        <section class="section-container">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>⚡ Dual-Mode Transport</h3>
+                    <p>Why choose between speed and scale? Pipestream routes high-priority UI requests via <strong>gRPC</strong> (milliseconds) and bulk ingestion via <strong>Kafka</strong> (terabytes). The engine handles the switching dynamically.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🌐 Polyglot Service Mesh</h3>
+                    <p>Write LLM logic in Python. Write parsers in Rust or Java. Connect them seamlessly. Modules are "dumb" gRPC endpoints; the Engine handles the complex orchestration, retries, and state.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🛡️ Schema-First Governance</h3>
+                    <p>Prevent data corruption. We use <strong>Protobuf</strong> and <strong>Apicurio Registry</strong> to enforce strict data contracts. The Engine controls the mapping, so a rogue script can never break your Search Index.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-container">
+            <h2 style="text-align: center; color: white; margin-bottom: 40px; font-size: 2.2rem;">Pipestream vs. The World</h2>
+            <div class="comparison-table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th class="highlight-col">Pipestream</th>
+                            <th>LangChain</th>
+                            <th>Apache NiFi</th>
+                            <th>Data Prepper</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Primary Goal</strong></td>
+                            <td class="highlight-col">Document Business Logic</td>
+                            <td>Prototyping / RAG Scripts</td>
+                            <td>Moving Raw Bits (ETL)</td>
+                            <td>Log Aggregation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Architecture</strong></td>
+                            <td class="highlight-col">Service Mesh (Hub & Spoke)</td>
+                            <td>Library (Client-side)</td>
+                            <td>Visual DAG Graph</td>
+                            <td>Linear Pipeline</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Transport</strong></td>
+                            <td class="highlight-col">Hybrid (gRPC + Kafka)</td>
+                            <td>In-Memory / HTTP</td>
+                            <td>Disk-based / Proprietary</td>
+                            <td>Memory Buffer</td>
+                        </tr>
+                        <tr>
+                            <td><strong>State Mgmt</strong></td>
+                            <td class="highlight-col">Claim-Check (S3)</td>
+                            <td>Manual</td>
+                            <td>Heavy FlowFiles</td>
+                            <td>Transient</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Schema</strong></td>
+                            <td class="highlight-col">Strict (Protobuf)</td>
+                            <td>Loose (JSON)</td>
+                            <td>Schemaless</td>
+                            <td>Loose JSON</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section-container">
+            <h2 style="color: white; margin-bottom: 20px;">How It Works: The Engineering Flow</h2>
+            <p style="color: rgba(255,255,255,0.7); max-width: 700px;">Pipestream separates the control plane from the data plane to handle massive files without clogging your message broker.</p>
+            
+            <div class="steps-grid">
+                <div class="step-card">
+                    <h4>1. Ingest & Claim Check</h4>
+                    <p>The Intake Service accepts a document. Large binaries (PDFs) are immediately offloaded to S3 (Repo Service). Only the lightweight <strong>PipeDoc</strong> metadata enters the stream.</p>
+                </div>
+                <div class="step-card">
+                    <h4>2. The Engine Router</h4>
+                    <p>The Engine receives the PipeDoc. Based on priority, it routes via gRPC to the next Node, or pushes a pointer to the <strong>pipeline-work-v1</strong> Kafka topic if the node is busy.</p>
+                </div>
+                <div class="step-card">
+                    <h4>3. Polyglot Processing</h4>
+                    <p>Your Python <strong>Summarizer Module</strong> receives a typed Request. It pulls text, runs the LLM, and returns the result. It never touches S3 or Kafka directly.</p>
+                </div>
+                <div class="step-card">
+                    <h4>4. Strict Indexing</h4>
+                    <p>The Engine takes the result, applies strict schema mapping (so "summary" goes to "metadata.description"), and indexes it into OpenSearch safely.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://github.com/ai-pipestream">GitHub Organization</a>
+            <a href="docs/developer/README.md">Documentation</a>
+            <a href="https://github.com/ai-pipestream/.github/issues">Support</a>
         </div>
-    </div>
-</section>
-
-<section class="features-grid">
-    <div class="feature-card">
-        <h3>⚡ Dual-Mode Transport</h3>
-        <p>Why choose between speed and scale? Pipestream routes high-priority requests via <strong>gRPC</strong> (milliseconds) and bulk ingestion via <strong>Kafka</strong> (terabytes). The engine handles the switching dynamically.</p>
-    </div>
-    <div class="feature-card">
-        <h3>🌐 Polyglot Service Mesh</h3>
-        <p>Write LLM logic in Python. Write parsers in Rust or Java. Connect them seamlessly. Modules are "dumb" gRPC endpoints; the Engine handles the complex orchestration, retries, and state.</p>
-    </div>
-    <div class="feature-card">
-        <h3>🛡️ Schema-First Governance</h3>
-        <p>Prevent data corruption. We use <strong>Protobuf</strong> and <strong>Apicurio Registry</strong> to enforce strict data contracts. The Engine controls the mapping, so a rogue script can never break your Search Index.</p>
-    </div>
-</section>
-
-<section class="comparison-section">
-    <div class="container">
-        <h2>Pipestream vs. The World</h2>
-        <p>Existing tools are either too simple (libraries) or too heavy (ETL tools). Pipestream fills the gap.</p>
-        <div class="table-responsive">
-            <table class="comparison-table">
-                <thead>
-                    <tr>
-                        <th>Feature</th>
-                        <th class="highlight">Pipestream</th>
-                        <th>LangChain</th>
-                        <th>Apache NiFi</th>
-                        <th>Data Prepper</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Architecture</strong></td>
-                        <td class="highlight"><strong>Service Mesh</strong></td>
-                        <td>Client Library</td>
-                        <td>Visual DAG</td>
-                        <td>Linear Pipeline</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Transport</strong></td>
-                        <td class="highlight"><strong>gRPC + Kafka</strong></td>
-                        <td>In-Memory/HTTP</td>
-                        <td>Disk-based</td>
-                        <td>Memory Buffer</td>
-                    </tr>
-                    <tr>
-                        <td><strong>State Mgmt</strong></td>
-                        <td class="highlight"><strong>Claim-Check (S3)</strong></td>
-                        <td>Manual</td>
-                        <td>Heavy FlowFiles</td>
-                        <td>Transient</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Schema</strong></td>
-                        <td class="highlight"><strong>Strict (Protobuf)</strong></td>
-                        <td>Loose (JSON)</td>
-                        <td>Schemaless</td>
-                        <td>Loose JSON</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="copyright">
+            &copy; 2025 Pipestream AI. Open Source under MIT License.
         </div>
-    </div>
-</section>
-</main>
-
-<footer>
-    <div class="footer-links">
-        <a href="https://github.com/ai-pipestream">GitHub Organization</a>
-        <a href="/docs/">Documentation</a>
-        <a href="https://github.com/ai-pipestream/.github/issues">Support</a>
-    </div>
-    <div class="copyright">
-        &copy; 2025 Pipestream AI. Open source under MIT License.
-    </div>
-</footer>
-
-<script>
-    function scrollToSection(id) {
-        document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-    }
-</script>
+    </footer>
 </body>
 </html>
