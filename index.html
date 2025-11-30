@@ -565,207 +565,85 @@
 </header>
 
 <main>
-    <!-- Hero Section -->
-    <section class="hero">
-        <h1>The Modern Pipeline Processor for<br>High-Throughput Vector Data</h1>
-        <p class="tagline">Ingest Terabytes of unstructured data with scalable rewindable pipelines in any language</p>
-        <div class="license-badge">MIT Licensed • Always Free • Container Based</div>
-        <p class="description">
-            Pipestream AI is an open-source platform designed to solve the headaches of massive unstructured data processing.
-            Payloads are streamed and processed in a reactive, claim-check architecture, with async checkpoints stored in S3 and processed by Kafka.
-            Process, chunk, and index massive datasets for RAG and Vector Search at scale.
+    <section class="hero-section">
+    <div class="container">
+        <h1>The Document Processing Mesh <br>for Serious Data Engineering</h1>
+        <p class="lead">
+            Stop building fragile Python script chains. Pipestream is a high-performance orchestration engine 
+            that combines <strong>gRPC real-time latency</strong> with <strong>Kafka-based durability</strong>. 
+            Type-safe, polyglot, and schema-first.
         </p>
-        <div class="cta-buttons">
-            <a href="https://github.com/ai-pipestream" class="btn">View on GitHub</a>
-            <a href="/docs/#/design/document-journey" class="btn secondary">From Document to Search Engine - a Document Journey</a>
+        <div class="cta-group">
+            <a href="docs/architecture/system-overview.md" class="btn btn-primary">Read the Architecture</a>
+            <a href="https://buf.build/pipestreamai/platform" class="btn btn-secondary">View Proto Contracts</a>
         </div>
+    </div>
+</section>
 
-        <div class="tech-stack-grid">
-            <div class="tech-badge">⚡ Quarkus</div>
-            <div class="tech-badge">📨 Kafka (SmallRye)</div>
-            <div class="tech-badge">🚀 gRPC</div>
-            <div class="tech-badge">📦 S3 / MinIO / Garage</div>
-            <div class="tech-badge">🔎 OpenSearch</div>
-            <div class="tech-badge">🧬 Apicurio</div>
+<section class="features-grid">
+    <div class="feature-card">
+        <h3>⚡ Dual-Mode Transport</h3>
+        <p>Why choose between speed and scale? Pipestream routes high-priority requests via <strong>gRPC</strong> (milliseconds) and bulk ingestion via <strong>Kafka</strong> (terabytes). The engine handles the switching dynamically.</p>
+    </div>
+    <div class="feature-card">
+        <h3>🌐 Polyglot Service Mesh</h3>
+        <p>Write LLM logic in Python. Write parsers in Rust or Java. Connect them seamlessly. Modules are "dumb" gRPC endpoints; the Engine handles the complex orchestration, retries, and state.</p>
+    </div>
+    <div class="feature-card">
+        <h3>🛡️ Schema-First Governance</h3>
+        <p>Prevent data corruption. We use <strong>Protobuf</strong> and <strong>Apicurio Registry</strong> to enforce strict data contracts. The Engine controls the mapping, so a rogue script can never break your Search Index.</p>
+    </div>
+</section>
+
+<section class="comparison-section">
+    <div class="container">
+        <h2>Pipestream vs. The World</h2>
+        <p>Existing tools are either too simple (libraries) or too heavy (ETL tools). Pipestream fills the gap.</p>
+        <div class="table-responsive">
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th class="highlight">Pipestream</th>
+                        <th>LangChain</th>
+                        <th>Apache NiFi</th>
+                        <th>Data Prepper</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Architecture</strong></td>
+                        <td class="highlight"><strong>Service Mesh</strong></td>
+                        <td>Client Library</td>
+                        <td>Visual DAG</td>
+                        <td>Linear Pipeline</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Transport</strong></td>
+                        <td class="highlight"><strong>gRPC + Kafka</strong></td>
+                        <td>In-Memory/HTTP</td>
+                        <td>Disk-based</td>
+                        <td>Memory Buffer</td>
+                    </tr>
+                    <tr>
+                        <td><strong>State Mgmt</strong></td>
+                        <td class="highlight"><strong>Claim-Check (S3)</strong></td>
+                        <td>Manual</td>
+                        <td>Heavy FlowFiles</td>
+                        <td>Transient</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Schema</strong></td>
+                        <td class="highlight"><strong>Strict (Protobuf)</strong></td>
+                        <td>Loose (JSON)</td>
+                        <td>Schemaless</td>
+                        <td>Loose JSON</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </section>
-
-    <!-- Comparison Section (Problem vs Solution) -->
-    <section class="comparison-section">
-        <div class="section-title" style="font-size: 2rem; margin-bottom: 40px;">The Problem: "ETL Hell"</div>
-        <div class="comparison-grid">
-            <div class="comparison-card problem">
-                <h3>Typical Pipelines</h3>
-                <p style="margin-bottom: 20px; color: rgba(255,255,255,0.6);">Traditional tools built for rows and columns choke on the unstructured chaos of the AI era.</p>
-                <ul>
-                    <li>
-                        <strong>Real Scaling</strong>
-                        Sequential pipelines block on slow steps (like OCR), causing backpressure that halts the system.
-                    </li>
-                    <li>
-                        <strong>Fast and Low Cost</strong>
-                        Pushing heavy payloads (PDFs, Images) through brokers kills throughput and explodes retention costs.
-                    </li>
-                    <li>
-                        <strong>Data intact, no Schema Drift</strong>
-                        Automated crawlers guess data types incorrectly, creating brittle pipelines that break silently.
-                    </li>
-                </ul>
-            </div>
-            <div class="comparison-card solution">
-                <h3>Pipestream AI</h3>
-                <p style="margin-bottom: 20px; color: rgba(255,255,255,0.6);">A reactive, claim-check architecture built specifically for massive unstructured data streams.</p>
-                <ul>
-                    <li>
-                        <strong>Reactive & Non-Blocking</strong>
-                        Built on Quarkus and Mutiny. A single pod handles thousands of concurrent streams with minimal memory.
-                    </li>
-                    <li>
-                        <strong>Claim-Check Pattern</strong>
-                        Kafka carries the envelope (metadata). S3 & gRPC carry the heavy payload.
-                    </li>
-                    <li>
-                        <strong>Strict Schemas with Apicurio</strong>
-                        Integration with Apicurio Registry ensures strict Protobuf contracts, preventing silent failures caused by drift.
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="feature-card" onclick="location.href='/docs/#/design/document-journey?id=sequential-processing-accumulating-chunks-and-embeddings-single-index'">
-            <div class="feature-icon">🧬</div>
-            <h3>Multi-Strategy Intelligence</h3>
-            <p>
-                Apply <strong>any number of</strong> chunking strategies and embedding models in a single crawl.
-                Store all resulting vectors in the same <strong>OpenSearch</strong> record, opening the door for true AB testing.
-                <strong>Reindex your data</strong> without crawling it again.
-            </p>
-        </div>
-
-        <div class="feature-card" onclick="location.href='/docs/#/design/document-journey?id=example-1-pdf-from-s3-crawl'">
-            <div class="feature-icon">🎟️</div>
-            <h3>Claim-Check Architecture</h3>
-            <p>
-                We separate the Control Plane (Kafka) from the Data Plane (S3 + gRPC).
-                Process terabytes of data in a horizontally scaled cluster without ever clogging your message brokers.
-            </p>
-        </div>
-
-        <div class="feature-card" onclick="scrollToSection('architecture')">
-            <div class="feature-icon">⏪</div>
-            <h3>Time Travel & Rewind</h3>
-            <p>
-                Updated your embedding model? Reset the consumer offset.
-                The pipeline replays the state instantly, skipping expensive ingestion steps by fetching raw text from S3.
-            </p>
-        </div>
-
-        <div class="feature-card" onclick="location.href='/docs/#/grpc/optimization/GRPC_PERFORMANCE_OPTIMIZATION'">
-            <div class="feature-icon">⚡</div>
-            <h3>High-Speed gRPC</h3>
-            <p>
-                Processing steps communicate via strictly typed, internal gRPC streams.
-                Optimized raw flow control for hundreds of MB per-second throughput per stream.
-            </p>
-        </div>
-
-        <div class="feature-card" onclick="scrollToSection('architecture')">
-            <div class="feature-icon">🛠️</div>
-            <h3>Democratized Config</h3>
-            <p>
-                Dynamic JSON Forms create front ends without coding.  This allows admins and Data Scientists to tweak NLP parameters (like LLM temperature)
-                via the UI without touching backend code.
-            </p>
-        </div>
-
-        <div class="feature-card" onclick="location.href='/docs/#/design/document-journey?id=network-graph-architecture'">
-            <div class="feature-icon">🕸️</div>
-            <h3>Dynamic Graph</h3>
-            <p>
-                Fan-in from multiple pipeline steps, Fan-out to multiple pipeline steps (A/B testing).
-                The pipeline is a graph, not a linear line.  So you can branch and share data between steps.
-            </p>
-        </div>
-    </section>
-
-    <!-- Architecture Section -->
-    <section class="architecture" id="architecture">
-        <h2 class="section-title">Architecture Overview</h2>
-        <div class="architecture-content">
-            <h3>The Document Hop</h3>
-            <p>
-                Pipestream operates on a "Document Hop" model. The Engine is the central router, moving <strong>PipeDocs</strong> (rich metadata envelopes) between specialized modules.  This of it as the TCP protocol for search processing.
-            </p>
-
-            <div class="architecture-features">
-                <div class="arch-feature">
-                    <h4>1. Data Loading</h4>
-                    <p>Assets are ingested via Connectors. Data can be saved to S3 at any time; metadata tracked through the Engine.</p>
-                </div>
-                <div class="arch-feature">
-                    <h4>2. Transformation</h4>
-                    <p>Assets are transformed to text (Parsing). This step is skippable on "Rewind" operations.</p>
-                </div>
-                <div class="arch-feature">
-                    <h4>3. Enhancement (Fan-Out)</h4>
-                    <p>Text is chunked and embedded. Run multiple chunkers and embedders in parallel, accumulating results in the PipeDoc.</p>
-                </div>
-                <div class="arch-feature">
-                    <h4>4. Sink</h4>
-                    <p>All accumulated vectors (from all strategies) are indexed into OpenSearch for hybrid retrieval.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Use Cases Section -->
-    <section class="use-cases" id="use-cases">
-        <h2 class="section-title">Use Cases</h2>
-        <div class="use-case-grid">
-            <div class="use-case">
-                <h4>Enterprise Search</h4>
-                <p>Index internal documents, wikis, and knowledge bases with hybrid search capabilities (Lexical + Semantic).</p>
-            </div>
-            <div class="use-case">
-                <h4>RAG & LLM Context</h4>
-                <p>Feed clean, chunked context to LLMs. Test different chunk sizes to optimize retrieval quality.</p>
-            </div>
-            <div class="use-case">
-                <h4>Multi-Model A/B Testing</h4>
-                <p>Run OpenAI Ada and Llama3 embeddings side-by-side in the same index to compare performance.</p>
-            </div>
-            <div class="use-case">
-                <h4>Document Intelligence</h4>
-                <p>Extract metadata and text from diverse formats (PDF, Video, Audio) with dedicated microservice parsers.</p>
-            </div>
-            <div class="use-case">
-                <h4>Massive Migration</h4>
-                <p>Move Terabytes of legacy data into modern Vector Stores using high-throughput gRPC streams.</p>
-            </div>
-            <div class="use-case">
-                <h4>Hybrid Search</h4>
-                <p>Combine OpenSearch BM25 ranking with Dense Vector Retrieval for superior accuracy.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Open Source Section -->
-    <section class="open-source">
-        <div class="open-source-content">
-            <h2>Open Source & MIT Licensed</h2>
-            <p>
-                Pipestream AI bridges the gap between Backend Engineering and Data Science.
-                Run it on a local workstation or scale it to index a Fortune 500's entire history.
-            </p>
-            <div class="cta-buttons">
-                <a href="https://github.com/ai-pipestream" class="btn">Contribute on GitHub</a>
-                <a href="/docs/" class="btn secondary">View Documentation</a>
-            </div>
-        </div>
-    </section>
+    </div>
+</section>
 </main>
 
 <footer>
