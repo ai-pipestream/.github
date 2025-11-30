@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Pipestream AI - The Document Processing Mesh. gRPC latency, Kafka durability, and strict schema governance.">
-    <title>Pipestream AI: Document Processing Mesh for text processing</title>
+    <meta name="description" content="Pipestream AI - The Enterprise Document Service Mesh. gRPC latency, Kafka durability, and strict schema governance.">
+    <title>Pipestream AI: Document Processing Mesh for Text</title>
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -13,6 +13,8 @@
             --text-main: #ffffff;
             --text-muted: rgba(255, 255, 255, 0.7);
             --accent: #667eea;
+            --success: #48bb78;
+            --danger: #f56565;
         }
 
         * {
@@ -24,7 +26,7 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: var(--text-main);
             background: var(--bg-dark);
             overflow-x: hidden;
         }
@@ -129,7 +131,7 @@
             border-radius: 50px;
             font-weight: 600;
             text-decoration: none;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .btn:hover {
@@ -142,10 +144,18 @@
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
         }
 
+        .btn-primary:hover {
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+
         .btn-secondary {
             background: transparent;
             border: 2px solid var(--accent);
             color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(102, 126, 234, 0.1);
         }
 
         /* Tech Stack Badges */
@@ -165,20 +175,44 @@
             border-radius: 8px;
             font-size: 0.9rem;
             font-weight: 500;
+            transition: all 0.3s ease;
         }
 
-        /* Features Grid */
+        .badge:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: rgba(102, 126, 234, 0.3);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* Standard Section Styles */
         .section-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 80px 20px;
         }
 
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 60px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Features Grid */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 30px;
-            margin-bottom: 80px;
         }
 
         .feature-card {
@@ -187,21 +221,25 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
             padding: 40px;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, border-color 0.3s ease;
         }
 
         .feature-card:hover {
             transform: translateY(-5px);
             border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            display: block;
         }
 
         .feature-card h3 {
             color: var(--text-main);
             font-size: 1.5rem;
             margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         .feature-card p {
@@ -222,7 +260,7 @@
             width: 100%;
             border-collapse: collapse;
             color: var(--text-muted);
-            min-width: 800px; /* Prevent crushing on mobile */
+            min-width: 800px;
         }
 
         th, td {
@@ -259,9 +297,10 @@
 
         .step-card {
             text-align: left;
-            padding: 20px;
-            border-left: 2px solid var(--accent);
+            padding: 25px;
+            border-left: 3px solid var(--accent);
             background: linear-gradient(90deg, rgba(102,126,234,0.05) 0%, transparent 100%);
+            border-radius: 0 10px 10px 0;
         }
 
         .step-card h4 {
@@ -273,6 +312,7 @@
         .step-card p {
             color: var(--text-muted);
             font-size: 0.95rem;
+            margin: 0;
         }
 
         /* Footer */
@@ -293,6 +333,11 @@
         .footer-links a {
             color: var(--text-muted);
             text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
         }
 
         .copyright {
@@ -300,7 +345,7 @@
             font-size: 0.9rem;
         }
 
-        /* Responsive Tweaks */
+        /* Responsive */
         @media (max-width: 768px) {
             h1 { font-size: 2.8rem; }
             .hero { padding-top: 60px; }
@@ -319,28 +364,28 @@
         <nav>
             <a href="docs/architecture/system-overview.md">Architecture</a>
             <a href="https://buf.build/pipestreamai/platform" target="_blank">Proto Registry</a>
-            <a href="docs/developer/README.md">Docs</a>
+            <a href="/docs/">Documentation</a>
             <a href="https://github.com/ai-pipestream" target="_blank">GitHub</a>
         </nav>
     </header>
 
     <main>
         <section class="hero">
-            <h1>The Document Processing Mesh <br>for Serious Data Engineering</h1>
+            <h1>The Document Service Mesh <br>for Serious Data Engineering</h1>
             <p class="lead">
                 Stop building fragile Python script chains. Pipestream is a high-performance orchestration engine 
-                that combines <strong>gRPC real-time processing</strong> with <strong>Kafka-based durability</strong>. 
+                that combines <strong>gRPC real-time latency</strong> with <strong>Kafka-based durability</strong>. 
                 Type-safe, polyglot, and schema-first.
             </p>
             
             <div class="cta-group">
-                <a href="docs/architecture/system-overview.md" class="btn btn-primary">Read the Architecture</a>
+                <a href="docs/architecture/system-overview.md" class="btn btn-primary">Read the Whitepaper</a>
                 <a href="https://github.com/ai-pipestream" class="btn btn-secondary">View on GitHub</a>
             </div>
 
             <div class="tech-stack">
                 <span class="badge">⚡ Quarkus Engine</span>
-                <span class="badge">📨 Kafka Streams</span>
+                <span class="badge">📨 Kafka "Save Game"</span>
                 <span class="badge">🚀 gRPC Mesh</span>
                 <span class="badge">🛡️ Protobuf / Buf</span>
                 <span class="badge">📦 S3 Claim-Check</span>
@@ -348,25 +393,44 @@
             </div>
         </section>
 
-        <section class="section-container">
+        <section class="section-container" id="features">
             <div class="features-grid">
                 <div class="feature-card">
-                    <h3>⚡ Dual-Mode Transport</h3>
-                    <p>Why choose between speed and scale? Pipestream routes high-priority UI requests via <strong>gRPC</strong> (milliseconds) and bulk ingestion via <strong>Kafka</strong> (terabytes). The engine handles the switching dynamically.</p>
+                    <span class="feature-icon">🎮</span>
+                    <h3>Kafka = "Save Game"</h3>
+                    <p>We treat Kafka as a checkpoint system. Pause, rewind, and replay your pipeline from any node. Perfect for DLQ handling or re-running expensive LLM steps without hitting the API again.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>🌐 Polyglot Service Mesh</h3>
-                    <p>Write LLM logic in Python. Write parsers in Rust or Java. Connect them seamlessly. Modules are "dumb" gRPC endpoints; the Engine handles the complex orchestration, retries, and state.</p>
+                    <span class="feature-icon">🕸️</span>
+                    <h3>Visual DAG Builder</h3>
+                    <p>Design pipelines with a drag-and-drop graph editor. Connect nodes via <strong>Kafka</strong> (async) or <strong>gRPC</strong> (sync). The engine validates cycles and allows multiple pipelines per client.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>🛡️ Schema-First Governance</h3>
-                    <p>Prevent data corruption. We use <strong>Protobuf</strong> and <strong>Apicurio Registry</strong> to enforce strict data contracts. The Engine controls the mapping, so a rogue script can never break your Search Index.</p>
+                    <span class="feature-icon">🔐</span>
+                    <h3>BYOK Encryption</h3>
+                    <p>Security is baked in. Data stored in the S3 "Claim Check" layer can be encrypted with your own keys (BYOK). We handle the secure envelope; you hold the keys.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <h3>Dual-Mode Transport</h3>
+                    <p>Why choose? Route high-priority UI requests via gRPC (milliseconds) and bulk ingestion via Kafka (terabytes). The engine handles the switching dynamically.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🌐</span>
+                    <h3>Polyglot Service Mesh</h3>
+                    <p>Write LLM logic in Python. Write parsers in Rust. Connect them seamlessly in a Consul-backed service mesh. Modules are "dumb" endpoints; the Engine is the smart router.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🛡️</span>
+                    <h3>Schema-First Governance</h3>
+                    <p>Prevent data corruption with strict Apicurio & Protobuf contracts. The Engine controls mapping, so a rogue script can never break your Search Index.</p>
                 </div>
             </div>
         </section>
 
         <section class="section-container">
-            <h2 style="text-align: center; color: white; margin-bottom: 40px; font-size: 2.2rem;">Pipestream vs. The World</h2>
+            <h2 class="section-title">Pipestream vs. The World</h2>
+            <p class="section-subtitle">Existing tools are either too simple (libraries) or too heavy (ETL tools). Pipestream fills the gap.</p>
             <div class="comparison-table-wrapper">
                 <table>
                     <thead>
@@ -382,7 +446,7 @@
                         <tr>
                             <td><strong>Primary Goal</strong></td>
                             <td class="highlight-col">Document Business Logic</td>
-                            <td>Prototyping / RAG Scripts</td>
+                            <td>Prototyping / RAG</td>
                             <td>Moving Raw Bits (ETL)</td>
                             <td>Log Aggregation</td>
                         </tr>
@@ -397,7 +461,7 @@
                             <td><strong>Transport</strong></td>
                             <td class="highlight-col">Hybrid (gRPC + Kafka)</td>
                             <td>In-Memory / HTTP</td>
-                            <td>Disk-based / Proprietary</td>
+                            <td>Disk-based</td>
                             <td>Memory Buffer</td>
                         </tr>
                         <tr>
@@ -420,25 +484,40 @@
         </section>
 
         <section class="section-container">
-            <h2 style="color: white; margin-bottom: 20px;">How It Works: The Engineering Flow</h2>
-            <p style="color: rgba(255,255,255,0.7); max-width: 700px;">Pipestream separates the control plane from the data plane to handle massive files without clogging your message broker.</p>
+            <h2 class="section-title">The Engineering Flow</h2>
+            <p class="section-subtitle">A DAM for Text + Language-Agnostic Stream Processor.</p>
             
             <div class="steps-grid">
                 <div class="step-card">
                     <h4>1. Ingest & Claim Check</h4>
-                    <p>The Intake Service accepts a document. Large binaries (PDFs) are immediately offloaded to S3 (Repo Service). Only the lightweight <strong>PipeDoc</strong> metadata enters the stream.</p>
+                    <p>Intake Service accepts documents via gRPC. Large binaries (PDFs/Videos) are immediately offloaded to encrypted S3 storage. Only the lightweight <strong>PipeDoc</strong> metadata enters the stream.</p>
                 </div>
                 <div class="step-card">
                     <h4>2. The Engine Router</h4>
-                    <p>The Engine receives the PipeDoc. Based on priority, it routes via gRPC to the next Node, or pushes a pointer to the <strong>pipeline-work-v1</strong> Kafka topic if the node is busy.</p>
+                    <p>The Engine acts as the "DNS" for your data. It checks the DAG, detects cycles, and routes to the next Node via gRPC (fast) or Kafka (durable save-point).</p>
                 </div>
                 <div class="step-card">
                     <h4>3. Polyglot Processing</h4>
-                    <p>Your Python <strong>Summarizer Module</strong> receives a typed Request. It pulls text, runs the LLM, and returns the result. It never touches S3 or Kafka directly.</p>
+                    <p>Your Python <strong>Summarizer Module</strong> receives a typed Request. It processes data and returns it. It knows nothing about the mesh, retries, or storage.</p>
                 </div>
                 <div class="step-card">
                     <h4>4. Strict Indexing</h4>
-                    <p>The Engine takes the result, applies strict schema mapping (so "summary" goes to "metadata.description"), and indexes it into OpenSearch safely.</p>
+                    <p>The Engine maps the result to the <strong>OpenSearch</strong> schema. Decryption happens only at the last mile for indexing, ensuring security in transit.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-container">
+            <h2 class="section-title">The "Data Commons" Vision</h2>
+            <p class="section-subtitle">Future versions will allow meshes to cluster together.</p>
+            <div class="features-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="feature-card">
+                    <h3>🌍 Subscribe to the World</h3>
+                    <p>We are building standardized, pre-indexed subscriptions for <strong>Wikipedia, Gutenberg, Census, and IRS data</strong>. Connect your mesh to the public Pipestream cluster and ingest curated datasets instantly.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🤝 Mesh Clustering</h3>
+                    <p>Pipestream instances will be able to join via Consul to form larger processing clusters. Share load, share datasets, and process the world's information together.</p>
                 </div>
             </div>
         </section>
@@ -447,7 +526,7 @@
     <footer>
         <div class="footer-links">
             <a href="https://github.com/ai-pipestream">GitHub Organization</a>
-            <a href="docs/developer/README.md">Documentation</a>
+            <a href="/docs/">Documentation</a>
             <a href="https://github.com/ai-pipestream/.github/issues">Support</a>
         </div>
         <div class="copyright">
