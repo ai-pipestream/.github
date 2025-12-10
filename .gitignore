@@ -15,6 +15,12 @@ Thumbs.db
 *~
 .project
 
+*.iml
+.idea
+*.ipr
+*.iws
+
+
 # Build artifacts (if any)
 dist/
 build/
