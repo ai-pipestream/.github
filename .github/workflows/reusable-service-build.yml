@@ -17,6 +17,11 @@ on:
         required: false
         default: 'linux/amd64,linux/arm64'
         type: string
+      dockerfile-path:
+        description: 'Path to Dockerfile (e.g., src/main/docker/Dockerfile.jvm)'
+        required: false
+        default: 'src/main/docker/Dockerfile.jvm'
+        type: string
     secrets:
       BUF_TOKEN:
         required: true
@@ -199,7 +204,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: src/main/docker/Dockerfile.jvm
+          file: ${{ inputs.dockerfile-path }}
           platforms: ${{ inputs.docker-platforms }}
           push: true
           sbom: true

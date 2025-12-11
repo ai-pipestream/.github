@@ -29,6 +29,11 @@ on:
         required: false
         default: 'linux/amd64,linux/arm64'
         type: string
+      dockerfile-path:
+        description: 'Path to Dockerfile (e.g., src/main/docker/Dockerfile.jvm)'
+        required: false
+        default: 'src/main/docker/Dockerfile.jvm'
+        type: string
     secrets:
       BUF_TOKEN:
         required: true
@@ -300,31 +305,29 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push multi-arch Docker image
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Build application
         env:
           GRADLE_OPTS: -Xmx2048m -XX:MaxMetaspaceSize=512m
-        run: |
-          ./gradlew clean build -x test \
-            -Dquarkus.container-image.build=true \
-            -Dquarkus.container-image.push=true \
-            -Dquarkus.container-image.registry=ghcr.io \
-            -Dquarkus.container-image.group=${{ github.repository_owner }} \
-            -Dquarkus.container-image.name=${{ inputs.docker-image-name }} \
-            -Dquarkus.container-image.tag=${{ needs.release.outputs.version }} \
-            -Dquarkus.container-image.additional-tags=latest \
-            --no-daemon
+        run: ./gradlew clean build -x test --no-daemon
 
-      - name: Trigger Docker Hub publish
-        if: success()
-        continue-on-error: true
-        uses: peter-evans/repository-dispatch@v3
+      - name: Build and push multi-arch Docker image to GHCR and Docker Hub
+        # Push to both registries in a single build to avoid copy issues
+        uses: docker/build-push-action@v6
         with:
-          token: ${{ secrets.DISPATCH_TOKEN }}
-          repository: ${{ github.repository }}
-          event-type: dockerhub-publish
-          client-payload: |
-            {
-              "base_image": "ghcr.io/${{ github.repository_owner }}/${{ inputs.docker-image-name }}",
-              "dockerhub_repo": "pipestreamai/${{ inputs.docker-image-name }}",
-              "tags": "${{ needs.release.outputs.version }} latest"
-            }
+          context: .
+          file: ${{ inputs.dockerfile-path }}
+          platforms: ${{ inputs.docker-platforms }}
+          push: true
+          sbom: true
+          provenance: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/${{ inputs.docker-image-name }}:${{ needs.release.outputs.version }}
+            ghcr.io/${{ github.repository_owner }}/${{ inputs.docker-image-name }}:latest
+            docker.io/pipestreamai/${{ inputs.docker-image-name }}:${{ needs.release.outputs.version }}
+            docker.io/pipestreamai/${{ inputs.docker-image-name }}:latest
