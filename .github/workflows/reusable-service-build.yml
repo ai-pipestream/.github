@@ -63,8 +63,8 @@ jobs:
           token: ${{ secrets.BUF_TOKEN }}
           setup_only: true
 
-      - name: Clear Gradle build cache
-        run: rm -rf ~/.gradle/caches/build-cache-* ~/.gradle/caches/transforms-* ~/.gradle/caches/jars-*
+      - name: Clear entire Gradle cache
+        run: rm -rf ~/.gradle/caches/
 
       - name: Build and test with Gradle
         env:
