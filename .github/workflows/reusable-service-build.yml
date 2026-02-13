@@ -63,12 +63,15 @@ jobs:
           token: ${{ secrets.BUF_TOKEN }}
           setup_only: true
 
+      - name: Clear Gradle build cache
+        run: rm -rf ~/.gradle/caches/build-cache-* ~/.gradle/caches/transforms-* ~/.gradle/caches/jars-*
+
       - name: Build and test with Gradle
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GRADLE_OPTS: -Xmx2048m -XX:MaxMetaspaceSize=512m --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
-        run: ./gradlew clean build test --no-daemon --refresh-dependencies
+        run: ./gradlew clean build test --no-daemon --no-build-cache --refresh-dependencies
 
       - name: Publish Test Report
         uses: dorny/test-reporter@v2
