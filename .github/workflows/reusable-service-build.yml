@@ -67,7 +67,7 @@ jobs:
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GRADLE_OPTS: -Xmx2048m -XX:MaxMetaspaceSize=512m
+          GRADLE_OPTS: -Xmx2048m -XX:MaxMetaspaceSize=512m --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
         run: ./gradlew clean build test --no-daemon --refresh-dependencies
 
       - name: Publish Test Report
@@ -127,14 +127,14 @@ jobs:
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-          GRADLE_OPTS: -Xmx2048m -XX:MaxMetaspaceSize=512m
+          GRADLE_OPTS: -Xmx2048m -XX:MaxMetaspaceSize=512m --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
         run: ./gradlew publishAllPublicationsToCentralPortalSnapshots --no-daemon --stacktrace
 
       - name: Publish snapshots to GitHub Packages
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GRADLE_OPTS: -Xmx2048m -XX:MaxMetaspaceSize=512m
+          GRADLE_OPTS: -Xmx2048m -XX:MaxMetaspaceSize=512m --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
         run: ./gradlew publish -PskipCentral=true --no-daemon --stacktrace
 
   docker-snapshot:
@@ -180,7 +180,7 @@ jobs:
 
       - name: Build application (Skip tests)
         env:
-          GRADLE_OPTS: -Xmx2048m -XX:MaxMetaspaceSize=512m
+          GRADLE_OPTS: -Xmx2048m -XX:MaxMetaspaceSize=512m --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
         run: ./gradlew clean build -x test --no-daemon
 
       - name: Build and push multi-arch snapshot Docker image
