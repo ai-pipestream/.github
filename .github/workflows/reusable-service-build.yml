@@ -63,22 +63,12 @@ jobs:
           token: ${{ secrets.BUF_TOKEN }}
           setup_only: true
 
-      - name: Clear entire Gradle cache
-        run: rm -rf ~/.gradle/caches/
-
-      - name: Debug dependency versions
-        env:
-          GRADLE_OPTS: -Xmx2048m -XX:MaxMetaspaceSize=512m --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
-        run: |
-          ./gradlew dependencies --configuration runtimeClasspath --no-daemon 2>&1 | grep -E "smallrye-openapi|quarkus-bom" || true
-          ./gradlew buildEnvironment --no-daemon 2>&1 | grep -E "quarkus" | head -5 || true
-
       - name: Build and test with Gradle
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GRADLE_OPTS: -Xmx2048m -XX:MaxMetaspaceSize=512m --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
-        run: ./gradlew clean build test --no-daemon --no-build-cache --refresh-dependencies
+        run: ./gradlew clean build test --no-daemon
 
       - name: Publish Test Report
         uses: dorny/test-reporter@v2
