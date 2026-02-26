@@ -16,6 +16,7 @@
    - 4.2 [Claim-Check Pattern and Document Hydration](#42-claim-check-pattern-and-document-hydration)
    - 4.3 [DAG Nodes, Edges, and CEL Routing](#43-dag-nodes-edges-and-cel-routing)
    - 4.4 [Frontend Application](#44-frontend-application)
+   - 4.5 [Automatic Embedding Management](#45-automatic-embedding-management)
 5. [Architectural Pillars](#5-architectural-pillars)
    - 5.1 [Security and Compliance](#51-security-and-compliance)
    - 5.2 [Resilience and Reliability](#52-resilience-and-reliability)
@@ -1017,6 +1018,103 @@ REPO,Repository Service,Document storage,rectangle,#438DD5,#3C7FC0,,
 OSMGR,OpenSearch Manager,Index management,rectangle,#438DD5,#3C7FC0,,
 MATOMO,Matomo,Search usage analytics,rectangle,#E8E8E8,#CCCCCC,,
 ```
+
+---
+
+### 4.5 Automatic Embedding Management
+
+The platform provides fully automatic embedding lifecycle management — from raw text chunks through vectorization to k-NN-indexed OpenSearch documents. No manual index creation, dimension configuration, or schema definition is required. The chain of five services collaborates to ensure that when a new embedding model is introduced or an existing pipeline is reconfigured, the downstream storage layer self-provisions.
+
+#### 4.5.1 The Embedding Chain
+
+The embedding lifecycle flows through five services in sequence:
+
+```
+┌──────────┐    ┌──────────┐    ┌─────────────────┐    ┌──────────────────┐    ┌────────────┐
+│  Chunker │───▶│ Embedder │───▶│ OpenSearch Sink  │───▶│ OpenSearch Mgr   │───▶│ OpenSearch │
+│          │    │          │    │                  │    │                  │    │  (Index)   │
+│ text →   │    │ text →   │    │ dedup + convert  │    │ resolve dims +   │    │            │
+│ chunks   │    │ vectors  │    │ ensure schema    │    │ create k-NN idx  │    │ bulk write │
+└──────────┘    └──────────┘    └─────────────────┘    └──────────────────┘    └────────────┘
+```
+
+**Step 1 — Chunker produces text-only chunks.**
+`ChunkerGrpcImpl` receives a `PipeDoc` with parsed body text. `OverlapChunker` splits the text using one of three algorithms — token-based (OpenNLP tokenizer), sentence-based (OpenNLP sentence detector), or character-based — with configurable chunk size and overlap. Each chunk receives a deterministic ID (`{pipeStepName}-{shortDocId}-{sequence}`). The chunker appends a `SemanticProcessingResult` to `PipeDoc.search_metadata.semantic_results[]` containing `SemanticChunk` entries. Each chunk's `ChunkEmbedding` carries `text_content` but the `vector` field is **empty** — the chunker never touches embeddings.
+
+**Step 2 — Embedder attaches float vectors.**
+`EmbedderGrpcImpl` iterates over the `SemanticProcessingResult` entries produced by the chunker. It collects all chunk `text_content` strings into a batch and calls `DjlServingVectorizer.batchEmbeddings()`, which POSTs to the DJL Serving endpoint (`/predictions/{modelName}`) with the full batch. DJL returns one `float[]` per chunk. The embedder writes each vector into the corresponding `ChunkEmbedding.vector` field in-place and stamps the `SemanticProcessingResult` with `embedding_config_id` (the model identifier, e.g., `all-MiniLM-L6-v2`) and updates `result_set_name` to `{pipeStepName}_embeddings_{modelId}`. The embedder is purely additive — it reads what the chunker wrote and populates the vector slots.
+
+**Step 3 — OpenSearch Sink extracts, deduplicates, and ensures schema.**
+`OpenSearchIngestionServiceImpl` receives the fully vectorized `PipeDoc`. Processing proceeds in two parallel concerns:
+
+- **Schema management.** `SchemaManagerService` derives the target index name (`pipeline-{documentType}`) and calls `ensureIndexExists()`. This first attempts a gRPC call to the OpenSearch Manager service (`ensureNestedEmbeddingsFieldExists`). If the manager is unreachable, a local fallback derives the vector dimension directly from the document — by reading `vector.size()` from the first non-empty chunk — and creates the index locally with a hardcoded nested schema.
+
+- **Document conversion.** `DocumentConverterService.extractAllEmbeddings()` iterates all `SemanticProcessingResult` entries, and for each `SemanticChunk` with a non-empty vector, produces an `OpenSearchEmbedding` record containing `vector`, `source_text`, `chunk_config_id`, `embedding_id`, and `is_primary`. Deduplication uses a composite key of `chunkConfigId|embeddingId|sourceText.hashCode()` to prevent double-indexing when multiple semantic result sets share overlapping chunks. The embeddings are nested under the `"embeddings"` field in the final `OpenSearchDocument`.
+
+**Step 4 — OpenSearch Manager resolves dimensions and creates k-NN indices.**
+When the sink calls `ensureNestedEmbeddingsFieldExists`, `OpenSearchManagerService` delegates dimension resolution to `EmbeddingBindingResolver`. The resolver queries a PostgreSQL table (`index_embedding_binding`) that maps `(index_name, field_name)` to an `EmbeddingModelConfig` record carrying the model's output `dimensions`. This is the authoritative dimension source — it decouples index creation from the live document payload.
+
+If a binding exists, `OpenSearchSchemaServiceImpl.createIndexWithNestedMapping()` constructs the index with:
+- A `nested` field `"embeddings"` containing:
+  - `vector` — `knn_vector` with `dimension=N`, method `hnsw`, engine `lucene`, space type `cosinesimil`
+  - `source_text` — full-text searchable
+  - `context_text` — full-text searchable
+  - `chunk_config_id` — keyword (identifies the chunking strategy)
+  - `embedding_id` — keyword (identifies the embedding model)
+  - `is_primary` — boolean (marks title/summary embeddings for boosting)
+- Index-level setting `knn: true`
+- HNSW parameters (`m`, `ef_construction`, `ef_search`) configurable via the `VectorFieldDefinition`
+
+Index creation uses retry logic (up to 6 attempts with exponential backoff) to handle transient OpenSearch unavailability.
+
+**Step 5 — Bulk indexing to OpenSearch.**
+After schema is ensured, the sink's `OpenSearchRepository` executes a bulk index operation via gRPC, writing the `OpenSearchDocument` (with its nested embeddings array) into the target index.
+
+#### 4.5.2 Dimension Resolution Hierarchy
+
+The platform resolves vector dimensions through a three-level fallback hierarchy:
+
+| Priority | Source | Mechanism |
+|----------|--------|-----------|
+| 1 (highest) | Explicit request | `VectorFieldDefinition` passed in the gRPC `EnsureNestedEmbeddingsFieldExistsRequest` |
+| 2 | Database binding | `EmbeddingBindingResolver` → `IndexEmbeddingBinding` JOIN `EmbeddingModelConfig.dimensions` |
+| 3 (fallback) | Live document | `SchemaManagerService.deriveDimensionFromDocument()` reads `vector.size()` from first non-empty chunk |
+
+This hierarchy ensures that indices can be pre-provisioned (priority 1-2) for known models, while still supporting zero-configuration onboarding when a new model is introduced and no binding exists yet.
+
+#### 4.5.3 Combinatorial Interaction with Fan-Out
+
+When a pipeline fans out to N chunkers × M embedding models, each combination produces a distinct `SemanticProcessingResult` with its own `chunk_config_id` and `embedding_config_id`. The sink's deduplication logic preserves all N×M result sets as separate `OpenSearchEmbedding` entries within the same document's nested `"embeddings"` array. This means a single indexed document can carry embeddings from multiple strategies simultaneously — enabling query-time selection of which embedding space to search.
+
+For example, with 2 chunkers (sentence, token) and 3 models (MiniLM-L6, BGE-large, domain-tuned):
+
+```
+Document "report-2024.pdf"
+└── embeddings[] (nested array)
+    ├── {chunk_config_id: "sentence-chunker", embedding_id: "all-MiniLM-L6-v2",   vector: [384 dims], ...}
+    ├── {chunk_config_id: "sentence-chunker", embedding_id: "bge-large-en-v1.5",   vector: [1024 dims], ...}
+    ├── {chunk_config_id: "sentence-chunker", embedding_id: "domain-finance-v1",    vector: [768 dims], ...}
+    ├── {chunk_config_id: "token-chunker",    embedding_id: "all-MiniLM-L6-v2",   vector: [384 dims], ...}
+    ├── {chunk_config_id: "token-chunker",    embedding_id: "bge-large-en-v1.5",   vector: [1024 dims], ...}
+    └── {chunk_config_id: "token-chunker",    embedding_id: "domain-finance-v1",    vector: [768 dims], ...}
+```
+
+At query time, the search service filters on `embedding_id` and `chunk_config_id` within the nested query to target a specific strategy.
+
+#### 4.5.4 Repository as Archival Store
+
+The Repository Service (`DocumentStorageService`) stores the complete `PipeDoc` — including all `SemanticProcessingResult` entries with their populated `float[]` vectors — as serialized Protobuf bytes in S3. The S3 key is deterministic: `{prefix}/{drive}/{accountId}/{connectorId}/{datasourceId}/{docId}/{clusterId}/{nodeId}.pb`. A corresponding `PipeDocRecord` in Aurora PostgreSQL stores the metadata pointer (node ID, S3 key, size, checksum) but never the embedding data itself.
+
+This design means the repository acts as a full-fidelity archival store. If an index is lost or a new embedding model is added, documents can be rehydrated from S3 and reprocessed through the embedder and sink without re-parsing or re-crawling the source system.
+
+#### 4.5.5 draw.io Reference
+
+The internal component diagrams for each service in this chain are provided in `ARCHITECTURE_SERVICE_COMPONENTS.drawio`:
+- **Page 4** — Chunker internals (OverlapChunker, strategy router, chunk ID generation)
+- **Page 5** — Embedder internals (DjlServingVectorizer, batch API, vector attachment)
+- **Page 6** — OpenSearch Sink internals (DocumentConverterService, SchemaManagerService, dedup logic)
+- **Page 7** — OpenSearch Manager internals (EmbeddingBindingResolver, KnnVectorProperty, HNSW config)
+- **Page 8** — End-to-end Embedding Management Chain (all services in sequence)
 
 ---
 
