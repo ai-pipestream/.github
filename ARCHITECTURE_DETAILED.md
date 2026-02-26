@@ -53,6 +53,9 @@ The platform integrates with external metadata governance systems at the intake 
 **Polyglot Module Ecosystem.**
 All inter-service communication uses gRPC with Protobuf contracts published to Apicurio Registry. Processing modules can be implemented in any language — Java, Python, Go, Rust — as long as they conform to the `ModuleProcessRequest`/`ModuleProcessResponse` contract. The proxy-module pattern provides a sidecar that inherits the platform's control plane (health checks, registration, configuration injection, tracing) so that a bare processing function can be wrapped and deployed without platform-specific code.
 
+**AI Summarization via AWS Bedrock.**
+The platform includes a summarizer module that follows the same proxy pattern as the embedder. The summarizer node calls AWS Bedrock foundation models within the organization's AWS account to generate document summaries, key-phrase extractions, and classification labels. Like all modules, it is a DAG node — it can be placed anywhere in the pipeline, conditioned by CEL expressions, and its output is decorated onto the document's metadata for downstream consumption by sinks or further processing steps.
+
 **Multiple Sink Targets.**
 OpenSearch is one output option, not the only one. The platform's sink abstraction allows any number of output destinations: search indices, data warehouses, notification systems, or human-in-the-loop review queues. Each sink is a module node in the DAG and can receive the same document independently.
 
@@ -266,7 +269,7 @@ NEXT_KAFKA,Dispatch (Kafka),"Dehydrate + publish to topic (durable, cross-cluste
 
 ## 3. Target State Architecture
 
-All diagrams below use C4 modeling conventions and are provided in **draw.io CSV import format**. To import: open draw.io → Arrange → Insert → Advanced → CSV.
+All diagrams below are described inline with CSV notation for quick reference. Full **draw.io XML** versions of all diagrams are available in the companion file [`ARCHITECTURE_DIAGRAMS.drawio`](ARCHITECTURE_DIAGRAMS.drawio) — open directly in draw.io or import via File → Open.
 
 ### 3.1 System Context Diagram (C4 Level 1)
 
@@ -326,6 +329,8 @@ CHUNKER,Module: Chunker,"module-chunker [Fargate]",rectangle,#085B1D,#064516,,Te
 EMBEDDER,Module: Embedder,"DJL Serving proxy [EC2 GPU]",rectangle,#085B1D,#064516,,Vector embedding
 DJL,DJL Serving,"ML inference server [EC2 GPU + ASG]",rectangle,#999999,#666666,,Model serving
 DOCLING,Docling Serve,"ML document parsing [EC2 GPU + ASG]",rectangle,#999999,#666666,,PDF/image parsing
+SUMMARIZER,Module: Summarizer,"Bedrock proxy [Fargate]",rectangle,#085B1D,#064516,BEDROCK,Summarization + classification
+BEDROCK,AWS Bedrock,Foundation model inference (in-account),rectangle,#FF8C00,#CC7000,,
 OS_SINK,Module: OS Sink,"module-opensearch-sink [Fargate]",rectangle,#085B1D,#064516,OS_MGR,Index documents
 OS_MGR,OpenSearch Manager,"opensearch-manager [Fargate]",rectangle,#438DD5,#3C7FC0,OPENSEARCH,Index + mapping management
 SEARCH_PROXY,Search Proxy,"ACL-enforcing query proxy [Fargate]",rectangle,#438DD5,#3C7FC0,OPENSEARCH,ACL-filtered queries
@@ -469,7 +474,7 @@ TRACING,OpenTelemetry,Distributed trace propagation,rectangle,#E8E8E8,#CCCCCC,,
 # layout: horizontalflow
 ## ---
 id,name,desc,shape,fill,stroke,refs,label
-ENGINE,Engine,Calls modules via gRPC,rectangle,#438DD5,#3C7FC0,"PARSER_SVC;CHUNKER_SVC;EMBED_SVC;SINK_SVC;PROXY_SVC",ModuleProcessRequest
+ENGINE,Engine,Calls modules via gRPC,rectangle,#438DD5,#3C7FC0,"PARSER_SVC;CHUNKER_SVC;EMBED_SVC;SUMM_SVC;SINK_SVC;PROXY_SVC",ModuleProcessRequest
 PARSER_SVC,Parser Service,"gRPC service [EC2 GPU / Fargate]",rectangle,#085B1D,#064516,"TIKA;DOCLING_INT",Routes by format
 TIKA,Apache Tika 3.2,100+ formats / 1330+ metadata fields,rectangle,#085B1D,#064516,META_BUILD,Parses document
 DOCLING_INT,Docling Integration,ML-based PDF/image parsing,rectangle,#085B1D,#064516,DOCLING_SRV,gRPC to Docling
@@ -482,6 +487,8 @@ DJL_SRV,DJL Serving,"ML model inference [EC2 GPU + ASG, SSL at ALB]",rectangle,#
 SINK_SVC,OpenSearch Sink,gRPC service [Fargate],rectangle,#085B1D,#064516,OS_MGR,Indexes documents
 OS_MGR,OpenSearch Manager,Index + field mapping management,rectangle,#438DD5,#3C7FC0,OPENSEARCH,Bulk index
 OPENSEARCH,AWS OpenSearch,"Managed cluster (7 shards, 3 replicas)",cylinder,#FF8C00,#CC7000,,
+SUMM_SVC,Summarizer Service,gRPC proxy [Fargate],rectangle,#085B1D,#064516,BEDROCK,Proxies to Bedrock
+BEDROCK,AWS Bedrock,Foundation model inference (in-account),rectangle,#FF8C00,#CC7000,,
 PROXY_SVC,Proxy Module,Sidecar wrapper for custom modules,rectangle,#085B1D,#064516,CUSTOM_MOD,Inherits platform controls
 CUSTOM_MOD,Custom Module,"Any language (Python, Go, Rust, ...)",rectangle,#999999,#666666,,
 APICURIO,Apicurio Registry,Module config schemas (JSON Forms),rectangle,#438DD5,#3C7FC0,,
@@ -1304,3 +1311,42 @@ The `PipelineConfigService` gRPC API supports full pipeline lifecycle:
 | S3 | Storage + requests | Lifecycle policies; blob dehydration; efficient hydration patterns |
 | OpenSearch | Instance hours + storage | Hot-warm tiering; index lifecycle management; shard count tuned to data volume |
 | Data transfer | Cross-AZ + internet egress | Same-AZ preference; claim-check pattern; gRPC fast-path |
+| AWS Bedrock | Per-token inference cost | Batch summarization; model selection by cost/quality tradeoff; cache summaries to avoid re-inference |
+
+---
+
+## Appendix A: Future Roadmap
+
+The following capabilities are planned for future releases and are not part of the current target state.
+
+### A.1 MCP Server Integration for LLM-Driven Pipeline Design
+
+Each platform service and processing module will expose an **MCP (Model Context Protocol) server** interface. This will allow large language models to interact directly with the platform's control plane:
+
+- **Pipeline drafting** — an LLM (via Claude, GPT, or other MCP-capable agents) can query available modules, their configuration schemas, and registered connectors, then generate a draft `PipelineGraph` protobuf that represents a complete DAG. The administrator reviews and deploys the draft through the existing DAG editor.
+- **Module discovery** — the LLM can call MCP tools to list registered modules, inspect their JSON config schemas, read health status, and understand capabilities — enabling conversational pipeline construction ("I have 50,000 PDFs in S3 that need to be parsed, chunked with 512-token windows, embedded with MiniLM, and indexed for semantic search").
+- **Operational queries** — MCP tools will expose pipeline execution metrics, DLQ status, and processing history, allowing an LLM to diagnose pipeline issues conversationally.
+- **Configuration validation** — the LLM can submit draft graph configurations to the `ValidateDesignGraph` endpoint and iterate on errors before deployment.
+
+**Target MCP services:**
+
+| MCP Server | Exposed Capabilities |
+|------------|---------------------|
+| Platform Registration | List services, modules, health status, schemas |
+| Pipeline Config | CRUD on pipeline graphs; validate; simulate |
+| Connector Admin | List connectors, datasources, configuration schemas |
+| Account Service | Account listing and status |
+| Module Services | Per-module configuration examples, schema introspection |
+| Engine Metrics | Processing throughput, error rates, DLQ depth |
+
+### A.2 Additional Planned Capabilities
+
+| Capability | Description |
+|------------|-------------|
+| **Redis caching layer** | In-memory cache for hydrated document metadata, graph lookups, and module response deduplication — introduced when profiling identifies cache-worthy hot paths |
+| **Streaming module protocol** | Bidirectional gRPC streaming for modules that produce incremental output (e.g., LLM token streaming for summarization) |
+| **Multi-region deployment** | Active-passive with S3 cross-region replication and MSK MirrorMaker 2 for Kafka topic sync |
+| **Custom connector SDK** | Published SDK and templates for building Kafka-Connect compatible connectors in any language |
+| **Advanced semantic chunking** | ML-based semantic boundary detection using transformer models for context-preserving chunk splits |
+| **Pipeline versioning and rollback UI** | Visual diff between pipeline graph versions with one-click rollback from the admin UI |
+| **Cost attribution per tenant** | Per-account metering of compute, storage, and inference costs for internal chargeback |
