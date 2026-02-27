@@ -1,0 +1,1570 @@
+<mxfile host="app.diagrams.net" agent="Architecture Export" version="24.0.0">
+<diagram id="c4-l1-system-context" name="Page 1 - System Context (C4 L1)">
+  <mxGraphModel dx="2800" dy="2000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1600" math="0" shadow="0">
+    <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+
+      <!-- Title -->
+      <mxCell id="title-1" value="&lt;b&gt;System Context Diagram [C4 Level 1]&lt;/b&gt;&lt;br/&gt;Shows the overall system and its interactions with users and external systems" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" vertex="1" parent="1">
+        <mxGeometry x="700" y="20" width="600" height="50" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ PEOPLE ============ -->
+
+      <!-- End Users -->
+      <mxCell id="person-enduser" value="&lt;b&gt;&amp;laquo;Person&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;End User&lt;/b&gt;&lt;br/&gt;[Researcher / Analyst]&lt;br/&gt;&lt;br/&gt;Searches documents, views&lt;br/&gt;results, and explores&lt;br/&gt;enriched content" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#08427b;fontColor=#ffffff;strokeColor=#073B6F;fontSize=12;verticalAlign=middle;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+        <mxGeometry x="350" y="150" width="220" height="180" as="geometry"/>
+      </mxCell>
+
+      <!-- Administrators -->
+      <mxCell id="person-admin" value="&lt;b&gt;&amp;laquo;Person&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Administrator&lt;/b&gt;&lt;br/&gt;[Platform Operator]&lt;br/&gt;&lt;br/&gt;Configures connectors,&lt;br/&gt;manages accounts, and&lt;br/&gt;monitors pipeline health" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#08427b;fontColor=#ffffff;strokeColor=#073B6F;fontSize=12;verticalAlign=middle;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+        <mxGeometry x="1430" y="150" width="220" height="180" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ SYSTEM UNDER DESIGN ============ -->
+
+      <!-- Platform -->
+      <mxCell id="system-platform" value="&lt;b&gt;&amp;laquo;Software System&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;[ORG_NAME] Platform&lt;/b&gt;&lt;br/&gt;[Cloud-Native Document Processing]&lt;br/&gt;&lt;br/&gt;Ingests documents from diverse sources,&lt;br/&gt;processes them through modular AI/NLP&lt;br/&gt;pipelines, and makes enriched content&lt;br/&gt;searchable via OpenSearch." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=13;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="750" y="500" width="500" height="200" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ EXTERNAL SYSTEMS ============ -->
+
+      <!-- External Data Sources -->
+      <mxCell id="ext-datasources" value="&lt;b&gt;&amp;laquo;External System&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;External Data Sources&lt;/b&gt;&lt;br/&gt;[S3 Buckets, APIs, File Shares]&lt;br/&gt;&lt;br/&gt;Provides raw documents&lt;br/&gt;(PDF, DOCX, HTML, etc.)&lt;br/&gt;for ingestion" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;fontColor=#ffffff;strokeColor=#666666;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="50" y="520" width="260" height="160" as="geometry"/>
+      </mxCell>
+
+      <!-- Metadata Governance -->
+      <mxCell id="ext-metadata" value="&lt;b&gt;&amp;laquo;External System&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Metadata Governance&lt;/b&gt;&lt;br/&gt;[Enterprise MDM / Data Catalog]&lt;br/&gt;&lt;br/&gt;Provides and receives governed&lt;br/&gt;metadata and lineage information" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;fontColor=#ffffff;strokeColor=#666666;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="50" y="820" width="260" height="150" as="geometry"/>
+      </mxCell>
+
+      <!-- Okta IdP -->
+      <mxCell id="ext-okta" value="&lt;b&gt;&amp;laquo;External System&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Okta IdP&lt;/b&gt;&lt;br/&gt;[Identity Provider]&lt;br/&gt;&lt;br/&gt;Authenticates users via OIDC&lt;br/&gt;and provides JWT tokens&lt;br/&gt;for authorization" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;fontColor=#ffffff;strokeColor=#666666;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1690" y="420" width="260" height="160" as="geometry"/>
+      </mxCell>
+
+      <!-- Matomo Analytics -->
+      <mxCell id="ext-matomo" value="&lt;b&gt;&amp;laquo;External System&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Matomo Analytics&lt;/b&gt;&lt;br/&gt;[Self-hosted Web Analytics]&lt;br/&gt;&lt;br/&gt;Collects usage telemetry&lt;br/&gt;and user behavior analytics" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;fontColor=#ffffff;strokeColor=#666666;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1690" y="640" width="260" height="150" as="geometry"/>
+      </mxCell>
+
+      <!-- AWS Bedrock -->
+      <mxCell id="ext-bedrock" value="&lt;b&gt;&amp;laquo;External System&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;AWS Bedrock&lt;/b&gt;&lt;br/&gt;[Foundation Models API]&lt;br/&gt;&lt;br/&gt;Provides LLM inference for&lt;br/&gt;summarization and generative&lt;br/&gt;AI capabilities" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF8C00;fontColor=#ffffff;strokeColor=#CC7000;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1690" y="850" width="260" height="160" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ EDGES ============ -->
+
+      <!-- End User -> Platform -->
+      <mxCell id="edge-eu-platform" value="Searches and browses&lt;br/&gt;enriched documents&lt;br/&gt;[HTTPS/REST]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;fontColor=#333333;strokeColor=#08427b;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" source="person-enduser" target="system-platform" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Admin -> Platform -->
+      <mxCell id="edge-admin-platform" value="Configures connectors,&lt;br/&gt;manages pipelines&lt;br/&gt;[HTTPS/REST]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;fontColor=#333333;strokeColor=#08427b;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" source="person-admin" target="system-platform" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Data Sources -> Platform -->
+      <mxCell id="edge-ds-platform" value="Fetches raw documents&lt;br/&gt;[S3 API / HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;fontColor=#333333;strokeColor=#666666;strokeWidth=2;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="ext-datasources" target="system-platform" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Platform -> Metadata Governance -->
+      <mxCell id="edge-platform-meta" value="Publishes metadata&lt;br/&gt;and lineage events&lt;br/&gt;[HTTPS/REST]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;fontColor=#333333;strokeColor=#666666;strokeWidth=2;exitX=0;exitY=0.85;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="system-platform" target="ext-metadata" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Platform -> Okta -->
+      <mxCell id="edge-platform-okta" value="Authenticates users&lt;br/&gt;[OIDC / OAuth 2.0]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;fontColor=#333333;strokeColor=#666666;strokeWidth=2;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="system-platform" target="ext-okta" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Platform -> Matomo -->
+      <mxCell id="edge-platform-matomo" value="Sends usage telemetry&lt;br/&gt;[JavaScript tracker / HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;fontColor=#333333;strokeColor=#666666;strokeWidth=2;exitX=1;exitY=0.65;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="system-platform" target="ext-matomo" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Platform -> Bedrock -->
+      <mxCell id="edge-platform-bedrock" value="Requests LLM inference&lt;br/&gt;[AWS SDK / HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;fontColor=#333333;strokeColor=#CC7000;strokeWidth=2;exitX=1;exitY=0.9;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="system-platform" target="ext-bedrock" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Legend -->
+      <mxCell id="legend-1-border" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#333333;dashed=1;" vertex="1" parent="1">
+        <mxGeometry x="50" y="1080" width="500" height="200" as="geometry"/>
+      </mxCell>
+      <mxCell id="legend-1-title" value="&lt;b&gt;Legend&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=13;" vertex="1" parent="1">
+        <mxGeometry x="60" y="1085" width="70" height="30" as="geometry"/>
+      </mxCell>
+      <mxCell id="legend-1-person" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#08427b;strokeColor=#073B6F;" vertex="1" parent="1">
+        <mxGeometry x="70" y="1120" width="30" height="20" as="geometry"/>
+      </mxCell>
+      <mxCell id="legend-1-person-lbl" value="Person" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="110" y="1115" width="60" height="30" as="geometry"/>
+      </mxCell>
+      <mxCell id="legend-1-system" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;" vertex="1" parent="1">
+        <mxGeometry x="70" y="1155" width="30" height="20" as="geometry"/>
+      </mxCell>
+      <mxCell id="legend-1-system-lbl" value="Software System (under design)" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="110" y="1150" width="200" height="30" as="geometry"/>
+      </mxCell>
+      <mxCell id="legend-1-ext" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#666666;" vertex="1" parent="1">
+        <mxGeometry x="70" y="1190" width="30" height="20" as="geometry"/>
+      </mxCell>
+      <mxCell id="legend-1-ext-lbl" value="External System" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="110" y="1185" width="110" height="30" as="geometry"/>
+      </mxCell>
+      <mxCell id="legend-1-aws" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FF8C00;strokeColor=#CC7000;" vertex="1" parent="1">
+        <mxGeometry x="70" y="1225" width="30" height="20" as="geometry"/>
+      </mxCell>
+      <mxCell id="legend-1-aws-lbl" value="External System (AWS Managed)" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="110" y="1220" width="200" height="30" as="geometry"/>
+      </mxCell>
+
+    </root>
+  </mxGraphModel>
+</diagram>
+<diagram id="c4-l2-container" name="Page 2 - Container Diagram (C4 L2)">
+  <mxGraphModel dx="4000" dy="5200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4000" pageHeight="5000" math="0" shadow="0">
+    <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+
+      <!-- Title -->
+      <mxCell id="title-2" value="&lt;b&gt;Container Diagram [C4 Level 2]&lt;/b&gt;&lt;br/&gt;Shows the containers within the [ORG_NAME] Platform and their interactions" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" vertex="1" parent="1">
+        <mxGeometry x="1200" y="20" width="600" height="50" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ SYSTEM BOUNDARY ============ -->
+      <mxCell id="sys-boundary" value="&lt;b&gt;&amp;laquo;Software System&amp;raquo;&lt;br/&gt;[ORG_NAME] Platform&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#3C7FC0;dashed=1;dashPattern=8 4;strokeWidth=2;fontSize=14;fontColor=#3C7FC0;verticalAlign=top;align=left;spacingLeft=15;spacingTop=10;arcSize=3;" vertex="1" parent="1">
+        <mxGeometry x="200" y="100" width="3600" height="4400" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ INFRASTRUCTURE (top row) ============ -->
+
+      <!-- AWS ALB -->
+      <mxCell id="infra-alb" value="&lt;b&gt;&amp;laquo;Infrastructure&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;AWS ALB&lt;/b&gt;&lt;br/&gt;[TLS termination]&lt;br/&gt;&lt;br/&gt;Routes external HTTPS traffic&lt;br/&gt;to platform services" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8E8E8;fontColor=#333333;strokeColor=#CCCCCC;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1500" y="180" width="250" height="130" as="geometry"/>
+      </mxCell>
+
+      <!-- Consul -->
+      <mxCell id="infra-consul" value="&lt;b&gt;&amp;laquo;Infrastructure&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Consul&lt;/b&gt;&lt;br/&gt;[EC2 ASG, 3-node cluster]&lt;br/&gt;&lt;br/&gt;Service discovery and&lt;br/&gt;health checking" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8E8E8;fontColor=#333333;strokeColor=#CCCCCC;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="2000" y="180" width="250" height="130" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ ROW 1: Ingress + Core Services ============ -->
+
+      <!-- Frontend -->
+      <mxCell id="c-frontend" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Frontend&lt;/b&gt;&lt;br/&gt;[Fargate: Node.js/Express/Vue 3]&lt;br/&gt;&lt;br/&gt;Serves SPA and proxies&lt;br/&gt;API requests to backend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="400" y="420" width="270" height="130" as="geometry"/>
+      </mxCell>
+
+      <!-- S3 Connector -->
+      <mxCell id="c-s3conn" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;S3 Connector&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;Polls S3 buckets for new&lt;br/&gt;objects and emits intake events" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="850" y="420" width="270" height="130" as="geometry"/>
+      </mxCell>
+
+      <!-- Intake Gate -->
+      <mxCell id="c-intake" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Intake Gate&lt;/b&gt;&lt;br/&gt;connector-intake-service&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;Validates, deduplicates, and&lt;br/&gt;routes inbound documents" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1300" y="420" width="270" height="140" as="geometry"/>
+      </mxCell>
+
+      <!-- Account Service -->
+      <mxCell id="c-account" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Account Service&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;Manages user accounts,&lt;br/&gt;tenant isolation, and RBAC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1750" y="420" width="270" height="130" as="geometry"/>
+      </mxCell>
+
+      <!-- Connector Admin -->
+      <mxCell id="c-connadmin" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Connector Admin&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;CRUD for connector configs&lt;br/&gt;and scheduling rules" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="2200" y="420" width="270" height="130" as="geometry"/>
+      </mxCell>
+
+      <!-- Platform Registration -->
+      <mxCell id="c-platreg" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Platform Registration&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;Registers services, modules,&lt;br/&gt;and pipeline definitions" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="2650" y="420" width="270" height="130" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ ROW 2: Repository + Engine + Search ============ -->
+
+      <!-- Repository Service -->
+      <mxCell id="c-repo" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Repository Service&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;Persists document metadata&lt;br/&gt;and binary references (claim-check)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="400" y="700" width="270" height="140" as="geometry"/>
+      </mxCell>
+
+      <!-- Kafka Sidecar -->
+      <mxCell id="c-kafkasc" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Kafka Sidecar&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;Abstracts Kafka producer/consumer&lt;br/&gt;with Protobuf serialization&lt;br/&gt;via Apicurio Registry" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="850" y="700" width="270" height="150" as="geometry"/>
+      </mxCell>
+
+      <!-- PipeStream Engine -->
+      <mxCell id="c-engine" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;PipeStream Engine&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;Orchestrates pipeline DAG&lt;br/&gt;execution and module dispatch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1300" y="700" width="270" height="140" as="geometry"/>
+      </mxCell>
+
+      <!-- Search Proxy -->
+      <mxCell id="c-searchproxy" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Search Proxy&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;Translates search queries and&lt;br/&gt;applies tenant-scoped filters" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1750" y="700" width="270" height="130" as="geometry"/>
+      </mxCell>
+
+      <!-- OpenSearch Manager -->
+      <mxCell id="c-osmgr" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;OpenSearch Manager&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;Manages index lifecycle,&lt;br/&gt;mappings, and templates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="2200" y="700" width="270" height="130" as="geometry"/>
+      </mxCell>
+
+      <!-- Apicurio Registry -->
+      <mxCell id="c-apicurio" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Apicurio Registry v3&lt;/b&gt;&lt;br/&gt;[Fargate]&lt;br/&gt;&lt;br/&gt;Schema registry for Protobuf&lt;br/&gt;message validation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="2650" y="700" width="270" height="130" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ ROW 3: PROCESSING MODULES (green) ============ -->
+
+      <!-- Module: Parser -->
+      <mxCell id="m-parser" value="&lt;b&gt;&amp;laquo;Container: Module&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Parser&lt;/b&gt;&lt;br/&gt;[EC2 GPU / Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;Extracts text, tables, and&lt;br/&gt;structure from documents&lt;br/&gt;via Docling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;fontColor=#ffffff;strokeColor=#064516;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="300" y="1050" width="280" height="150" as="geometry"/>
+      </mxCell>
+
+      <!-- Module: Chunker -->
+      <mxCell id="m-chunker" value="&lt;b&gt;&amp;laquo;Container: Module&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Chunker&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;Splits parsed content into&lt;br/&gt;semantic chunks for embedding" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;fontColor=#ffffff;strokeColor=#064516;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="750" y="1050" width="280" height="140" as="geometry"/>
+      </mxCell>
+
+      <!-- Module: Embedder -->
+      <mxCell id="m-embedder" value="&lt;b&gt;&amp;laquo;Container: Module&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Embedder&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;Generates vector embeddings&lt;br/&gt;via DJL Serving" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;fontColor=#ffffff;strokeColor=#064516;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1200" y="1050" width="280" height="140" as="geometry"/>
+      </mxCell>
+
+      <!-- Module: Summarizer -->
+      <mxCell id="m-summarizer" value="&lt;b&gt;&amp;laquo;Container: Module&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Summarizer&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;Generates summaries via&lt;br/&gt;AWS Bedrock LLMs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;fontColor=#ffffff;strokeColor=#064516;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1650" y="1050" width="280" height="140" as="geometry"/>
+      </mxCell>
+
+      <!-- Module: OpenSearch Sink -->
+      <mxCell id="m-ossink" value="&lt;b&gt;&amp;laquo;Container: Module&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;OpenSearch Sink&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;Indexes enriched documents&lt;br/&gt;into OpenSearch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;fontColor=#ffffff;strokeColor=#064516;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="2100" y="1050" width="280" height="140" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ ROW 4: GPU / ML SERVING ============ -->
+
+      <!-- DJL Serving -->
+      <mxCell id="c-djl" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;DJL Serving&lt;/b&gt;&lt;br/&gt;[EC2 GPU + ASG]&lt;br/&gt;&lt;br/&gt;Serves embedding models&lt;br/&gt;(e.g. BGE, E5) on GPU" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF8C00;fontColor=#ffffff;strokeColor=#CC7000;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1200" y="1350" width="280" height="130" as="geometry"/>
+      </mxCell>
+
+      <!-- Docling Serve -->
+      <mxCell id="c-docling" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Docling Serve&lt;/b&gt;&lt;br/&gt;[EC2 GPU + ASG]&lt;br/&gt;&lt;br/&gt;Document parsing service&lt;br/&gt;(IBM Docling) on GPU" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF8C00;fontColor=#ffffff;strokeColor=#CC7000;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="300" y="1350" width="280" height="130" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ ROW 5: DATA STORES (orange cylinders) ============ -->
+
+      <!-- AWS MSK -->
+      <mxCell id="ds-msk" value="&lt;b&gt;&amp;laquo;Container: Message Broker&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;AWS MSK&lt;/b&gt;&lt;br/&gt;[6 brokers, RF=2]&lt;br/&gt;&lt;br/&gt;Event backbone for all&lt;br/&gt;inter-module messaging" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FF8C00;fontColor=#ffffff;strokeColor=#CC7000;fontSize=11;verticalAlign=middle;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+        <mxGeometry x="870" y="1620" width="240" height="160" as="geometry"/>
+      </mxCell>
+
+      <!-- AWS S3 -->
+      <mxCell id="ds-s3" value="&lt;b&gt;&amp;laquo;Container: Database&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;AWS S3&lt;/b&gt;&lt;br/&gt;[SSE-KMS encryption]&lt;br/&gt;&lt;br/&gt;Stores document blobs&lt;br/&gt;and intermediate artifacts" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FF8C00;fontColor=#ffffff;strokeColor=#CC7000;fontSize=11;verticalAlign=middle;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+        <mxGeometry x="300" y="1620" width="240" height="160" as="geometry"/>
+      </mxCell>
+
+      <!-- Aurora PostgreSQL -->
+      <mxCell id="ds-aurora" value="&lt;b&gt;&amp;laquo;Container: Database&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Aurora PostgreSQL&lt;/b&gt;&lt;br/&gt;[Multi-AZ, per-service DBs]&lt;br/&gt;&lt;br/&gt;Relational store for accounts,&lt;br/&gt;connectors, and repository metadata" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FF8C00;fontColor=#ffffff;strokeColor=#CC7000;fontSize=11;verticalAlign=middle;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+        <mxGeometry x="1500" y="1620" width="260" height="160" as="geometry"/>
+      </mxCell>
+
+      <!-- AWS OpenSearch -->
+      <mxCell id="ds-opensearch" value="&lt;b&gt;&amp;laquo;Container: Search Engine&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;AWS OpenSearch&lt;/b&gt;&lt;br/&gt;[7 shards, 3 replicas]&lt;br/&gt;&lt;br/&gt;Full-text and k-NN vector&lt;br/&gt;search for enriched documents" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FF8C00;fontColor=#ffffff;strokeColor=#CC7000;fontSize=11;verticalAlign=middle;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+        <mxGeometry x="2100" y="1620" width="260" height="160" as="geometry"/>
+      </mxCell>
+
+      <!-- AWS Bedrock -->
+      <mxCell id="ds-bedrock" value="&lt;b&gt;&amp;laquo;Container: Database&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;AWS Bedrock&lt;/b&gt;&lt;br/&gt;[Foundation models]&lt;br/&gt;&lt;br/&gt;LLM inference for&lt;br/&gt;summarization tasks" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FF8C00;fontColor=#ffffff;strokeColor=#CC7000;fontSize=11;verticalAlign=middle;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+        <mxGeometry x="1650" y="1350" width="240" height="140" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ EXTERNAL SYSTEMS (outside boundary) ============ -->
+
+      <!-- Okta IdP -->
+      <mxCell id="ext2-okta" value="&lt;b&gt;&amp;laquo;External System&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Okta IdP&lt;/b&gt;&lt;br/&gt;[Identity Provider]&lt;br/&gt;&lt;br/&gt;OIDC / OAuth 2.0&lt;br/&gt;authentication" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;fontColor=#ffffff;strokeColor=#666666;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="3100" y="180" width="230" height="130" as="geometry"/>
+      </mxCell>
+
+      <!-- Metadata Governance -->
+      <mxCell id="ext2-meta" value="&lt;b&gt;&amp;laquo;External System&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Metadata Governance&lt;/b&gt;&lt;br/&gt;[Enterprise MDM]&lt;br/&gt;&lt;br/&gt;Governed metadata&lt;br/&gt;and lineage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;fontColor=#ffffff;strokeColor=#666666;fontSize=11;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="3100" y="380" width="230" height="130" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ KEY EDGES ============ -->
+
+      <!-- ALB -> Frontend -->
+      <mxCell id="e-alb-fe" value="[HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#666666;strokeWidth=1.5;" edge="1" source="infra-alb" target="c-frontend" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- ALB -> Account Service -->
+      <mxCell id="e-alb-acct" value="[HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#666666;strokeWidth=1.5;" edge="1" source="infra-alb" target="c-account" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Frontend -> Search Proxy -->
+      <mxCell id="e-fe-sp" value="[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#3C7FC0;strokeWidth=1.5;" edge="1" source="c-frontend" target="c-searchproxy" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- S3 Connector -> Intake Gate -->
+      <mxCell id="e-s3c-intake" value="[Protobuf/mTLS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#3C7FC0;strokeWidth=1.5;" edge="1" source="c-s3conn" target="c-intake" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Intake Gate -> Repository Service -->
+      <mxCell id="e-intake-repo" value="Path A: persist&lt;br/&gt;[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#3C7FC0;strokeWidth=1.5;" edge="1" source="c-intake" target="c-repo" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Intake Gate -> Kafka Sidecar -->
+      <mxCell id="e-intake-ks" value="Path B: RTF&lt;br/&gt;[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#438DD5;strokeWidth=1.5;" edge="1" source="c-intake" target="c-kafkasc" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Repository -> Kafka Sidecar -->
+      <mxCell id="e-repo-ks" value="[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#3C7FC0;strokeWidth=1.5;" edge="1" source="c-repo" target="c-kafkasc" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Kafka Sidecar -> MSK -->
+      <mxCell id="e-ks-msk" value="[Protobuf/mTLS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#CC7000;strokeWidth=1.5;" edge="1" source="c-kafkasc" target="ds-msk" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Kafka Sidecar -> Apicurio -->
+      <mxCell id="e-ks-api" value="Schema lookup&lt;br/&gt;[HTTP]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#3C7FC0;strokeWidth=1.5;" edge="1" source="c-kafkasc" target="c-apicurio" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Engine -> Kafka Sidecar -->
+      <mxCell id="e-engine-ks" value="Consumes/produces&lt;br/&gt;[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#3C7FC0;strokeWidth=1.5;" edge="1" source="c-engine" target="c-kafkasc" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Engine -> Parser -->
+      <mxCell id="e-engine-parser" value="Dispatch&lt;br/&gt;[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#064516;strokeWidth=1.5;" edge="1" source="c-engine" target="m-parser" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Engine -> Chunker -->
+      <mxCell id="e-engine-chunker" value="Dispatch&lt;br/&gt;[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#064516;strokeWidth=1.5;" edge="1" source="c-engine" target="m-chunker" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Engine -> Embedder -->
+      <mxCell id="e-engine-embedder" value="Dispatch&lt;br/&gt;[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#064516;strokeWidth=1.5;" edge="1" source="c-engine" target="m-embedder" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Engine -> Summarizer -->
+      <mxCell id="e-engine-summarizer" value="Dispatch&lt;br/&gt;[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#064516;strokeWidth=1.5;" edge="1" source="c-engine" target="m-summarizer" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Engine -> OS Sink -->
+      <mxCell id="e-engine-ossink" value="Dispatch&lt;br/&gt;[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#064516;strokeWidth=1.5;" edge="1" source="c-engine" target="m-ossink" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Parser -> Docling -->
+      <mxCell id="e-parser-docling" value="[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#CC7000;strokeWidth=1.5;" edge="1" source="m-parser" target="c-docling" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Embedder -> DJL -->
+      <mxCell id="e-embedder-djl" value="[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#CC7000;strokeWidth=1.5;" edge="1" source="m-embedder" target="c-djl" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Summarizer -> Bedrock -->
+      <mxCell id="e-summ-bedrock" value="[AWS SDK]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#CC7000;strokeWidth=1.5;" edge="1" source="m-summarizer" target="ds-bedrock" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- OS Sink -> OpenSearch -->
+      <mxCell id="e-ossink-os" value="Bulk index&lt;br/&gt;[HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#CC7000;strokeWidth=1.5;" edge="1" source="m-ossink" target="ds-opensearch" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Search Proxy -> OpenSearch -->
+      <mxCell id="e-sp-os" value="Query&lt;br/&gt;[HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#CC7000;strokeWidth=1.5;" edge="1" source="c-searchproxy" target="ds-opensearch" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- OpenSearch Manager -> OpenSearch -->
+      <mxCell id="e-osmgr-os" value="Index mgmt&lt;br/&gt;[HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#CC7000;strokeWidth=1.5;" edge="1" source="c-osmgr" target="ds-opensearch" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Repository -> S3 -->
+      <mxCell id="e-repo-s3" value="Store/retrieve blobs&lt;br/&gt;[AWS SDK]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#CC7000;strokeWidth=1.5;" edge="1" source="c-repo" target="ds-s3" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Repository -> Aurora -->
+      <mxCell id="e-repo-aurora" value="[JDBC/TLS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#CC7000;strokeWidth=1.5;" edge="1" source="c-repo" target="ds-aurora" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Account -> Aurora -->
+      <mxCell id="e-acct-aurora" value="[JDBC/TLS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#CC7000;strokeWidth=1.5;" edge="1" source="c-account" target="ds-aurora" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- ConnAdmin -> Aurora -->
+      <mxCell id="e-ca-aurora" value="[JDBC/TLS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#CC7000;strokeWidth=1.5;" edge="1" source="c-connadmin" target="ds-aurora" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Account -> Okta -->
+      <mxCell id="e-acct-okta" value="[OIDC/OAuth 2.0]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#666666;strokeWidth=1.5;" edge="1" source="c-account" target="ext2-okta" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Consul edges -->
+      <mxCell id="e-consul-services" value="Service discovery&lt;br/&gt;[HTTP/DNS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#CCCCCC;strokeWidth=1.5;dashed=1;" edge="1" source="infra-consul" target="c-engine" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- PlatReg -> Aurora -->
+      <mxCell id="e-pr-aurora" value="[JDBC/TLS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#CC7000;strokeWidth=1.5;" edge="1" source="c-platreg" target="ds-aurora" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- S3 Connector -> S3 (external source) -->
+      <mxCell id="e-s3c-s3" value="Poll objects&lt;br/&gt;[AWS SDK]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#CC7000;strokeWidth=1.5;" edge="1" source="c-s3conn" target="ds-s3" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ LEGEND ============ -->
+      <mxCell id="legend-2-border" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#333333;dashed=1;" vertex="1" parent="1">
+        <mxGeometry x="250" y="1920" width="700" height="280" as="geometry"/>
+      </mxCell>
+      <mxCell id="legend-2-title" value="&lt;b&gt;Legend&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=13;" vertex="1" parent="1">
+        <mxGeometry x="260" y="1930" width="70" height="30" as="geometry"/>
+      </mxCell>
+
+      <mxCell id="l2-svc" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;" vertex="1" parent="1">
+        <mxGeometry x="270" y="1975" width="30" height="20" as="geometry"/>
+      </mxCell>
+      <mxCell id="l2-svc-lbl" value="Platform Container (Service)" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="310" y="1970" width="190" height="30" as="geometry"/>
+      </mxCell>
+
+      <mxCell id="l2-mod" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#085B1D;strokeColor=#064516;" vertex="1" parent="1">
+        <mxGeometry x="270" y="2010" width="30" height="20" as="geometry"/>
+      </mxCell>
+      <mxCell id="l2-mod-lbl" value="Processing Module" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="310" y="2005" width="130" height="30" as="geometry"/>
+      </mxCell>
+
+      <mxCell id="l2-ds" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FF8C00;strokeColor=#CC7000;" vertex="1" parent="1">
+        <mxGeometry x="270" y="2045" width="30" height="20" as="geometry"/>
+      </mxCell>
+      <mxCell id="l2-ds-lbl" value="AWS Managed Service / Data Store" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="310" y="2040" width="220" height="30" as="geometry"/>
+      </mxCell>
+
+      <mxCell id="l2-infra" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8E8E8;strokeColor=#CCCCCC;" vertex="1" parent="1">
+        <mxGeometry x="270" y="2080" width="30" height="20" as="geometry"/>
+      </mxCell>
+      <mxCell id="l2-infra-lbl" value="Infrastructure" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="310" y="2075" width="100" height="30" as="geometry"/>
+      </mxCell>
+
+      <mxCell id="l2-ext" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#666666;" vertex="1" parent="1">
+        <mxGeometry x="270" y="2115" width="30" height="20" as="geometry"/>
+      </mxCell>
+      <mxCell id="l2-ext-lbl" value="External System" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="310" y="2110" width="110" height="30" as="geometry"/>
+      </mxCell>
+
+      <mxCell id="l2-dash-lbl" value="&lt;i&gt;Dashed boundary = Software System scope&lt;br/&gt;All edge labels indicate protocol in [brackets]&lt;/i&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="560" y="1970" width="260" height="50" as="geometry"/>
+      </mxCell>
+
+    </root>
+  </mxGraphModel>
+</diagram>
+<diagram id="c4-dynamic-e2e" name="Page 3 - E2E Data Flow (C4 Dynamic)">
+  <mxGraphModel dx="3200" dy="3600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3200" pageHeight="3400" math="0" shadow="0">
+    <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+
+      <!-- Title -->
+      <mxCell id="title-3" value="&lt;b&gt;C4 Dynamic Diagram: End-to-End Data Flow&lt;/b&gt;&lt;br/&gt;Shows the document journey from source to searchable index" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" vertex="1" parent="1">
+        <mxGeometry x="900" y="20" width="600" height="50" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ ELEMENTS ============ -->
+
+      <!-- External Data Source -->
+      <mxCell id="d-ext-source" value="&lt;b&gt;&amp;laquo;External System&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;External Data Source&lt;/b&gt;&lt;br/&gt;[S3 Bucket]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;fontColor=#ffffff;strokeColor=#666666;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="100" y="150" width="240" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- S3 Connector -->
+      <mxCell id="d-s3conn" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;S3 Connector&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="550" y="150" width="280" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Intake Gate -->
+      <mxCell id="d-intake" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Intake Gate&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1050" y="150" width="280" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Path Decision -->
+      <mxCell id="d-decision" value="&lt;b&gt;Routing&lt;br/&gt;Decision&lt;/b&gt;&lt;br/&gt;Path A or B?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;fontColor=#333333;strokeColor=#D6B656;fontSize=11;verticalAlign=middle;" vertex="1" parent="1">
+        <mxGeometry x="1110" y="380" width="160" height="140" as="geometry"/>
+      </mxCell>
+
+      <!-- Repository Service (Path A) -->
+      <mxCell id="d-repo" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Repository Service&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="550" y="400" width="280" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- S3 blob store -->
+      <mxCell id="d-s3" value="&lt;b&gt;&amp;laquo;Container: Database&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;AWS S3&lt;/b&gt;&lt;br/&gt;[SSE-KMS]" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FF8C00;fontColor=#ffffff;strokeColor=#CC7000;fontSize=12;verticalAlign=middle;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+        <mxGeometry x="150" y="390" width="200" height="120" as="geometry"/>
+      </mxCell>
+
+      <!-- Kafka Sidecar -->
+      <mxCell id="d-kafkasc" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Kafka Sidecar&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1050" y="650" width="280" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- MSK -->
+      <mxCell id="d-msk" value="&lt;b&gt;&amp;laquo;Container: Message Broker&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;AWS MSK&lt;/b&gt;&lt;br/&gt;[6 brokers, RF=2]" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FF8C00;fontColor=#ffffff;strokeColor=#CC7000;fontSize=12;verticalAlign=middle;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+        <mxGeometry x="1600" y="640" width="240" height="120" as="geometry"/>
+      </mxCell>
+
+      <!-- DLQ -->
+      <mxCell id="d-dlq" value="&lt;b&gt;&amp;laquo;Container: Message Broker&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;DLQ Topic&lt;/b&gt;&lt;br/&gt;[AWS MSK]" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#CC0000;fontColor=#ffffff;strokeColor=#990000;fontSize=11;verticalAlign=middle;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+        <mxGeometry x="2200" y="640" width="200" height="120" as="geometry"/>
+      </mxCell>
+
+      <!-- PipeStream Engine -->
+      <mxCell id="d-engine" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;PipeStream Engine&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1050" y="900" width="280" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Parser -->
+      <mxCell id="d-parser" value="&lt;b&gt;&amp;laquo;Container: Module&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Parser&lt;/b&gt;&lt;br/&gt;[EC2 GPU / Fargate]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;fontColor=#ffffff;strokeColor=#064516;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="300" y="1150" width="250" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Chunker -->
+      <mxCell id="d-chunker" value="&lt;b&gt;&amp;laquo;Container: Module&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Chunker&lt;/b&gt;&lt;br/&gt;[Fargate]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;fontColor=#ffffff;strokeColor=#064516;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="700" y="1150" width="250" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Embedder -->
+      <mxCell id="d-embedder" value="&lt;b&gt;&amp;laquo;Container: Module&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Embedder&lt;/b&gt;&lt;br/&gt;[Fargate]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;fontColor=#ffffff;strokeColor=#064516;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1100" y="1150" width="250" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Summarizer -->
+      <mxCell id="d-summarizer" value="&lt;b&gt;&amp;laquo;Container: Module&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Summarizer&lt;/b&gt;&lt;br/&gt;[Fargate]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;fontColor=#ffffff;strokeColor=#064516;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1500" y="1150" width="250" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- OpenSearch Sink -->
+      <mxCell id="d-ossink" value="&lt;b&gt;&amp;laquo;Container: Module&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;OpenSearch Sink&lt;/b&gt;&lt;br/&gt;[Fargate]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;fontColor=#ffffff;strokeColor=#064516;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1900" y="1150" width="250" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- OpenSearch -->
+      <mxCell id="d-opensearch" value="&lt;b&gt;&amp;laquo;Container: Search Engine&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;AWS OpenSearch&lt;/b&gt;&lt;br/&gt;[7 shards, 3 replicas]" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FF8C00;fontColor=#ffffff;strokeColor=#CC7000;fontSize=12;verticalAlign=middle;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+        <mxGeometry x="1900" y="1400" width="250" height="130" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ NUMBERED EDGES ============ -->
+
+      <!-- 1. Source -> S3 Connector -->
+      <mxCell id="de-1" value="&lt;b&gt;1&lt;/b&gt; Poll for new objects&lt;br/&gt;[S3 API / HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="d-ext-source" target="d-s3conn" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 2. S3 Connector -> Intake Gate -->
+      <mxCell id="de-2" value="&lt;b&gt;2&lt;/b&gt; Submit document envelope&lt;br/&gt;[Protobuf/mTLS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="d-s3conn" target="d-intake" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 3. Intake -> Decision -->
+      <mxCell id="de-3" value="&lt;b&gt;3&lt;/b&gt; Validate &amp;amp; deduplicate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="d-intake" target="d-decision" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 4a. Decision -> Repository (Path A) -->
+      <mxCell id="de-4a" value="&lt;b&gt;4a&lt;/b&gt; Path A: Persist document&lt;br/&gt;[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="d-decision" target="d-repo" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 4a.1 Repository -> S3 -->
+      <mxCell id="de-4a1" value="&lt;b&gt;4a.1&lt;/b&gt; Store blob&lt;br/&gt;[AWS SDK]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="d-repo" target="d-s3" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 4b. Decision -> Kafka Sidecar (Path B: RTF) -->
+      <mxCell id="de-4b" value="&lt;b&gt;4b&lt;/b&gt; Path B: RTF in-memory&lt;br/&gt;[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#438DD5;strokeWidth=2;" edge="1" source="d-decision" target="d-kafkasc" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 5. Repository -> Kafka Sidecar (Path A continues) -->
+      <mxCell id="de-5" value="&lt;b&gt;5&lt;/b&gt; Emit claim-check event&lt;br/&gt;[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="d-repo" target="d-kafkasc" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 6. Kafka Sidecar -> MSK -->
+      <mxCell id="de-6" value="&lt;b&gt;6&lt;/b&gt; Produce to topic&lt;br/&gt;[Protobuf/mTLS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="d-kafkasc" target="d-msk" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- DLQ edge -->
+      <mxCell id="de-dlq" value="Error / max retries&lt;br/&gt;exceeded" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#CC0000;strokeWidth=2;dashed=1;dashPattern=8 4;" edge="1" source="d-msk" target="d-dlq" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 7. MSK -> Engine (consume) -->
+      <mxCell id="de-7" value="&lt;b&gt;7&lt;/b&gt; Consume pipeline event" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="d-msk" target="d-engine" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <Array as="points">
+            <mxPoint x="1720" y="850"/>
+            <mxPoint x="1190" y="850"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+
+      <!-- 8. Engine -> Parser -->
+      <mxCell id="de-8" value="&lt;b&gt;8&lt;/b&gt; Dispatch parse&lt;br/&gt;[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="d-engine" target="d-parser" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 9. Engine -> Chunker -->
+      <mxCell id="de-9" value="&lt;b&gt;9&lt;/b&gt; Dispatch chunk&lt;br/&gt;[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="d-engine" target="d-chunker" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 10. Engine -> Embedder -->
+      <mxCell id="de-10" value="&lt;b&gt;10&lt;/b&gt; Dispatch embed&lt;br/&gt;[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="d-engine" target="d-embedder" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 11. Engine -> Summarizer -->
+      <mxCell id="de-11" value="&lt;b&gt;11&lt;/b&gt; Dispatch summarize&lt;br/&gt;[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="d-engine" target="d-summarizer" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 12. Engine -> OS Sink -->
+      <mxCell id="de-12" value="&lt;b&gt;12&lt;/b&gt; Dispatch index&lt;br/&gt;[gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="d-engine" target="d-ossink" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 13. OS Sink -> OpenSearch -->
+      <mxCell id="de-13" value="&lt;b&gt;13&lt;/b&gt; Bulk index enriched document&lt;br/&gt;[HTTPS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="d-ossink" target="d-opensearch" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ LEGEND ============ -->
+      <mxCell id="legend-3-border" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#333333;dashed=1;" vertex="1" parent="1">
+        <mxGeometry x="100" y="1550" width="500" height="200" as="geometry"/>
+      </mxCell>
+      <mxCell id="legend-3-title" value="&lt;b&gt;Legend&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=13;" vertex="1" parent="1">
+        <mxGeometry x="110" y="1555" width="70" height="30" as="geometry"/>
+      </mxCell>
+
+      <mxCell id="l3-green" value="________" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#2D7600;fontStyle=1;" vertex="1" parent="1">
+        <mxGeometry x="120" y="1590" width="80" height="30" as="geometry"/>
+      </mxCell>
+      <mxCell id="l3-green-lbl" value="Primary happy path (Path A: persistent)" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="200" y="1590" width="250" height="30" as="geometry"/>
+      </mxCell>
+
+      <mxCell id="l3-blue" value="________" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#438DD5;fontStyle=1;" vertex="1" parent="1">
+        <mxGeometry x="120" y="1620" width="80" height="30" as="geometry"/>
+      </mxCell>
+      <mxCell id="l3-blue-lbl" value="RTF path (Path B: in-memory)" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="200" y="1620" width="190" height="30" as="geometry"/>
+      </mxCell>
+
+      <mxCell id="l3-red" value="- - - - - - -" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#CC0000;fontStyle=1;" vertex="1" parent="1">
+        <mxGeometry x="120" y="1650" width="80" height="30" as="geometry"/>
+      </mxCell>
+      <mxCell id="l3-red-lbl" value="DLQ / Error path" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="200" y="1650" width="120" height="30" as="geometry"/>
+      </mxCell>
+
+      <mxCell id="l3-num-lbl" value="&lt;b&gt;N&lt;/b&gt; = Interaction step number (C4 Dynamic)" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="120" y="1690" width="270" height="30" as="geometry"/>
+      </mxCell>
+
+    </root>
+  </mxGraphModel>
+</diagram>
+<diagram id="c4-dynamic-claimcheck" name="Page 4 - Claim-Check and Hydration (C4 Dynamic)">
+  <mxGraphModel dx="2800" dy="3200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2800" pageHeight="3000" math="0" shadow="0">
+    <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+
+      <!-- Title -->
+      <mxCell id="title-4" value="&lt;b&gt;C4 Dynamic Diagram: Claim-Check Pattern and Two-Level Hydration&lt;/b&gt;&lt;br/&gt;Shows how modules receive lightweight references and hydrate data on demand" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" vertex="1" parent="1">
+        <mxGeometry x="600" y="20" width="700" height="50" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ ELEMENTS ============ -->
+
+      <!-- PipeStream Engine -->
+      <mxCell id="h-engine" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;PipeStream Engine&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;Orchestrates pipeline steps;&lt;br/&gt;dispatches claim-check refs&lt;br/&gt;to modules" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="200" y="150" width="300" height="160" as="geometry"/>
+      </mxCell>
+
+      <!-- Kafka Sidecar -->
+      <mxCell id="h-kafkasc" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Kafka Sidecar&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]&lt;br/&gt;&lt;br/&gt;Serializes/deserializes&lt;br/&gt;Protobuf messages" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="800" y="150" width="280" height="140" as="geometry"/>
+      </mxCell>
+
+      <!-- MSK topic -->
+      <mxCell id="h-msk" value="&lt;b&gt;&amp;laquo;Container: Message Broker&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;MSK Topic&lt;/b&gt;&lt;br/&gt;[Claim-check reference only]&lt;br/&gt;&lt;br/&gt;Carries lightweight .pb metadata&lt;br/&gt;(1-50 KB per message)" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FF8C00;fontColor=#ffffff;strokeColor=#CC7000;fontSize=12;verticalAlign=middle;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+        <mxGeometry x="1400" y="150" width="280" height="160" as="geometry"/>
+      </mxCell>
+
+      <!-- Generic Module -->
+      <mxCell id="h-module" value="&lt;b&gt;&amp;laquo;Container: Module&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Processing Module&lt;/b&gt;&lt;br/&gt;[Parser / Chunker / Embedder / ...]&lt;br/&gt;&lt;br/&gt;Receives claim-check ref,&lt;br/&gt;hydrates as needed,&lt;br/&gt;processes, dehydrates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;fontColor=#ffffff;strokeColor=#064516;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1000" y="500" width="300" height="160" as="geometry"/>
+      </mxCell>
+
+      <!-- Decision Diamond -->
+      <mxCell id="h-decision" value="&lt;b&gt;Does module&lt;br/&gt;need blob?&lt;/b&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;fontColor=#333333;strokeColor=#D6B656;fontSize=12;verticalAlign=middle;" vertex="1" parent="1">
+        <mxGeometry x="1060" y="800" width="180" height="140" as="geometry"/>
+      </mxCell>
+
+      <!-- L1 Hydration annotation -->
+      <mxCell id="h-l1-note" value="&lt;b&gt;L1 Hydration&lt;/b&gt;&lt;br/&gt;.pb metadata deserialized&lt;br/&gt;from Kafka message&lt;br/&gt;&lt;i&gt;Size: 1-50 KB&lt;/i&gt;&lt;br/&gt;&lt;i&gt;Latency: &amp;lt; 1 ms (already in memory)&lt;/i&gt;" style="shape=note;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#D6B656;fontSize=11;verticalAlign=middle;size=14;" vertex="1" parent="1">
+        <mxGeometry x="350" y="530" width="260" height="110" as="geometry"/>
+      </mxCell>
+
+      <!-- Repository Service -->
+      <mxCell id="h-repo" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Repository Service&lt;/b&gt;&lt;br/&gt;[Fargate: Java/Quarkus/gRPC]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="1550" y="800" width="280" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- S3 Store -->
+      <mxCell id="h-s3" value="&lt;b&gt;&amp;laquo;Container: Database&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;AWS S3&lt;/b&gt;&lt;br/&gt;[SSE-KMS]&lt;br/&gt;&lt;br/&gt;Stores binary blobs&lt;br/&gt;(.bin, KB-GB range)" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FF8C00;fontColor=#ffffff;strokeColor=#CC7000;fontSize=12;verticalAlign=middle;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+        <mxGeometry x="2050" y="780" width="240" height="150" as="geometry"/>
+      </mxCell>
+
+      <!-- L2 Hydration annotation -->
+      <mxCell id="h-l2-note" value="&lt;b&gt;L2 Hydration&lt;/b&gt;&lt;br/&gt;.bin blob fetched from S3&lt;br/&gt;via Repository Service&lt;br/&gt;&lt;i&gt;Size: KB - GB&lt;/i&gt;&lt;br/&gt;&lt;i&gt;Latency: 10ms - seconds&lt;/i&gt;" style="shape=note;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#D6B656;fontSize=11;verticalAlign=middle;size=14;" vertex="1" parent="1">
+        <mxGeometry x="1580" y="1000" width="260" height="110" as="geometry"/>
+      </mxCell>
+
+      <!-- Dehydrated output -->
+      <mxCell id="h-dehydrated" value="&lt;b&gt;&amp;laquo;Container: Message Broker&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;MSK Output Topic&lt;/b&gt;&lt;br/&gt;[New claim-check reference]&lt;br/&gt;&lt;br/&gt;Module emits dehydrated ref&lt;br/&gt;for next pipeline step" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FF8C00;fontColor=#ffffff;strokeColor=#CC7000;fontSize=12;verticalAlign=middle;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+        <mxGeometry x="1000" y="1150" width="300" height="160" as="geometry"/>
+      </mxCell>
+
+      <!-- Repository for dehydration store -->
+      <mxCell id="h-repo2" value="&lt;b&gt;&amp;laquo;Container&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Repository Service&lt;/b&gt;&lt;br/&gt;[Store new artifact]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;fontColor=#ffffff;strokeColor=#3C7FC0;fontSize=12;verticalAlign=middle;arcSize=8;" vertex="1" parent="1">
+        <mxGeometry x="400" y="1050" width="250" height="90" as="geometry"/>
+      </mxCell>
+
+      <!-- S3 for dehydration -->
+      <mxCell id="h-s3-2" value="&lt;b&gt;&amp;laquo;Container: Database&amp;raquo;&lt;/b&gt;&lt;br/&gt;&lt;b&gt;AWS S3&lt;/b&gt;&lt;br/&gt;[New blob stored]" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#FF8C00;fontColor=#ffffff;strokeColor=#CC7000;fontSize=12;verticalAlign=middle;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+        <mxGeometry x="150" y="1150" width="220" height="120" as="geometry"/>
+      </mxCell>
+
+      <!-- ============ NUMBERED EDGES ============ -->
+
+      <!-- 1. Engine -> Kafka Sidecar -->
+      <mxCell id="he-1" value="&lt;b&gt;1&lt;/b&gt; Dispatch claim-check&lt;br/&gt;reference [gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="h-engine" target="h-kafkasc" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 2. Kafka Sidecar -> MSK -->
+      <mxCell id="he-2" value="&lt;b&gt;2&lt;/b&gt; Produce .pb message&lt;br/&gt;(metadata only, 1-50 KB)&lt;br/&gt;[Protobuf/mTLS]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="h-kafkasc" target="h-msk" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 3. MSK -> Module (consume) -->
+      <mxCell id="he-3" value="&lt;b&gt;3&lt;/b&gt; Consume claim-check&lt;br/&gt;event (L1 hydration:&lt;br/&gt;.pb deserialized)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="h-msk" target="h-module" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <Array as="points">
+            <mxPoint x="1540" y="420"/>
+            <mxPoint x="1150" y="420"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+
+      <!-- L1 annotation arrow -->
+      <mxCell id="he-l1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#D6B656;strokeWidth=1;dashed=1;" edge="1" source="h-l1-note" target="h-module" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 4. Module -> Decision -->
+      <mxCell id="he-4" value="&lt;b&gt;4&lt;/b&gt; Check if blob needed" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="h-module" target="h-decision" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 5a. Decision NO -> skip to dehydrate -->
+      <mxCell id="he-5a" value="&lt;b&gt;5a&lt;/b&gt; No - process&lt;br/&gt;with L1 data only" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="h-decision" target="h-dehydrated" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <Array as="points">
+            <mxPoint x="800" y="870"/>
+            <mxPoint x="800" y="1230"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+
+      <!-- 5b. Decision YES -> Repository -->
+      <mxCell id="he-5b" value="&lt;b&gt;5b&lt;/b&gt; Yes - request L2&lt;br/&gt;hydration [gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#438DD5;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" source="h-decision" target="h-repo" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 6. Repository -> S3 -->
+      <mxCell id="he-6" value="&lt;b&gt;6&lt;/b&gt; Fetch .bin blob&lt;br/&gt;[AWS SDK]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#438DD5;strokeWidth=2;" edge="1" source="h-repo" target="h-s3" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- L2 annotation arrow -->
+      <mxCell id="he-l2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#D6B656;strokeWidth=1;dashed=1;" edge="1" source="h-l2-note" target="h-repo" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 7. S3 -> Repository -> Module (return blob) -->
+      <mxCell id="he-7" value="&lt;b&gt;7&lt;/b&gt; Return blob to module&lt;br/&gt;[gRPC stream]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#438DD5;strokeWidth=2;" edge="1" source="h-repo" target="h-module" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <Array as="points">
+            <mxPoint x="1500" y="700"/>
+            <mxPoint x="1150" y="700"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+
+      <!-- 8. Module processes and dehydrates -> Repo2 -->
+      <mxCell id="he-8" value="&lt;b&gt;8&lt;/b&gt; Dehydrate: store&lt;br/&gt;new artifact [gRPC]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;exitX=0;exitY=1;exitDx=0;exitDy=0;" edge="1" source="h-module" target="h-repo2" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 8a. Repo2 -> S3 -->
+      <mxCell id="he-8a" value="&lt;b&gt;8a&lt;/b&gt; Store new blob&lt;br/&gt;[AWS SDK]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;" edge="1" source="h-repo2" target="h-s3-2" parent="1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 9. Module -> Output MSK topic -->
+      <mxCell id="he-9" value="&lt;b&gt;9&lt;/b&gt; Emit new claim-check&lt;br/&gt;reference for next step&lt;br/&gt;[Protobuf/mTLS via Sidecar]" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#2D7600;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" source="h-module" target="h-dehydrated" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <Array as="points">
+            <mxPoint x="1150" y="1100"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+
+      <!-- ============ LEGEND ============ -->
+      <mxCell id="legend-4-border" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#333333;dashed=1;" vertex="1" parent="1">
+        <mxGeometry x="100" y="1400" width="550" height="250" as="geometry"/>
+      </mxCell>
+      <mxCell id="legend-4-title" value="&lt;b&gt;Legend&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=13;" vertex="1" parent="1">
+        <mxGeometry x="110" y="1405" width="70" height="30" as="geometry"/>
+      </mxCell>
+
+      <mxCell id="l4-green" value="________" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#2D7600;fontStyle=1;" vertex="1" parent="1">
+        <mxGeometry x="120" y="1440" width="80" height="30" as="geometry"/>
+      </mxCell>
+      <mxCell id="l4-green-lbl" value="Primary flow (L1 metadata path)" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="200" y="1440" width="210" height="30" as="geometry"/>
+      </mxCell>
+
+      <mxCell id="l4-blue" value="________" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;fontColor=#438DD5;fontStyle=1;" vertex="1" parent="1">
+        <mxGeometry x="120" y="1470" width="80" height="30" as="geometry"/>
+      </mxCell>
+      <mxCell id="l4-blue-lbl" value="L2 hydration path (blob fetch)" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="200" y="1470" width="200" height="30" as="geometry"/>
+      </mxCell>
+
+      <mxCell id="l4-l1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#D6B656;" vertex="1" parent="1">
+        <mxGeometry x="120" y="1510" width="30" height="20" as="geometry"/>
+      </mxCell>
+      <mxCell id="l4-l1-lbl" value="L1 Hydration: .pb metadata (1-50 KB, in-memory)" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="160" y="1505" width="300" height="30" as="geometry"/>
+      </mxCell>
+
+      <mxCell id="l4-l2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFCC;strokeColor=#D6B656;" vertex="1" parent="1">
+        <mxGeometry x="120" y="1545" width="30" height="20" as="geometry"/>
+      </mxCell>
+      <mxCell id="l4-l2-lbl" value="L2 Hydration: .bin blob (KB-GB, from S3 via Repo)" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="160" y="1540" width="310" height="30" as="geometry"/>
+      </mxCell>
+
+      <mxCell id="l4-diamond" value="" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;" vertex="1" parent="1">
+        <mxGeometry x="120" y="1575" width="30" height="25" as="geometry"/>
+      </mxCell>
+      <mxCell id="l4-diamond-lbl" value="Decision point" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="160" y="1575" width="100" height="30" as="geometry"/>
+      </mxCell>
+
+      <mxCell id="l4-num-lbl" value="&lt;b&gt;N&lt;/b&gt; = Interaction step number (C4 Dynamic)" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="120" y="1610" width="270" height="30" as="geometry"/>
+      </mxCell>
+
+    </root>
+  </mxGraphModel>
+</diagram><diagram id="page5" name="5 - Combinatorial Fan-Out">
+  <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+    <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+
+      <!-- Title -->
+      <mxCell id="p5-title" value="&lt;b&gt;C4 Dynamic Diagram: Combinatorial Semantic Fan-Out&lt;/b&gt;&lt;br&gt;2 chunkers × 3 embedding models = 6 result sets for A/B testing" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" vertex="1" parent="1">
+        <mxGeometry x="400" y="20" width="800" height="50" as="geometry"/>
+      </mxCell>
+
+      <!-- Parsed Document (input) -->
+      <mxCell id="p5-parsed" value="&lt;b&gt;Parsed Document&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container: Module»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Structured output from&lt;br&gt;document parser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="680" y="100" width="240" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Chunker A -->
+      <mxCell id="p5-chunkerA" value="&lt;b&gt;Chunker A&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container: Module»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Token-based 512 tokens&lt;br&gt;50-token overlap" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;strokeColor=#064516;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="340" y="280" width="220" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Chunker B -->
+      <mxCell id="p5-chunkerB" value="&lt;b&gt;Chunker B&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container: Module»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Sentence-based NLP&lt;br&gt;boundary detection" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;strokeColor=#064516;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="1040" y="280" width="220" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Step 1: Parsed Doc → Chunker A -->
+      <mxCell id="p5-e1" value="&lt;b&gt;1&lt;/b&gt; chunks (token)" style="html=1;endArrow=block;endFill=1;strokeColor=#085B1D;strokeWidth=2;fontColor=#085B1D;" edge="1" parent="1" source="p5-parsed" target="p5-chunkerA">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Step 2: Parsed Doc → Chunker B -->
+      <mxCell id="p5-e2" value="&lt;b&gt;2&lt;/b&gt; chunks (sentence)" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#438DD5;" edge="1" parent="1" source="p5-parsed" target="p5-chunkerB">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Embedder MiniLM (Chunker A path) -->
+      <mxCell id="p5-emb-a1" value="&lt;b&gt;MiniLM&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container: Module»&lt;/i&gt;&lt;br&gt;&lt;br&gt;384-dimensional" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;strokeColor=#064516;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="100" y="470" width="180" height="90" as="geometry"/>
+      </mxCell>
+
+      <!-- Embedder BGE-large (Chunker A path) -->
+      <mxCell id="p5-emb-a2" value="&lt;b&gt;BGE-large&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container: Module»&lt;/i&gt;&lt;br&gt;&lt;br&gt;1024-dimensional" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;strokeColor=#064516;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="340" y="470" width="180" height="90" as="geometry"/>
+      </mxCell>
+
+      <!-- Embedder Custom (Chunker A path) -->
+      <mxCell id="p5-emb-a3" value="&lt;b&gt;Custom&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container: Module»&lt;/i&gt;&lt;br&gt;&lt;br&gt;768-dimensional" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;strokeColor=#064516;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="580" y="470" width="180" height="90" as="geometry"/>
+      </mxCell>
+
+      <!-- Embedder MiniLM (Chunker B path) -->
+      <mxCell id="p5-emb-b1" value="&lt;b&gt;MiniLM&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container: Module»&lt;/i&gt;&lt;br&gt;&lt;br&gt;384-dimensional" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;strokeColor=#064516;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="840" y="470" width="180" height="90" as="geometry"/>
+      </mxCell>
+
+      <!-- Embedder BGE-large (Chunker B path) -->
+      <mxCell id="p5-emb-b2" value="&lt;b&gt;BGE-large&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container: Module»&lt;/i&gt;&lt;br&gt;&lt;br&gt;1024-dimensional" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;strokeColor=#064516;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="1080" y="470" width="180" height="90" as="geometry"/>
+      </mxCell>
+
+      <!-- Embedder Custom (Chunker B path) -->
+      <mxCell id="p5-emb-b3" value="&lt;b&gt;Custom&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container: Module»&lt;/i&gt;&lt;br&gt;&lt;br&gt;768-dimensional" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;strokeColor=#064516;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="1320" y="470" width="180" height="90" as="geometry"/>
+      </mxCell>
+
+      <!-- Chunker A → Embedders (green arrows) -->
+      <mxCell id="p5-e3" value="&lt;b&gt;3&lt;/b&gt; embed" style="html=1;endArrow=block;endFill=1;strokeColor=#085B1D;strokeWidth=2;fontColor=#085B1D;" edge="1" parent="1" source="p5-chunkerA" target="p5-emb-a1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-e4" value="&lt;b&gt;4&lt;/b&gt; embed" style="html=1;endArrow=block;endFill=1;strokeColor=#085B1D;strokeWidth=2;fontColor=#085B1D;" edge="1" parent="1" source="p5-chunkerA" target="p5-emb-a2">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-e5" value="&lt;b&gt;5&lt;/b&gt; embed" style="html=1;endArrow=block;endFill=1;strokeColor=#085B1D;strokeWidth=2;fontColor=#085B1D;" edge="1" parent="1" source="p5-chunkerA" target="p5-emb-a3">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Chunker B → Embedders (blue arrows) -->
+      <mxCell id="p5-e6" value="&lt;b&gt;6&lt;/b&gt; embed" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#438DD5;" edge="1" parent="1" source="p5-chunkerB" target="p5-emb-b1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-e7" value="&lt;b&gt;7&lt;/b&gt; embed" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#438DD5;" edge="1" parent="1" source="p5-chunkerB" target="p5-emb-b2">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-e8" value="&lt;b&gt;8&lt;/b&gt; embed" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#438DD5;" edge="1" parent="1" source="p5-chunkerB" target="p5-emb-b3">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Result Sets (orange cylinders) -->
+      <mxCell id="p5-set1" value="&lt;b&gt;Set 1&lt;/b&gt;&lt;br&gt;Token-512 + MiniLM-384d" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#FF8C00;strokeColor=#CC7000;fontColor=#FFFFFF;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="100" y="650" width="180" height="80" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-set2" value="&lt;b&gt;Set 2&lt;/b&gt;&lt;br&gt;Token-512 + BGE-1024d" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#FF8C00;strokeColor=#CC7000;fontColor=#FFFFFF;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="340" y="650" width="180" height="80" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-set3" value="&lt;b&gt;Set 3&lt;/b&gt;&lt;br&gt;Token-512 + Custom-768d" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#FF8C00;strokeColor=#CC7000;fontColor=#FFFFFF;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="580" y="650" width="180" height="80" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-set4" value="&lt;b&gt;Set 4&lt;/b&gt;&lt;br&gt;Sentence-NLP + MiniLM-384d" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#FF8C00;strokeColor=#CC7000;fontColor=#FFFFFF;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="840" y="650" width="180" height="80" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-set5" value="&lt;b&gt;Set 5&lt;/b&gt;&lt;br&gt;Sentence-NLP + BGE-1024d" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#FF8C00;strokeColor=#CC7000;fontColor=#FFFFFF;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="1080" y="650" width="180" height="80" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-set6" value="&lt;b&gt;Set 6&lt;/b&gt;&lt;br&gt;Sentence-NLP + Custom-768d" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#FF8C00;strokeColor=#CC7000;fontColor=#FFFFFF;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="1320" y="650" width="180" height="80" as="geometry"/>
+      </mxCell>
+
+      <!-- Embedder → Result Set edges -->
+      <mxCell id="p5-e9" value="&lt;b&gt;9&lt;/b&gt; index" style="html=1;endArrow=block;endFill=1;strokeColor=#085B1D;strokeWidth=1;fontColor=#085B1D;" edge="1" parent="1" source="p5-emb-a1" target="p5-set1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-e10" value="&lt;b&gt;10&lt;/b&gt; index" style="html=1;endArrow=block;endFill=1;strokeColor=#085B1D;strokeWidth=1;fontColor=#085B1D;" edge="1" parent="1" source="p5-emb-a2" target="p5-set2">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-e11" value="&lt;b&gt;11&lt;/b&gt; index" style="html=1;endArrow=block;endFill=1;strokeColor=#085B1D;strokeWidth=1;fontColor=#085B1D;" edge="1" parent="1" source="p5-emb-a3" target="p5-set3">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-e12" value="&lt;b&gt;12&lt;/b&gt; index" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=1;fontColor=#438DD5;" edge="1" parent="1" source="p5-emb-b1" target="p5-set4">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-e13" value="&lt;b&gt;13&lt;/b&gt; index" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=1;fontColor=#438DD5;" edge="1" parent="1" source="p5-emb-b2" target="p5-set5">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-e14" value="&lt;b&gt;14&lt;/b&gt; index" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=1;fontColor=#438DD5;" edge="1" parent="1" source="p5-emb-b3" target="p5-set6">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- OpenSearch -->
+      <mxCell id="p5-os" value="&lt;b&gt;OpenSearch&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container: Search Engine»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Stores all 6 result sets&lt;br&gt;for A/B comparison" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#FF8C00;strokeColor=#CC7000;fontColor=#FFFFFF;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="620" y="820" width="360" height="110" as="geometry"/>
+      </mxCell>
+
+      <!-- Result Sets → OpenSearch -->
+      <mxCell id="p5-e15" value="&lt;b&gt;15&lt;/b&gt; persist" style="html=1;endArrow=block;endFill=1;strokeColor=#CC7000;strokeWidth=1;fontColor=#CC7000;" edge="1" parent="1" source="p5-set1" target="p5-os">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-e16" value="" style="html=1;endArrow=block;endFill=1;strokeColor=#CC7000;strokeWidth=1;" edge="1" parent="1" source="p5-set2" target="p5-os">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-e17" value="" style="html=1;endArrow=block;endFill=1;strokeColor=#CC7000;strokeWidth=1;" edge="1" parent="1" source="p5-set3" target="p5-os">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-e18" value="" style="html=1;endArrow=block;endFill=1;strokeColor=#CC7000;strokeWidth=1;" edge="1" parent="1" source="p5-set4" target="p5-os">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-e19" value="" style="html=1;endArrow=block;endFill=1;strokeColor=#CC7000;strokeWidth=1;" edge="1" parent="1" source="p5-set5" target="p5-os">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-e20" value="" style="html=1;endArrow=block;endFill=1;strokeColor=#CC7000;strokeWidth=1;" edge="1" parent="1" source="p5-set6" target="p5-os">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Legend -->
+      <mxCell id="p5-leg-title" value="&lt;b&gt;Legend&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;" vertex="1" parent="1">
+        <mxGeometry x="20" y="860" width="70" height="30" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-leg1" value="" style="endArrow=block;endFill=1;strokeColor=#085B1D;strokeWidth=2;html=1;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="20" y="910" as="sourcePoint"/>
+          <mxPoint x="80" y="910" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="p5-leg1t" value="Chunker A path (Token)" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+        <mxGeometry x="90" y="895" width="150" height="30" as="geometry"/>
+      </mxCell>
+      <mxCell id="p5-leg2" value="" style="endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;html=1;" edge="1" parent="1">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="20" y="940" as="sourcePoint"/>
+          <mxPoint x="80" y="940" as="targetPoint"/>
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="p5-leg2t" value="Chunker B path (Sentence)" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+        <mxGeometry x="90" y="925" width="170" height="30" as="geometry"/>
+      </mxCell>
+    </root>
+  </mxGraphModel>
+</diagram>
+<diagram id="page6" name="6 - Engine Node Processing">
+  <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+    <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+
+      <!-- Title -->
+      <mxCell id="p6-title" value="&lt;b&gt;C4 Dynamic Diagram: Engine Node Processing Sequence&lt;/b&gt;&lt;br&gt;7-step execution within a single DAG node" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" vertex="1" parent="1">
+        <mxGeometry x="400" y="20" width="800" height="50" as="geometry"/>
+      </mxCell>
+
+      <!-- Repository (external data store) -->
+      <mxCell id="p6-repo" value="&lt;b&gt;Repository&lt;/b&gt;&lt;br&gt;&lt;i&gt;«External: Data Store»&lt;/i&gt;&lt;br&gt;&lt;br&gt;PipeDoc + metadata&lt;br&gt;persistence" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#999999;strokeColor=#666666;fontColor=#FFFFFF;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="40" y="200" width="180" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Step 1: Hydration -->
+      <mxCell id="p6-hydrate" value="&lt;b&gt;1. Hydration&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Component»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Fetch L1 (envelope) and&lt;br&gt;L2 (content) from Repository" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="280" y="160" width="220" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Step 2: CEL Filter (decision diamond) -->
+      <mxCell id="p6-celfilter" value="&lt;b&gt;2. CEL Filter&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Component»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Evaluate CEL expression&lt;br&gt;(pass / skip)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontColor=#333333;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="550" y="130" width="220" height="170" as="geometry"/>
+      </mxCell>
+
+      <!-- Step 3: Pre-Mapping -->
+      <mxCell id="p6-premap" value="&lt;b&gt;3. Pre-Mapping&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Component»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Transform input fields&lt;br&gt;to module request schema" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="830" y="160" width="220" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Step 4: Module Call -->
+      <mxCell id="p6-modcall" value="&lt;b&gt;4. Module Call&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Component»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Invoke module via gRPC&lt;br&gt;(timeout + retry policy)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;strokeColor=#064516;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="830" y="360" width="220" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- DLQ -->
+      <mxCell id="p6-dlq" value="&lt;b&gt;DLQ&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container: Queue»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Dead Letter Queue&lt;br&gt;for failed messages" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CC0000;strokeColor=#990000;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="1150" y="360" width="200" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Step 5: Post-Mapping -->
+      <mxCell id="p6-postmap" value="&lt;b&gt;5. Post-Mapping&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Component»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Transform module response&lt;br&gt;back to PipeDoc schema" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="830" y="540" width="220" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Step 6: Metadata Update -->
+      <mxCell id="p6-meta" value="&lt;b&gt;6. Metadata Update&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Component»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Update processing metadata&lt;br&gt;timestamps, status, lineage" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="550" y="540" width="220" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Step 7: CEL Routing (decision diamond) -->
+      <mxCell id="p6-celroute" value="&lt;b&gt;7. CEL Routing&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Component»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Evaluate routing expression&lt;br&gt;(next node selection)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;fontColor=#333333;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="270" y="500" width="230" height="180" as="geometry"/>
+      </mxCell>
+
+      <!-- gRPC dispatch -->
+      <mxCell id="p6-grpc" value="&lt;b&gt;gRPC Dispatch&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Component»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Direct node-to-node&lt;br&gt;(low latency)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="80" y="760" width="200" height="90" as="geometry"/>
+      </mxCell>
+
+      <!-- Kafka dispatch -->
+      <mxCell id="p6-kafka" value="&lt;b&gt;Kafka Dispatch&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Component»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Durable async delivery&lt;br&gt;via pipestream topic" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="360" y="760" width="200" height="90" as="geometry"/>
+      </mxCell>
+
+      <!-- Edges: Step 1 Repo → Hydrate -->
+      <mxCell id="p6-e0" value="&lt;b&gt;1&lt;/b&gt; fetch L1/L2" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#438DD5;" edge="1" parent="1" source="p6-repo" target="p6-hydrate">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Hydrate → CEL Filter -->
+      <mxCell id="p6-e1" value="&lt;b&gt;2&lt;/b&gt; evaluate" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#438DD5;" edge="1" parent="1" source="p6-hydrate" target="p6-celfilter">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- CEL Filter → Pre-Mapping (pass) -->
+      <mxCell id="p6-e2" value="&lt;b&gt;3&lt;/b&gt; pass → pre-map" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#438DD5;" edge="1" parent="1" source="p6-celfilter" target="p6-premap">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- CEL Filter → CEL Routing (skip path) -->
+      <mxCell id="p6-e2skip" value="&lt;b&gt;skip&lt;/b&gt;" style="html=1;endArrow=block;endFill=1;strokeColor=#D6B656;strokeWidth=2;dashed=1;fontColor=#D6B656;" edge="1" parent="1" source="p6-celfilter" target="p6-celroute">
+        <mxGeometry relative="1" as="geometry">
+          <Array as="points">
+            <mxPoint x="660" y="450"/>
+            <mxPoint x="500" y="500"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+
+      <!-- Pre-Mapping → Module Call -->
+      <mxCell id="p6-e3" value="&lt;b&gt;4&lt;/b&gt; invoke [gRPC]" style="html=1;endArrow=block;endFill=1;strokeColor=#085B1D;strokeWidth=2;fontColor=#085B1D;" edge="1" parent="1" source="p6-premap" target="p6-modcall">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Module Call → DLQ (failure, red dashed) -->
+      <mxCell id="p6-e3dlq" value="failure" style="html=1;endArrow=block;endFill=1;strokeColor=#CC0000;strokeWidth=2;dashed=1;fontColor=#CC0000;" edge="1" parent="1" source="p6-modcall" target="p6-dlq">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Module Call → Post-Mapping -->
+      <mxCell id="p6-e4" value="&lt;b&gt;5&lt;/b&gt; post-map" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#438DD5;" edge="1" parent="1" source="p6-modcall" target="p6-postmap">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Post-Mapping → Metadata Update -->
+      <mxCell id="p6-e5" value="&lt;b&gt;6&lt;/b&gt; update metadata" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#438DD5;" edge="1" parent="1" source="p6-postmap" target="p6-meta">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Metadata Update → CEL Routing -->
+      <mxCell id="p6-e6" value="&lt;b&gt;7&lt;/b&gt; route" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#438DD5;" edge="1" parent="1" source="p6-meta" target="p6-celroute">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- CEL Routing → gRPC dispatch -->
+      <mxCell id="p6-e7a" value="gRPC (direct)" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#438DD5;" edge="1" parent="1" source="p6-celroute" target="p6-grpc">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- CEL Routing → Kafka dispatch -->
+      <mxCell id="p6-e7b" value="Kafka (durable)" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#438DD5;" edge="1" parent="1" source="p6-celroute" target="p6-kafka">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+    </root>
+  </mxGraphModel>
+</diagram>
+<diagram id="page7" name="7 - Kafka Topic Topology">
+  <mxGraphModel dx="1622" dy="962" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1400" math="0" shadow="0">
+    <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+
+      <!-- Title -->
+      <mxCell id="p7-title" value="&lt;b&gt;Kafka Topic Topology — AWS MSK (6 brokers, RF=2, 30-day retention)&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" vertex="1" parent="1">
+        <mxGeometry x="400" y="20" width="800" height="40" as="geometry"/>
+      </mxCell>
+
+      <!-- MSK boundary -->
+      <mxCell id="p7-msk" value="&lt;b&gt;AWS MSK Cluster&lt;/b&gt;&lt;br&gt;6 brokers, RF=2, 30-day retention" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8E8E8;strokeColor=#CCCCCC;fontColor=#333333;dashed=1;dashPattern=5 5;verticalAlign=top;align=left;spacingTop=5;spacingLeft=10;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="440" y="70" width="920" height="1280" as="geometry"/>
+      </mxCell>
+
+      <!-- ==================== SERVICES (left side) ==================== -->
+
+      <!-- S3 Connector -->
+      <mxCell id="p7-s3conn" value="&lt;b&gt;S3 Connector&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Kafka Connect&lt;br&gt;S3 Source" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="40" y="110" width="180" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Intake Gate -->
+      <mxCell id="p7-intake" value="&lt;b&gt;Intake Gate&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Validates, classifies,&lt;br&gt;routes to datasource topic" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="40" y="290" width="180" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Kafka Sidecar -->
+      <mxCell id="p7-sidecar" value="&lt;b&gt;Kafka Sidecar&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Consumes &amp;amp; produces&lt;br&gt;on behalf of Engine" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="40" y="480" width="180" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Engine -->
+      <mxCell id="p7-engine" value="&lt;b&gt;Engine&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;&lt;br&gt;&lt;br&gt;DAG execution,&lt;br&gt;module orchestration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;strokeColor=#064516;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="40" y="660" width="180" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Repository Service -->
+      <mxCell id="p7-repo" value="&lt;b&gt;Repository Service&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;&lt;br&gt;&lt;br&gt;PipeDoc CRUD,&lt;br&gt;event sourcing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="40" y="850" width="180" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Account Service -->
+      <mxCell id="p7-acct" value="&lt;b&gt;Account Service&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Tenant, user,&lt;br&gt;permission mgmt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="40" y="1200" width="180" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- OpenSearch Manager (right side) -->
+      <mxCell id="p7-osmgr" value="&lt;b&gt;OpenSearch Manager&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Index management,&lt;br&gt;projection builder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="1500" y="900" width="200" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- Operations (person) -->
+      <mxCell id="p7-ops" value="&lt;b&gt;Operations&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Person»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Monitoring &amp;amp;&lt;br&gt;incident response" style="shape=mxgraph.c4.person2;whiteSpace=wrap;html=1;fillColor=#08427b;strokeColor=#073B6F;fontColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxGeometry x="1520" y="660" width="160" height="140" as="geometry"/>
+      </mxCell>
+
+      <!-- ==================== TOPICS (center) ==================== -->
+
+      <!-- s3-crawl-events-out -->
+      <mxCell id="p7-t1" value="&lt;b&gt;s3-crawl-events-out&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Topic»&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#FF8C00;strokeColor=#CC7000;fontColor=#FFFFFF;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="500" y="130" width="200" height="70" as="geometry"/>
+      </mxCell>
+
+      <!-- intake.<datasource_id> -->
+      <mxCell id="p7-t2" value="&lt;b&gt;intake.&amp;lt;datasource_id&amp;gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Topic»&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#FF8C00;strokeColor=#CC7000;fontColor=#FFFFFF;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="500" y="310" width="200" height="70" as="geometry"/>
+      </mxCell>
+
+      <!-- pipestream.<cluster>.<node> -->
+      <mxCell id="p7-t3" value="&lt;b&gt;pipestream.&amp;lt;cluster&amp;gt;.&amp;lt;node&amp;gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Topic»&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#FF8C00;strokeColor=#CC7000;fontColor=#FFFFFF;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="500" y="500" width="260" height="70" as="geometry"/>
+      </mxCell>
+
+      <!-- pipestream.*.dlq -->
+      <mxCell id="p7-t4" value="&lt;b&gt;pipestream.*.dlq&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Topic»&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#CC0000;strokeColor=#990000;fontColor=#FFFFFF;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="500" y="680" width="200" height="70" as="geometry"/>
+      </mxCell>
+
+      <!-- *.quarantine -->
+      <mxCell id="p7-t5" value="&lt;b&gt;*.quarantine&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Topic»&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#CC0000;strokeColor=#990000;fontColor=#FFFFFF;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="850" y="680" width="200" height="70" as="geometry"/>
+      </mxCell>
+
+      <!-- repository-events -->
+      <mxCell id="p7-t6" value="&lt;b&gt;repository-events&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Topic»&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#FF8C00;strokeColor=#CC7000;fontColor=#FFFFFF;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="500" y="870" width="200" height="70" as="geometry"/>
+      </mxCell>
+
+      <!-- Entity topics group -->
+      <mxCell id="p7-t7" value="&lt;b&gt;Entity Topics&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Topic»&lt;/i&gt;&lt;br&gt;drive / node / module /&lt;br&gt;pipedoc / graph-updates" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#FF8C00;strokeColor=#CC7000;fontColor=#FFFFFF;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="500" y="1020" width="260" height="90" as="geometry"/>
+      </mxCell>
+
+      <!-- account-events -->
+      <mxCell id="p7-t8" value="&lt;b&gt;account-events&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Topic»&lt;/i&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#FF8C00;strokeColor=#CC7000;fontColor=#FFFFFF;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="500" y="1210" width="200" height="70" as="geometry"/>
+      </mxCell>
+
+      <!-- ==================== EDGES ==================== -->
+
+      <!-- S3 Connector → s3-crawl-events-out -->
+      <mxCell id="p7-e1" value="[Protobuf]&lt;br&gt;CrawlEvent" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#333333;" edge="1" parent="1" source="p7-s3conn" target="p7-t1">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- s3-crawl-events-out → Intake Gate -->
+      <mxCell id="p7-e2" value="[Protobuf]&lt;br&gt;CrawlEvent" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#333333;" edge="1" parent="1" source="p7-t1" target="p7-intake">
+        <mxGeometry relative="1" as="geometry">
+          <Array as="points">
+            <mxPoint x="350" y="165"/>
+            <mxPoint x="350" y="340"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+
+      <!-- Intake Gate → intake.<datasource_id> -->
+      <mxCell id="p7-e3" value="[Protobuf]&lt;br&gt;IntakeMessage" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#333333;" edge="1" parent="1" source="p7-intake" target="p7-t2">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- intake.<datasource_id> → Kafka Sidecar -->
+      <mxCell id="p7-e4" value="[Protobuf]&lt;br&gt;PipeStreamMessage" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#333333;" edge="1" parent="1" source="p7-t2" target="p7-sidecar">
+        <mxGeometry relative="1" as="geometry">
+          <Array as="points">
+            <mxPoint x="350" y="345"/>
+            <mxPoint x="350" y="530"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+
+      <!-- Kafka Sidecar → Engine -->
+      <mxCell id="p7-e5" value="gRPC" style="html=1;endArrow=block;endFill=1;strokeColor=#085B1D;strokeWidth=2;fontColor=#085B1D;" edge="1" parent="1" source="p7-sidecar" target="p7-engine">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Engine → pipestream.<cluster>.<node> -->
+      <mxCell id="p7-e6" value="[Protobuf]&lt;br&gt;PipeStreamMessage" style="html=1;endArrow=block;endFill=1;strokeColor=#085B1D;strokeWidth=2;fontColor=#333333;" edge="1" parent="1" source="p7-engine" target="p7-t3">
+        <mxGeometry relative="1" as="geometry">
+          <Array as="points">
+            <mxPoint x="300" y="710"/>
+            <mxPoint x="300" y="535"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+
+      <!-- pipestream.<cluster>.<node> → Kafka Sidecar (routes back) -->
+      <mxCell id="p7-e7" value="routes back" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=1;dashed=1;fontColor=#333333;" edge="1" parent="1" source="p7-t3" target="p7-sidecar">
+        <mxGeometry relative="1" as="geometry">
+          <Array as="points">
+            <mxPoint x="400" y="535"/>
+            <mxPoint x="400" y="510"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+
+      <!-- Engine → pipestream.*.dlq (red) -->
+      <mxCell id="p7-e8" value="[Protobuf]&lt;br&gt;FailedMessage" style="html=1;endArrow=block;endFill=1;strokeColor=#CC0000;strokeWidth=2;fontColor=#CC0000;" edge="1" parent="1" source="p7-engine" target="p7-t4">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- pipestream.*.dlq → *.quarantine (red) -->
+      <mxCell id="p7-e9" value="[Protobuf]&lt;br&gt;QuarantineEvent" style="html=1;endArrow=block;endFill=1;strokeColor=#CC0000;strokeWidth=2;fontColor=#CC0000;" edge="1" parent="1" source="p7-t4" target="p7-t5">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- *.quarantine → Operations (red) -->
+      <mxCell id="p7-e10" value="alert" style="html=1;endArrow=block;endFill=1;strokeColor=#CC0000;strokeWidth=2;fontColor=#CC0000;" edge="1" parent="1" source="p7-t5" target="p7-ops">
+        <mxGeometry relative="1" as="geometry">
+          <Array as="points">
+            <mxPoint x="1200" y="715"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+
+      <!-- Repository Service → repository-events -->
+      <mxCell id="p7-e11" value="[Protobuf]&lt;br&gt;RepositoryEvent" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#333333;" edge="1" parent="1" source="p7-repo" target="p7-t6">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- repository-events → OpenSearch Manager -->
+      <mxCell id="p7-e12" value="[Protobuf]&lt;br&gt;RepositoryEvent" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#333333;" edge="1" parent="1" source="p7-t6" target="p7-osmgr">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Entity topics → OpenSearch Manager -->
+      <mxCell id="p7-e13" value="[Protobuf]&lt;br&gt;EntityEvent" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#333333;" edge="1" parent="1" source="p7-t7" target="p7-osmgr">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- Account Service → account-events -->
+      <mxCell id="p7-e14" value="[Protobuf]&lt;br&gt;AccountEvent" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#333333;" edge="1" parent="1" source="p7-acct" target="p7-t8">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+    </root>
+  </mxGraphModel>
+</diagram>
+<diagram id="page8" name="8 - Frontend Architecture">
+  <mxGraphModel dx="1422" dy="862" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+    <root>
+      <mxCell id="0"/>
+      <mxCell id="1" parent="0"/>
+
+      <!-- Title -->
+      <mxCell id="p8-title" value="&lt;b&gt;C4 Dynamic Diagram: Frontend Architecture&lt;/b&gt;&lt;br&gt;Vue 3 + Express BFF + Connect-ES" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=16;" vertex="1" parent="1">
+        <mxGeometry x="450" y="20" width="700" height="50" as="geometry"/>
+      </mxCell>
+
+      <!-- Browser User (person) -->
+      <mxCell id="p8-user" value="&lt;b&gt;Browser User&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Person»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Platform end user" style="shape=mxgraph.c4.person2;whiteSpace=wrap;html=1;fillColor=#08427b;strokeColor=#073B6F;fontColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxGeometry x="60" y="120" width="160" height="140" as="geometry"/>
+      </mxCell>
+
+      <!-- Vue 3 SPA -->
+      <mxCell id="p8-spa" value="&lt;b&gt;Vue 3 SPA&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Vuetify 3 + Pinia +&lt;br&gt;Vue Router&lt;br&gt;[TypeScript]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="340" y="130" width="220" height="120" as="geometry"/>
+      </mxCell>
+
+      <!-- Express BFF -->
+      <mxCell id="p8-bff" value="&lt;b&gt;Express BFF&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Node.js, Fargate&lt;br&gt;port 38106" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="340" y="400" width="220" height="110" as="geometry"/>
+      </mxCell>
+
+      <!-- Service Resolver -->
+      <mxCell id="p8-resolver" value="&lt;b&gt;Service Resolver&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Dynamic service lookup&lt;br&gt;and connection pooling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="340" y="610" width="220" height="110" as="geometry"/>
+      </mxCell>
+
+      <!-- Platform Registration -->
+      <mxCell id="p8-platreg" value="&lt;b&gt;Platform Registration&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;&lt;br&gt;&lt;br&gt;WatchServices stream&lt;br&gt;real-time service catalog" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="340" y="820" width="220" height="110" as="geometry"/>
+      </mxCell>
+
+      <!-- Consul -->
+      <mxCell id="p8-consul" value="&lt;b&gt;Consul&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Health checks +&lt;br&gt;service discovery" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#666666;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="100" y="820" width="180" height="110" as="geometry"/>
+      </mxCell>
+
+      <!-- Apicurio -->
+      <mxCell id="p8-apicurio" value="&lt;b&gt;Apicurio&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Proto + JSON&lt;br&gt;schema registry" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#666666;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="620" y="820" width="180" height="110" as="geometry"/>
+      </mxCell>
+
+      <!-- Matomo -->
+      <mxCell id="p8-matomo" value="&lt;b&gt;Matomo&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;&lt;br&gt;&lt;br&gt;Search analytics&lt;br&gt;and tracking" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#999999;strokeColor=#666666;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="60" y="400" width="180" height="100" as="geometry"/>
+      </mxCell>
+
+      <!-- ==================== Backend Services ==================== -->
+
+      <!-- Engine -->
+      <mxCell id="p8-engine" value="&lt;b&gt;Engine&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#085B1D;strokeColor=#064516;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="700" y="340" width="160" height="60" as="geometry"/>
+      </mxCell>
+
+      <!-- Account Service -->
+      <mxCell id="p8-acctsvc" value="&lt;b&gt;Account Svc&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="700" y="420" width="160" height="60" as="geometry"/>
+      </mxCell>
+
+      <!-- Connector Admin -->
+      <mxCell id="p8-connadmin" value="&lt;b&gt;Connector Admin&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="700" y="500" width="160" height="60" as="geometry"/>
+      </mxCell>
+
+      <!-- Repository -->
+      <mxCell id="p8-repo" value="&lt;b&gt;Repository&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="900" y="380" width="160" height="60" as="geometry"/>
+      </mxCell>
+
+      <!-- OpenSearch Manager -->
+      <mxCell id="p8-osmgr" value="&lt;b&gt;OS Manager&lt;/b&gt;&lt;br&gt;&lt;i&gt;«Container»&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#3C7FC0;fontColor=#FFFFFF;arcSize=10;verticalAlign=middle;align=center;" vertex="1" parent="1">
+        <mxGeometry x="900" y="460" width="160" height="60" as="geometry"/>
+      </mxCell>
+
+      <!-- Backend services boundary -->
+      <mxCell id="p8-backend-boundary" value="&lt;b&gt;Backend Services&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#3C7FC0;fontColor=#3C7FC0;dashed=1;dashPattern=5 5;verticalAlign=top;align=left;spacingTop=5;spacingLeft=10;fontSize=11;" vertex="1" parent="1">
+        <mxGeometry x="680" y="310" width="400" height="270" as="geometry"/>
+      </mxCell>
+
+      <!-- ==================== EDGES (numbered steps) ==================== -->
+
+      <!-- 1. User → Vue SPA -->
+      <mxCell id="p8-e1" value="&lt;b&gt;1&lt;/b&gt; browses" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#438DD5;" edge="1" parent="1" source="p8-user" target="p8-spa">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 2. Vue SPA → Express BFF -->
+      <mxCell id="p8-e2" value="&lt;b&gt;2&lt;/b&gt; Connect-ES&lt;br&gt;[binary Protobuf / HTTP]" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#438DD5;" edge="1" parent="1" source="p8-spa" target="p8-bff">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 3. BFF → Service Resolver -->
+      <mxCell id="p8-e3" value="&lt;b&gt;3&lt;/b&gt; resolve target" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#438DD5;" edge="1" parent="1" source="p8-bff" target="p8-resolver">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 4. Service Resolver → Platform Registration -->
+      <mxCell id="p8-e4" value="&lt;b&gt;4&lt;/b&gt; WatchServices stream" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=2;fontColor=#438DD5;" edge="1" parent="1" source="p8-resolver" target="p8-platreg">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 5. Platform Registration → Consul -->
+      <mxCell id="p8-e5" value="&lt;b&gt;5&lt;/b&gt; health + discovery" style="html=1;endArrow=block;endFill=1;strokeColor=#999999;strokeWidth=2;fontColor=#666666;" edge="1" parent="1" source="p8-platreg" target="p8-consul">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 6. Platform Registration → Apicurio -->
+      <mxCell id="p8-e6" value="&lt;b&gt;6&lt;/b&gt; Proto + JSON schemas" style="html=1;endArrow=block;endFill=1;strokeColor=#999999;strokeWidth=2;fontColor=#666666;" edge="1" parent="1" source="p8-platreg" target="p8-apicurio">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 7. BFF → Backend services via gRPC -->
+      <mxCell id="p8-e7a" value="&lt;b&gt;7&lt;/b&gt; gRPC" style="html=1;endArrow=block;endFill=1;strokeColor=#085B1D;strokeWidth=2;fontColor=#085B1D;" edge="1" parent="1" source="p8-bff" target="p8-engine">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p8-e7b" value="gRPC" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=1;fontColor=#438DD5;" edge="1" parent="1" source="p8-bff" target="p8-acctsvc">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p8-e7c" value="gRPC" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=1;fontColor=#438DD5;" edge="1" parent="1" source="p8-bff" target="p8-connadmin">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p8-e7d" value="gRPC" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=1;fontColor=#438DD5;" edge="1" parent="1" source="p8-bff" target="p8-repo">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+      <mxCell id="p8-e7e" value="gRPC" style="html=1;endArrow=block;endFill=1;strokeColor=#438DD5;strokeWidth=1;fontColor=#438DD5;" edge="1" parent="1" source="p8-bff" target="p8-osmgr">
+        <mxGeometry relative="1" as="geometry"/>
+      </mxCell>
+
+      <!-- 8. Vue SPA → Matomo -->
+      <mxCell id="p8-e8" value="&lt;b&gt;8&lt;/b&gt; search analytics" style="html=1;endArrow=block;endFill=1;strokeColor=#999999;strokeWidth=2;fontColor=#666666;" edge="1" parent="1" source="p8-spa" target="p8-matomo">
+        <mxGeometry relative="1" as="geometry">
+          <Array as="points">
+            <mxPoint x="280" y="190"/>
+            <mxPoint x="280" y="450"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+    </root>
+  </mxGraphModel>
+</diagram>
+</mxfile>
