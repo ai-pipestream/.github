@@ -68,7 +68,7 @@ jobs:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GRADLE_OPTS: -Xmx2048m -XX:MaxMetaspaceSize=512m --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
-        run: ./gradlew clean build test --no-daemon
+        run: ./gradlew clean build test --no-daemon --refresh-dependencies
 
       - name: Publish Test Report
         uses: dorny/test-reporter@v2
@@ -128,7 +128,7 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           GRADLE_OPTS: -Xmx2048m -XX:MaxMetaspaceSize=512m --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
-        run: ./gradlew publishAllPublicationsToCentralPortalSnapshots --no-daemon --stacktrace
+        run: ./gradlew publishAllPublicationsToCentralPortalSnapshots --no-daemon --refresh-dependencies --stacktrace
 
       - name: Publish snapshots to GitHub Packages
         env:
@@ -181,7 +181,7 @@ jobs:
       - name: Build application (Skip tests)
         env:
           GRADLE_OPTS: -Xmx2048m -XX:MaxMetaspaceSize=512m --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED
-        run: ./gradlew clean build -x test --no-daemon
+        run: ./gradlew clean build -x test --no-daemon --refresh-dependencies
 
       - name: Build and push multi-arch snapshot Docker image
         uses: docker/build-push-action@v6
