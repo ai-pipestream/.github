@@ -42,11 +42,12 @@ def to_title(name: str) -> str:
 
 
 def get_link_path(file_path: Path, base_dir: Path) -> str:
-    """Generate absolute Docsify link path (e.g., /folder/file)."""
+    """Generate relative Docsify link path (e.g., folder/file)."""
     rel_path = file_path.relative_to(base_dir)
     # Remove suffix for clean URLs if desired, or keep .md. Docsify usually handles no extension well.
     # Using no extension for cleaner URLs.
-    return "/" + str(rel_path.with_suffix("")).replace(os.sep, "/")
+    # Note: Removing leading slash to ensure compatibility with subpath hosting (GitHub Pages)
+    return str(rel_path.with_suffix("")).replace(os.sep, "/")
 
 
 def scan_directory(current_dir: Path, base_dir: Path, config: Dict) -> List[str]:
@@ -132,7 +133,8 @@ def main() -> None:
     
     # Start content
     lines = []
-    lines.append("- [Home](/)")
+    lines.append("- [← Back to Home](../)")
+    lines.append("- [Docs Overview](README)")
     
     # Recursively scan
     # We process the root DOCS_DIR. 

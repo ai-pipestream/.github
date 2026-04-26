@@ -1,23 +1,27 @@
-- [Home](/)
+- [← Back to Home](../)
+- [Docs Overview](README)
 - **Architecture**
-  - [System Overview](/architecture/system-overview)
-- **[Developer](/developer/README)**
-  - [Kafka & Apicurio Guide](/developer/kafka-apicurio-guide)
+  - [System Overview](architecture/system-overview)
 - **Grpc**
-  - [Platform Features](/grpc/platform-features)
-  - **[Optimization](/grpc/optimization/README)**
-    - [Overview](/grpc/optimization/README)
-    - [Grpc Optimization Summary](/grpc/optimization/GRPC_OPTIMIZATION_SUMMARY)
-    - [Grpc Performance Optimization](/grpc/optimization/GRPC_PERFORMANCE_OPTIMIZATION)
-    - [Unified Server Limitations](/grpc/optimization/UNIFIED_SERVER_LIMITATIONS)
+  - [Platform Features](grpc/platform-features)
+  - **[Optimization](grpc/optimization/README)**
+    - [Overview](grpc/optimization/README)
+    - [Grpc Optimization Summary](grpc/optimization/GRPC_OPTIMIZATION_SUMMARY)
+    - [Grpc Performance Optimization](grpc/optimization/GRPC_PERFORMANCE_OPTIMIZATION)
+    - [Unified Server Limitations](grpc/optimization/UNIFIED_SERVER_LIMITATIONS)
 - **Design**
-  - [Document Journey](/design/document-jonurney)
-- **[Hamster Wheel](/hamster-wheel/README)**
-  - [RFC-001: Custom Kafka MessageConverter](/hamster-wheel/RFC-001-custom-kafka-message-converter)
+  - [Document Journey](design/document-journey)
+- **[Hamster Wheel](hamster-wheel/README)**
+  - [Overview](hamster-wheel/README)
+  - [Rfc 001 Custom Kafka Message Converter](hamster-wheel/RFC-001-custom-kafka-message-converter)
   - **Connector**
-    - [Connector Upload Methods](/hamster-wheel/connector/connector-upload-methods)
-    - [Implementation Status](/hamster-wheel/connector/implementation-status)
-  - **[Dev Service Discovery](/hamster-wheel/dev-service-discovery/README)**
-    - [Overview](/hamster-wheel/dev-service-discovery/README)
-    - [Llm Implementation Context](/hamster-wheel/dev-service-discovery/LLM-IMPLEMENTATION-CONTEXT)
-    - [Research](/hamster-wheel/dev-service-discovery/research)
+    - [Connector Upload Methods](hamster-wheel/connector/connector-upload-methods)
+    - [Implementation Status](hamster-wheel/connector/implementation-status)
+  - **[Dev Service Discovery](hamster-wheel/dev-service-discovery/README)**
+    - [Overview](hamster-wheel/dev-service-discovery/README)
+    - [Llm Implementation Context](hamster-wheel/dev-service-discovery/LLM-IMPLEMENTATION-CONTEXT)
+- **[Developer](developer/README)**
+  - [Overview](developer/README)
+  - [Kafka Apicurio Guide](developer/kafka-apicurio-guide)
+- **Research**
+  - [Log Structured Data Flow Whitepaper](research/log-structured-data-flow-whitepaper)
