@@ -24,7 +24,10 @@ on:
         type: string
     secrets:
       BUF_TOKEN:
-        required: true
+        # Optional: only repos that pull from the Buf Schema Registry need it.
+        # Repos whose protos come from Git (proto-toolchain) build without it,
+        # and the Setup Buf step below is skipped when it's absent.
+        required: false
       GPG_PRIVATE_KEY:
         required: false
       GPG_PASSPHRASE:
@@ -38,6 +41,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # Surfaced as job-level env so the Setup Buf step's `if` can gate on it.
+      BUF_TOKEN: ${{ secrets.BUF_TOKEN }}
     permissions:
       contents: read
       checks: write
@@ -70,6 +76,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
 
       - name: Setup Buf
+        if: ${{ env.BUF_TOKEN != '' }}
         uses: bufbuild/buf-action@v1
         with:
           token: ${{ secrets.BUF_TOKEN }}
@@ -102,6 +109,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main'
+    env:
+      BUF_TOKEN: ${{ secrets.BUF_TOKEN }}
     permissions:
       contents: read
       packages: write
@@ -133,6 +142,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
 
       - name: Setup Buf
+        if: ${{ env.BUF_TOKEN != '' }}
         uses: bufbuild/buf-action@v1
         with:
           token: ${{ secrets.BUF_TOKEN }}
@@ -167,6 +177,8 @@ jobs:
       - build
       - publish-snapshots
     if: github.ref == 'refs/heads/main'
+    env:
+      BUF_TOKEN: ${{ secrets.BUF_TOKEN }}
     permissions:
       contents: write
       packages: write
@@ -194,6 +206,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
 
       - name: Setup Buf
+        if: ${{ env.BUF_TOKEN != '' }}
         uses: bufbuild/buf-action@v1
         with:
           token: ${{ secrets.BUF_TOKEN }}
