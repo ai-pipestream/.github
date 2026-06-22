@@ -48,6 +48,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Free up runner disk space
+        run: |
+          echo "Disk before cleanup:"; df -h /
+          # Reclaim ~25 GB of preinstalled SDKs we don't use, so testcontainers
+          # images, Gradle caches, and Docker layers fit on the ubuntu-latest
+          # runner (the Gradle cache-save post-step was hitting "No space left").
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android \
+                      /usr/local/share/boost /opt/hostedtoolcache/CodeQL \
+                      /usr/share/swift /usr/local/.ghcup || true
+          sudo docker image prune -af || true
+          echo "Disk after cleanup:"; df -h /
+
       - name: Set up JDK ${{ inputs.java-version }}
         uses: actions/setup-java@v5
         with:
@@ -99,6 +111,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Free up runner disk space
+        run: |
+          echo "Disk before cleanup:"; df -h /
+          # Reclaim ~25 GB of preinstalled SDKs we don't use, so testcontainers
+          # images, Gradle caches, and Docker layers fit on the ubuntu-latest
+          # runner (the Gradle cache-save post-step was hitting "No space left").
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android \
+                      /usr/local/share/boost /opt/hostedtoolcache/CodeQL \
+                      /usr/share/swift /usr/local/.ghcup || true
+          sudo docker image prune -af || true
+          echo "Disk after cleanup:"; df -h /
+
       - name: Set up JDK ${{ inputs.java-version }}
         uses: actions/setup-java@v5
         with:
@@ -149,6 +173,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+
+      - name: Free up runner disk space
+        run: |
+          echo "Disk before cleanup:"; df -h /
+          # Multi-arch Docker buildx is disk-heavy; reclaim unused SDKs first.
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android \
+                      /usr/local/share/boost /opt/hostedtoolcache/CodeQL \
+                      /usr/share/swift /usr/local/.ghcup || true
+          sudo docker image prune -af || true
+          echo "Disk after cleanup:"; df -h /
 
       - name: Set up JDK ${{ inputs.java-version }}
         uses: actions/setup-java@v5
