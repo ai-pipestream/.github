@@ -23,5 +23,7 @@
 - **[Developer](developer/README)**
   - [Overview](developer/README)
   - [Kafka Apicurio Guide](developer/kafka-apicurio-guide)
-- **Research**
+- **[Research](research/README)**
+  - [Public Research Overview](research/README)
+  - [Collaborative Distributed HNSW](research/README?id=collaborative-distributed-hnsw-search)
   - [Log Structured Data Flow Whitepaper](research/log-structured-data-flow-whitepaper)

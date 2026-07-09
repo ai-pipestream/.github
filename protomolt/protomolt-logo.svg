@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="ProtoMolt logo: a new hexagonal schema emerging from a molted shell">
   <defs>
     <linearGradient id="pm-grad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#667eea"/>
-      <stop offset="1" stop-color="#764ba2"/>
+      <stop offset="0" stop-color="#34495e"/>
+      <stop offset="1" stop-color="#2f5d78"/>
     </linearGradient>
   </defs>
 
   <!-- The molt: the shed shell of the previous version, cracked open toward the new one -->
-  <g stroke="#ffffff" stroke-opacity="0.30" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none" transform="rotate(-7 110 150)">
+  <g stroke="#7a7f8a" stroke-opacity="0.55" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none" transform="rotate(-7 110 150)">
     <path d="M 175.8 112 L 175.8 188 L 110 226 L 44.2 188 L 44.2 112 L 110 74"/>
     <!-- fragments left behind at the crack -->
     <path d="M 126 83 L 143 93"/>
@@ -17,9 +17,9 @@
   <!-- The proto: the new version, whole and current -->
   <g>
     <path d="M 152 50 L 198.8 77 L 198.8 131 L 152 158 L 105.2 131 L 105.2 77 Z"
-          fill="url(#pm-grad)" stroke="#ffffff" stroke-opacity="0.18" stroke-width="3" stroke-linejoin="round"/>
+          fill="url(#pm-grad)" stroke-linejoin="round"/>
     <!-- message fields: tag dot + value bar -->
-    <g fill="#ffffff" fill-opacity="0.92">
+    <g fill="#fbfbf9" fill-opacity="0.95">
       <circle cx="128" cy="86" r="5"/>
       <rect x="140" y="82" width="46" height="8" rx="4"/>
       <circle cx="128" cy="104" r="5"/>

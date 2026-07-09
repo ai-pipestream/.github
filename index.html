@@ -3,568 +3,932 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Pipestream AI - The Enterprise Document Service Mesh. gRPC latency, Kafka durability, and strict schema governance.">
-    <title>Pipestream AI: Document Processing Mesh for Text</title>
+    <meta name="description" content="Pipestream AI builds open-source software that assists with human understanding: distributed semantic search, document understanding, and upstream contributions to the Apache and gRPC ecosystems. Apache-2.0 and MIT licensed.">
+    <title>Pipestream AI — Open-source software for human understanding</title>
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --bg-dark: #0a0e27;
-            --bg-card: rgba(255, 255, 255, 0.05);
-            --text-main: #ffffff;
-            --text-muted: rgba(255, 255, 255, 0.7);
-            --accent: #667eea;
-            --success: #48bb78;
-            --danger: #f56565;
+            --bg: #fbfbf9;
+            --surface: #ffffff;
+            --ink: #1c1e23;
+            --ink-soft: #4a4e57;
+            --ink-faint: #7a7f8a;
+            --rule: #e5e4df;
+            --accent: #34495e;
+            --accent-soft: #eef1f4;
+            --link: #2f5d78;
+            --merged: #4a7c59;
+            --open: #9a6a3a;
+            --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+            --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            color: var(--text-main);
-            background: var(--bg-dark);
-            overflow-x: hidden;
+            font-family: var(--sans);
+            line-height: 1.65;
+            color: var(--ink);
+            background: var(--bg);
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
         }
 
-        /* Animated background */
-        .bg-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
-        }
+        a { color: var(--link); text-decoration: none; }
+        a:hover { text-decoration: underline; }
 
-        .bg-animation::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
-            animation: pulse 15s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.1) rotate(180deg); }
-        }
+        .wrap { max-width: 860px; margin: 0 auto; padding: 0 24px; }
 
         /* Header */
         header {
-            padding: 20px 40px;
+            border-bottom: 1px solid var(--rule);
+            background: var(--bg);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .header-inner {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 16px 24px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        nav a {
-            color: var(--text-muted);
-            text-decoration: none;
-            margin-left: 30px;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        nav a:hover {
-            color: var(--accent);
-        }
-
-        /* Hero Section */
-        .hero {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 100px 20px 60px;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 4rem;
-            line-height: 1.1;
-            margin-bottom: 25px;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 800;
-            letter-spacing: -1px;
-        }
-
-        .lead {
-            font-size: 1.35rem;
-            color: var(--text-muted);
-            margin-bottom: 40px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Buttons */
-        .cta-group {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-bottom: 60px;
-        }
-
-        .btn {
-            padding: 15px 35px;
-            border-radius: 50px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn-primary {
-            background: var(--primary-gradient);
-            color: white;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-primary:hover {
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            border: 2px solid var(--accent);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(102, 126, 234, 0.1);
-        }
-
-        /* Tech Stack Badges */
-        .tech-stack {
-            display: flex;
-            justify-content: center;
+            align-items: baseline;
+            gap: 16px;
             flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 80px;
         }
-
-        .badge {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-muted);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .badge:hover {
-            background: rgba(102, 126, 234, 0.1);
-            border-color: rgba(102, 126, 234, 0.3);
-            color: #fff;
-            transform: translateY(-2px);
-        }
-
-        /* Standard Section Styles */
-        .section-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 80px 20px;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: white;
-        }
-
-        .section-subtitle {
-            text-align: center;
-            color: var(--text-muted);
-            margin-bottom: 60px;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Features Grid */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-        }
-
-        .feature-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 40px;
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .feature-card h3 {
-            color: var(--text-main);
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-        }
-
-        .feature-card p {
-            color: var(--text-muted);
-            font-size: 1.05rem;
-        }
-
-        /* Comparison Table */
-        .comparison-table-wrapper {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            color: var(--text-muted);
-            min-width: 800px;
-        }
-
-        th, td {
-            padding: 20px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        th {
-            color: var(--accent);
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .highlight-col {
-            background: rgba(102, 126, 234, 0.1);
-            color: white;
-            font-weight: 600;
-            border-radius: 8px;
-        }
-        
-        td.highlight-col {
-            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
-        }
-
-        /* Architecture Steps */
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-
-        .step-card {
-            text-align: left;
-            padding: 25px;
-            border-left: 3px solid var(--accent);
-            background: linear-gradient(90deg, rgba(102,126,234,0.05) 0%, transparent 100%);
-            border-radius: 0 10px 10px 0;
-        }
-
-        .step-card h4 {
-            color: white;
-            margin-bottom: 10px;
+        .brand {
+            font-family: var(--serif);
             font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: -0.01em;
+        }
+        .brand:hover { text-decoration: none; }
+        nav.top a {
+            color: var(--ink-soft);
+            font-size: 0.9rem;
+            margin-left: 20px;
+        }
+        nav.top a:hover { color: var(--ink); }
+
+        /* Hero */
+        .hero { padding: 72px 0 40px; border-bottom: 1px solid var(--rule); }
+        .hero h1 {
+            font-family: var(--serif);
+            font-size: 2.5rem;
+            line-height: 1.15;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 22px;
+        }
+        .hero .mission {
+            font-size: 1.2rem;
+            color: var(--ink-soft);
+            max-width: 40em;
+        }
+        .hero .sub {
+            font-size: 1.02rem;
+            color: var(--ink-faint);
+            margin-top: 18px;
+            max-width: 44em;
+        }
+        .pillrow { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px; }
+        .pill {
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            color: var(--ink-soft);
+            background: var(--surface);
+            border: 1px solid var(--rule);
+            border-radius: 4px;
+            padding: 5px 10px;
         }
 
-        .step-card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin: 0;
+        /* Sections */
+        section.block { padding: 52px 0; border-bottom: 1px solid var(--rule); }
+        h2 {
+            font-family: var(--serif);
+            font-size: 1.55rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 8px;
         }
+        .lede { color: var(--ink-soft); margin-bottom: 28px; max-width: 46em; }
+        h3 { font-size: 1.02rem; font-weight: 650; margin-bottom: 4px; }
+
+        /* Contribution list */
+        .contrib { list-style: none; }
+        .contrib > li {
+            padding: 20px 0;
+            border-top: 1px solid var(--rule);
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 20px;
+        }
+        .contrib > li:first-child { border-top: none; }
+        .proj-name {
+            font-family: var(--serif);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .proj-name .host {
+            display: block;
+            font-family: var(--sans);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--ink-faint);
+            font-weight: 500;
+            margin-top: 3px;
+        }
+        .proj-body p { color: var(--ink-soft); font-size: 0.97rem; margin-bottom: 10px; }
+        .prs { list-style: none; font-size: 0.9rem; }
+        .prs li { padding: 3px 0; color: var(--ink-soft); }
+        .tag {
+            font-family: var(--mono);
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 1px 6px;
+            border-radius: 3px;
+            margin-right: 8px;
+            vertical-align: 1px;
+        }
+        .tag.merged { color: var(--merged); border: 1px solid #cfe0d4; background: #f3f8f4; }
+        .tag.open { color: var(--open); border: 1px solid #e6dcc9; background: #faf6ee; }
+
+        /* Project cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1px;
+            background: var(--rule);
+            border: 1px solid var(--rule);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .card { background: var(--surface); padding: 20px; }
+        .card h3 a { color: var(--ink); }
+        .card p { font-size: 0.9rem; color: var(--ink-soft); margin-top: 6px; }
+
+        /* Research callout */
+        .research {
+            background: var(--accent-soft);
+            border: 1px solid #dbe2e8;
+            border-radius: 8px;
+            padding: 28px 30px;
+        }
+        .research h3 { font-family: var(--serif); font-size: 1.15rem; margin-bottom: 6px; }
+        .research p { color: var(--ink-soft); font-size: 0.97rem; margin-bottom: 14px; }
+        .research ul { margin: 0 0 4px 1.1em; color: var(--ink-soft); font-size: 0.95rem; }
+        .research li { margin: 6px 0; }
+
+        .note {
+            font-size: 0.86rem;
+            color: var(--ink-faint);
+            font-style: italic;
+            margin-top: 14px;
+        }
+
+        /* Public packages */
+        .pkg-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 1px;
+            background: var(--rule);
+            border: 1px solid var(--rule);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .pkg { background: var(--surface); padding: 16px 18px; }
+        .pkg a.name { font-family: var(--mono); font-size: 0.9rem; color: var(--ink); font-weight: 600; }
+        .pkg p { font-size: 0.85rem; color: var(--ink-soft); margin-top: 5px; }
+
+        /* Project sections */
+        .project-lead { color: var(--ink-soft); font-size: 1.12rem; max-width: 46em; margin-bottom: 16px; }
+        .project-body { color: var(--ink-soft); max-width: 46em; }
+        .proj-h { font-family: var(--serif); font-size: 1.2rem; font-weight: 600; margin-top: 28px; margin-bottom: 4px; }
+        .proj-desc { color: var(--ink-soft); max-width: 48em; font-size: 0.97rem; }
+        .repo-link { font-family: var(--mono); font-size: 0.85rem; }
+        .actions { margin-top: 22px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .btn {
+            display: inline-block;
+            font-family: var(--sans);
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #fff;
+            background: var(--accent);
+            border: none;
+            border-radius: 6px;
+            padding: 10px 18px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn:hover { background: #2a3b4d; text-decoration: none; }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed; inset: 0; z-index: 100;
+            background: rgba(20, 22, 26, 0.55);
+            display: none;
+            align-items: flex-start; justify-content: center;
+            padding: 40px 20px; overflow-y: auto;
+        }
+        .modal-backdrop.open { display: flex; }
+        body.modal-open { overflow: hidden; }
+        .modal {
+            background: var(--surface);
+            max-width: 800px; width: 100%;
+            border-radius: 12px;
+            padding: 42px 46px 48px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .modal-close {
+            position: absolute; top: 14px; right: 18px;
+            background: none; border: none; font-size: 1.7rem; line-height: 1;
+            color: var(--ink-faint); cursor: pointer;
+        }
+        .modal-close:hover { color: var(--ink); }
+        .modal h2 { font-family: var(--serif); font-size: 1.6rem; margin-bottom: 6px; letter-spacing: -0.01em; }
+        .modal .eyebrow {
+            font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.06em; color: var(--ink-faint); margin-bottom: 14px;
+        }
+        .modal h3 { font-family: var(--serif); font-size: 1.18rem; margin: 28px 0 8px; }
+        .modal p { color: var(--ink-soft); margin-bottom: 12px; font-size: 0.97rem; }
+        .modal ul { margin: 0 0 14px 1.2em; color: var(--ink-soft); font-size: 0.95rem; }
+        .modal li { margin: 8px 0; }
+        .modal table { width: 100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 0.88rem; }
+        .modal th, .modal td { text-align: right; padding: 7px 12px; border-bottom: 1px solid var(--rule); color: var(--ink-soft); }
+        .modal th:first-child, .modal td:first-child { text-align: left; }
+        .modal th { color: var(--ink); font-weight: 600; }
+        .modal code { font-family: var(--mono); font-size: 0.86em; background: var(--accent-soft); padding: 1px 4px; border-radius: 3px; }
+        .modal .eq { font-family: var(--mono); font-size: 0.9rem; background: var(--accent-soft); color: var(--ink); padding: 11px 14px; border-radius: 6px; margin: 10px 0 14px; overflow-x: auto; }
 
         /* Footer */
-        footer {
-            text-align: center;
-            padding: 60px 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: 80px;
+        footer { padding: 48px 0 60px; }
+        .footer-cols { display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; }
+        .footer-cols h4 {
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--ink-faint);
+            margin-bottom: 10px;
+            font-weight: 600;
         }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 20px;
+        .footer-cols a { display: block; color: var(--ink-soft); font-size: 0.92rem; padding: 2px 0; }
+        .license {
+            margin-top: 36px;
+            padding-top: 20px;
+            border-top: 1px solid var(--rule);
+            color: var(--ink-faint);
+            font-size: 0.86rem;
         }
+        .yourkit { margin-top: 20px; font-size: 0.82rem; color: var(--ink-faint); }
+        .yourkit img { height: 26px; vertical-align: middle; margin-right: 6px; opacity: 0.85; }
 
-        .footer-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: var(--accent);
-        }
-
-        .copyright {
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 0.9rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            h1 { font-size: 2.8rem; }
-            .hero { padding-top: 60px; }
-            .cta-group { flex-direction: column; }
-            header { flex-direction: column; gap: 20px; }
-            nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
-            nav a { margin: 0; }
+        @media (max-width: 620px) {
+            .hero h1 { font-size: 2rem; }
+            .contrib > li { grid-template-columns: 1fr; gap: 8px; }
+            nav.top a { margin-left: 14px; }
         }
     </style>
 </head>
 <body>
-    <div class="bg-animation"></div>
-
     <header>
-        <div class="logo">Pipestream AI</div>
-        <nav>
-            <a href="docs/#/architecture/system-overview">Architecture</a>
-            <a href="protomolt/">ProtoMolt</a>
-            <a href="https://buf.build/pipestreamai/platform" target="_blank">Proto Registry</a>
-            <a href="docs/">Documentation</a>
-            <a href="https://github.com/ai-pipestream" target="_blank">GitHub</a>
-        </nav>
+        <div class="header-inner">
+            <a href="#top" class="brand">Pipestream AI</a>
+            <nav class="top">
+                <a href="#packages">Packages</a>
+                <a href="#distributed-search">Projects</a>
+                <a href="protomolt/">ProtoMolt</a>
+                <a href="#contributions">Contributions</a>
+                <a href="#research">Research</a>
+                <a href="https://github.com/ai-pipestream">GitHub</a>
+            </nav>
+        </div>
     </header>
 
-    <main>
+    <main id="top">
         <section class="hero">
-            <h1>The Document Service Mesh <br>for Text Processing</h1>
-            <p class="lead">
-                Pipestream is a high-performance orchestration engine that combines 
-                <strong>gRPC real-time latency</strong> with <strong>Kafka-based durability</strong>. 
-                Type-safe, polyglot, and schema-first.
-            </p>
-            
-            <div class="cta-group">
-                <a href="docs/#/architecture/system-overview" class="btn btn-primary">Read the Whitepaper</a>
-                <a href="https://github.com/ai-pipestream" class="btn btn-secondary">View on GitHub</a>
-            </div>
-
-            <div class="tech-stack">
-                <span class="badge">⚡ Quarkus Engine</span>
-                <span class="badge">📨 Kafka "Save Game"</span>
-                <span class="badge">🚀 gRPC Mesh</span>
-                <span class="badge">🛡️ Protobuf / Buf</span>
-                <span class="badge">📦 S3 Claim-Check</span>
-                <span class="badge">🔎 OpenSearch</span>
-            </div>
-        </section>
-
-        <section class="section-container" id="features">
-            <div class="features-grid">
-                <div class="feature-card">
-                    <span class="feature-icon">🎮</span>
-                    <h3>Kafka = "Save Game"</h3>
-                    <p>We treat Kafka as a checkpoint system. Pause, rewind, and replay your pipeline from any node. Perfect for DLQ handling or re-running expensive LLM steps without hitting the API again.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🕸️</span>
-                    <h3>Visual DAG Builder</h3>
-                    <p>Design pipelines with a drag-and-drop graph editor. Connect nodes via <strong>Kafka</strong> (async) or <strong>gRPC</strong> (sync). The engine validates cycles and allows multiple pipelines per client.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🔐</span>
-                    <h3>BYOK Encryption</h3>
-                    <p>Security is baked in. Data stored in the S3 "Claim Check" layer can be encrypted with your own keys (BYOK). We handle the secure envelope; you hold the keys.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">⚡</span>
-                    <h3>Dual-Mode Transport</h3>
-                    <p>Why choose? Route high-priority UI requests via gRPC (milliseconds) and bulk ingestion via Kafka (terabytes). The engine handles the switching dynamically.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🌐</span>
-                    <h3>Polyglot Service Mesh</h3>
-                    <p>Write LLM logic in Python. Write parsers in Rust. Connect them seamlessly in a Consul-backed service mesh. Modules are "dumb" endpoints; the Engine is the smart router.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🛡️</span>
-                    <h3>Schema-First Governance</h3>
-                    <p>Prevent data corruption with strict Apicurio & Protobuf contracts. The Engine controls mapping, so a rogue script can never break your Search Index.</p>
+            <div class="wrap">
+                <h1>Open-source software that assists with human understanding.</h1>
+                <p class="mission">
+                    Pipestream AI is a small collaboration of engineers working on
+                    distributed semantic search, document understanding, and the open
+                    infrastructure that connects them.
+                </p>
+                <p class="sub">
+                    We build in the open and contribute upstream. Everything we release is
+                    licensed under Apache&nbsp;2.0 or MIT. Where we can make an existing
+                    project faster, safer, or more capable, we send the work back to it
+                    rather than fork away.
+                </p>
+                <div class="pillrow">
+                    <span class="pill">Apache OpenNLP</span>
+                    <span class="pill">Apache Tika</span>
+                    <span class="pill">Apache Lucene</span>
+                    <span class="pill">Quarkus</span>
+                    <span class="pill">Docling</span>
+                    <span class="pill">gRPC</span>
                 </div>
             </div>
         </section>
 
-        <section class="section-container">
-            <h2 class="section-title">How Pipestream Compares</h2>
-            <p class="section-subtitle">Most tools are either lightweight libraries or heavyweight ETL platforms. Pipestream sits between them, focused on document business logic.</p>
-            <div class="comparison-table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Feature</th>
-                            <th class="highlight-col">Pipestream</th>
-                            <th>LangChain</th>
-                            <th>Apache NiFi</th>
-                            <th>Data Prepper</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Primary Goal</strong></td>
-                            <td class="highlight-col">Document Business Logic</td>
-                            <td>Prototyping / RAG</td>
-                            <td>Moving Raw Bits (ETL)</td>
-                            <td>Log Aggregation</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Architecture</strong></td>
-                            <td class="highlight-col">Service Mesh (Hub & Spoke)</td>
-                            <td>Library (Client-side)</td>
-                            <td>Visual DAG Graph</td>
-                            <td>Linear Pipeline</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Transport</strong></td>
-                            <td class="highlight-col">Hybrid (gRPC + Kafka)</td>
-                            <td>In-Memory / HTTP</td>
-                            <td>Disk-based</td>
-                            <td>Memory Buffer</td>
-                        </tr>
-                        <tr>
-                            <td><strong>State Mgmt</strong></td>
-                            <td class="highlight-col">Claim-Check (S3)</td>
-                            <td>Manual</td>
-                            <td>Heavy FlowFiles</td>
-                            <td>Transient</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Schema</strong></td>
-                            <td class="highlight-col">Strict (Protobuf)</td>
-                            <td>Loose (JSON)</td>
-                            <td>Schemaless</td>
-                            <td>Loose JSON</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section class="section-container">
-            <h2 class="section-title">The Engineering Flow</h2>
-            <p class="section-subtitle">A DAM for Text + Language-Agnostic Stream Processor.</p>
-            
-            <div class="steps-grid">
-                <div class="step-card">
-                    <h4>1. Ingest & Claim Check</h4>
-                    <p>Intake Service accepts documents via gRPC. Large binaries (PDFs/Videos) are immediately offloaded to encrypted S3 storage. Only the lightweight <strong>PipeDoc</strong> metadata enters the stream.</p>
-                </div>
-                <div class="step-card">
-                    <h4>2. The Engine Router</h4>
-                    <p>The Engine acts as the "DNS" for your data. It checks the DAG, detects cycles, and routes to the next Node via gRPC (fast) or Kafka (durable save-point).</p>
-                </div>
-                <div class="step-card">
-                    <h4>3. Polyglot Processing</h4>
-                    <p>Your Python <strong>Summarizer Module</strong> receives a typed Request. It processes data and returns it. It knows nothing about the mesh, retries, or storage.</p>
-                </div>
-                <div class="step-card">
-                    <h4>4. Strict Indexing</h4>
-                    <p>The Engine maps the result to the <strong>OpenSearch</strong> schema. Decryption happens only at the last mile for indexing, ensuring security in transit.</p>
+        <section class="block" id="packages">
+            <div class="wrap">
+                <h2>Public packages</h2>
+                <p class="lede">
+                    Everything below is public and open source — libraries you can depend on,
+                    tools you can run, and the research engine — under the
+                    <a href="https://github.com/ai-pipestream">ai-pipestream</a> organization.
+                </p>
+                <div class="pkg-grid">
+                    <div class="pkg"><a class="name" href="protomolt/">protomolt</a><p>Protobuf toolkit and schema registry over Git: validation, compatibility, search indexing.</p></div>
+                    <div class="pkg"><a class="name" href="https://github.com/ai-pipestream/distributed-search">distributed-search</a><p>Distributed semantic search with collaborative HNSW KNN across shards.</p></div>
+                    <div class="pkg"><a class="name" href="https://github.com/ai-pipestream/quarkus-buf-grpc-generator">quarkus-buf-grpc-generator</a><p>Quarkus Mutiny gRPC stubs generated with Buf, cross-platform.</p></div>
+                    <div class="pkg"><a class="name" href="https://github.com/ai-pipestream/quarkus-grpc-zero">quarkus-grpc-zero</a><p>JVM-only, self-contained protoc codegen for Quarkus.</p></div>
+                    <div class="pkg"><a class="name" href="https://github.com/ai-pipestream/protobuf4j">protobuf4j</a><p>Pure-Java Protobuf toolkit that runs protoc as WebAssembly.</p></div>
+                    <div class="pkg"><a class="name" href="https://github.com/ai-pipestream/docling-java">docling-java</a><p>A Java API for Docling, including a gRPC service client.</p></div>
+                    <div class="pkg"><a class="name" href="https://github.com/ai-pipestream/tika4-shaded">tika4-shaded</a><p>All-in-one shaded Tika 4 jar for quick Java integration.</p></div>
+                    <div class="pkg"><a class="name" href="https://github.com/ai-pipestream/docling-grpc-examples">docling-grpc-examples</a><p>Runnable multi-language examples for the Docling gRPC interface.</p></div>
+                    <div class="pkg"><a class="name" href="https://github.com/ai-pipestream/mcp-grpc-transport-proto">mcp-grpc-transport-proto</a><p>A gRPC transport definition for the Model Context Protocol.</p></div>
+                    <div class="pkg"><a class="name" href="https://github.com/ai-pipestream/pipestream-quic-protocol-rfc">pipestream-quic-protocol-rfc</a><p>Draft RFC for a QUIC-based pipeline transport.</p></div>
                 </div>
             </div>
         </section>
 
-        <section class="section-container">
-            <h2 class="section-title">ProtoMolt: The Schema Layer, Open Sourced</h2>
-            <p class="section-subtitle">The protobuf machinery underneath Pipestream is its own project.</p>
-            <div class="features-grid" style="grid-template-columns: 1fr;">
-                <div class="feature-card" style="max-width: 860px; margin: 0 auto;">
-                    <span class="feature-icon">🧬</span>
-                    <h3>A Protobuf Toolkit and a Schema Registry on Git</h3>
-                    <p>ProtoMolt gathers <code>.proto</code> sources from Git, Maven, jars, and other registries, validates and diffs them with a typed compatibility engine, and serves them from a registry whose storage is a plain Git repository behind the Confluent protocol. It passes the complete protovalidate conformance suite and every claim is enforced in CI.</p>
-                    <p style="margin-top: 16px;"><a href="protomolt/" class="btn btn-primary" style="padding: 10px 24px;">Explore ProtoMolt</a></p>
+        <section class="block" id="distributed-search">
+            <div class="wrap">
+                <h2>distributed-search</h2>
+                <p class="project-lead">
+                    A gRPC distributed semantic search engine with collaborative HNSW
+                    nearest-neighbour search across shards. It is the reference implementation
+                    for the search research below, and the reason the other search work exists.
+                </p>
+                <p class="project-body">
+                    Vector search scales by sharding an index across nodes, but the standard
+                    distributed contract makes every shard run its search to full depth while a
+                    coordinator merges and discards most of the results. distributed-search
+                    exists to test a better contract: shards that <em>collaborate</em> during the
+                    search, sharing a running bound so each can stop chasing candidates the rest
+                    of the cluster has already beaten. The core mechanism is being upstreamed to
+                    Apache Lucene as a sandbox collector.
+                </p>
+                <div class="actions">
+                    <button class="btn" data-modal="hnsw-modal">Read the technical write-up →</button>
+                    <a class="repo-link" href="https://github.com/ai-pipestream/distributed-search">github.com/ai-pipestream/distributed-search</a>
                 </div>
             </div>
         </section>
 
-        <section class="section-container">
-            <h2 class="section-title">The "Data Commons" Vision</h2>
-            <p class="section-subtitle">Future versions will allow meshes to cluster together.</p>
-            <div class="features-grid" style="grid-template-columns: 1fr 1fr;">
-                <div class="feature-card">
-                    <h3>🌍 Subscribe to the World</h3>
-                    <p>We are building standardized, pre-indexed subscriptions for <strong>Wikipedia, Gutenberg, Census, and IRS data</strong>. Connect your mesh to the public Pipestream cluster and ingest curated datasets instantly.</p>
+        <section class="block" id="protomolt">
+            <div class="wrap">
+                <h2>ProtoMolt</h2>
+                <p class="project-lead">
+                    A modular Java toolkit for Protocol Buffers at runtime, and a schema
+                    registry whose storage is a plain Git repository behind the Confluent
+                    protocol. It is the schema layer underneath Pipestream, maintained as
+                    its own project.
+                </p>
+                <p class="project-body">
+                    Every code path operates on descriptors rather than generated classes:
+                    gather <code>.proto</code> sources from Git, Maven, jars, or other
+                    registries; validate messages against rules carried on the schema
+                    (the protovalidate dialect passes the full conformance suite, 2,872 of
+                    2,872 cases, re-scored in CI on every push); diff schemas with a typed
+                    compatibility engine; and register versions through compatibility-gated
+                    writes, one Git commit each. gRPC consumers fetch compiled binary
+                    descriptor sets directly.
+                </p>
+                <div class="actions">
+                    <a class="btn" href="protomolt/">Visit the project page →</a>
+                    <a class="repo-link" href="https://github.com/ai-pipestream/protomolt">github.com/ai-pipestream/protomolt</a>
                 </div>
-                <div class="feature-card">
-                    <h3>🤝 Mesh Clustering</h3>
-                    <p>Pipestream instances will be able to join via Consul to form larger processing clusters. Share load, share datasets, and process the world's information together.</p>
+            </div>
+        </section>
+
+        <section class="block" id="projects">
+            <div class="wrap">
+                <h2>More projects</h2>
+                <p class="lede">Other open-source repositories we build and maintain.</p>
+
+                <h3 class="proj-h">quarkus-buf-grpc-generator</h3>
+                <p class="proj-desc">
+                    Generates Quarkus Mutiny gRPC stubs using Buf, so a Quarkus build can consume
+                    proto workspaces without a native protoc toolchain. Cross-platform.
+                    <a class="repo-link" href="https://github.com/ai-pipestream/quarkus-buf-grpc-generator">→&nbsp;repo</a>
+                </p>
+
+                <h3 class="proj-h">tika4-shaded</h3>
+                <p class="proj-desc">
+                    An all-in-one shaded build of Apache Tika 4 — one jar you can drop into a
+                    Java application for text and metadata extraction without wrestling
+                    dependency conflicts.
+                    <a class="repo-link" href="https://github.com/ai-pipestream/tika4-shaded">→&nbsp;repo</a>
+                </p>
+
+                <h3 class="proj-h">docling-grpc-examples</h3>
+                <p class="proj-desc">
+                    Runnable examples, in several languages, for the gRPC document-conversion
+                    interface being proposed to the Docling project.
+                    <a class="repo-link" href="https://github.com/ai-pipestream/docling-grpc-examples">→&nbsp;repo</a>
+                </p>
+
+                <h3 class="proj-h">pipestream-quic-protocol-rfc</h3>
+                <p class="proj-desc">
+                    A draft RFC exploring a QUIC-based transport for the pipeline.
+                    <a class="repo-link" href="https://github.com/ai-pipestream/pipestream-quic-protocol-rfc">→&nbsp;repo</a>
+                </p>
+            </div>
+        </section>
+
+        <section class="block" id="contributions">
+            <div class="wrap">
+                <h2>Upstream contributions</h2>
+                <p class="lede">
+                    Functional work merged into or proposed to established open-source
+                    projects. Each links to the pull request so the claim can be read
+                    against the code.
+                </p>
+
+                <ul class="contrib">
+                    <li>
+                        <div class="proj-name">OpenNLP<span class="host">Apache · merged</span></div>
+                        <div class="proj-body">
+                            <p>
+                                An ongoing effort to make OpenNLP's core faster and safer for
+                                concurrent use: making tokenization and normalization hot paths
+                                run in a fraction of their previous time, moving the stemmer and
+                                other stateful components toward thread-safety, and correcting
+                                Unicode handling against the Unicode Character Database. Alongside
+                                the performance work we've been adding capability — a lexical
+                                knowledge base, a gazetteer and geocoder for place-name
+                                understanding, and a static embedding engine.
+                            </p>
+                            <ul class="prs">
+                                <li><span class="tag merged">merged</span><a href="https://github.com/apache/opennlp/pull/1163">Thread-safe stemmers, <code>StemmerFactory</code>, per-thread stem caching</a></li>
+                                <li><span class="tag merged">merged</span><a href="https://github.com/apache/opennlp/pull/1161">Non-breaking normalization &amp; tokenization hot-path speedups</a></li>
+                                <li><span class="tag merged">merged</span><a href="https://github.com/apache/opennlp/pull/1155">Lexical knowledge-base seam — WN-LMF/WNDB readers, Morphy lemmatizer</a></li>
+                                <li><span class="tag merged">merged</span><a href="https://github.com/apache/opennlp/pull/1154">Gazetteer &amp; geocoder API with a bundled Natural Earth implementation</a></li>
+                                <li><span class="tag merged">merged</span><a href="https://github.com/apache/opennlp/pull/1152">Static embedding engine for distilled embedding tables</a></li>
+                                <li><a href="https://github.com/apache/opennlp/pulls?q=is%3Apr+author%3Akrickert">…and more — full history on GitHub</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="proj-name">Tika<span class="host">Apache · merged + open</span></div>
+                        <div class="proj-body">
+                            <p>
+                                A <code>MarkdownParser</code> for <code>tika-parser-text-module</code>.
+                                Before it, <code>.md</code> files were detected as
+                                <code>text/markdown</code> but no parser claimed them, so they fell
+                                through to plain-text extraction and their headings, tables, and
+                                code fences collapsed into flat text. This walks the Markdown AST
+                                into structured, lossless XHTML — and upstream has since built
+                                follow-on work on it. Alongside it, a strongly-typed
+                                <code>Document</code> parse contract for <code>tika-grpc</code>, so
+                                services can consume Tika output as a schema rather than by parsing
+                                HTML.
+                            </p>
+                            <ul class="prs">
+                                <li><span class="tag merged">merged</span><a href="https://github.com/apache/tika/pull/2922">Markdown parser with structured, lossless XHTML output</a></li>
+                                <li><span class="tag open">open</span><a href="https://github.com/apache/tika/pull/2921">Typed <code>Document</code> parse contract for tika-grpc</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="proj-name">Lucene<span class="host">Apache · open</span></div>
+                        <div class="proj-body">
+                            <p>
+                                A shared-floor kNN collector in the sandbox module — the building
+                                block for coordinating an HNSW nearest-neighbour search across
+                                independent shards without a central rank pass.
+                                <a href="#" data-modal="hnsw-modal">Read how the mechanism works →</a>
+                            </p>
+                            <ul class="prs">
+                                <li><span class="tag open">open</span><a href="https://github.com/apache/lucene/pull/16357">Add shared-floor kNN collection to the sandbox module</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="proj-name">Quarkus<span class="host">Quarkus · merged</span></div>
+                        <div class="proj-body">
+                            <p>
+                                Fixes and improvements to the gRPC stack — including a correction
+                                to the Stork load-balancer subchannel lifecycle — with further
+                                bug fixes and documentation improvements being catalogued.
+                            </p>
+                            <ul class="prs">
+                                <li><span class="tag merged">merged</span><a href="https://github.com/quarkusio/quarkus/pull/55185">Fix gRPC Stork load-balancer subchannel lifecycle</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="proj-name">Jandex Gradle Plugin<span class="host">kordamp · merged</span></div>
+                        <div class="proj-body">
+                            <p>
+                                Made the plugin compatible with Gradle's configuration cache —
+                                the build-caching feature it previously broke on. The task was
+                                refactored off non-serializable Gradle types (<code>Project</code>,
+                                <code>Configuration</code>, <code>SourceSet</code>) onto the lazy
+                                <code>Property</code>/<code>Provider</code> API, with correct
+                                input/output declarations for up-to-date checking and functional
+                                tests covering the cached path.
+                            </p>
+                            <ul class="prs">
+                                <li><span class="tag merged">merged</span><a href="https://github.com/kordamp/jandex-gradle-plugin/pull/37">Make the Jandex Gradle Plugin compatible with the Gradle configuration cache</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="proj-name">gRPC Zero<span class="host">Quarkiverse · merged</span></div>
+                        <div class="proj-body">
+                            <p>
+                                Sustained work on the JVM-only, self-contained protoc codegen for
+                                Quarkus: an input-hash cache that skips regeneration when the proto
+                                inputs haven't changed, descriptor-FQN validation that catches
+                                duplicate proto types, generator and post-processor SPIs for
+                                extensibility, clearer codegen failure diagnostics, and the
+                                project's documentation.
+                            </p>
+                            <ul class="prs">
+                                <li><span class="tag merged">merged</span><a href="https://github.com/quarkiverse/quarkus-grpc-zero/pull/119">Input-hash cache to skip codegen when proto inputs are unchanged</a></li>
+                                <li><span class="tag merged">merged</span><a href="https://github.com/quarkiverse/quarkus-grpc-zero/pull/97">Detect duplicate proto types by descriptor FQN</a></li>
+                                <li><span class="tag merged">merged</span><a href="https://github.com/quarkiverse/quarkus-grpc-zero/pull/96">Add <code>GrpcZeroGenerator</code> and <code>GrpcZeroPostProcessor</code> SPIs</a></li>
+                                <li><span class="tag merged">merged</span><a href="https://github.com/quarkiverse/quarkus-grpc-zero/pull/83">Improve proto codegen failure diagnostics</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="proj-name">Apicurio Registry<span class="host">Apicurio · merged</span></div>
+                        <div class="proj-body">
+                            <p>
+                                Hardening the registry's protobuf handling. Binary descriptor
+                                uploads whose identifiers violate the protobuf grammar were being
+                                stored intact and carried into downstream consumers; we now
+                                validate identifiers and reject conflicting type definitions at the
+                                upload boundary. The two follow-on fixes keep consumers alive when
+                                schema resolution fails, by falling back to direct protobuf parsing
+                                rather than stalling the consumer group.
+                            </p>
+                            <ul class="prs">
+                                <li><span class="tag merged">merged</span><a href="https://github.com/Apicurio/apicurio-registry/pull/7784">Validate identifiers &amp; reject conflicting schemas at upload</a></li>
+                                <li><span class="tag merged">merged</span><a href="https://github.com/Apicurio/apicurio-registry/pull/7603">Opt-in fallback to direct protobuf parsing when schema resolution fails</a></li>
+                                <li><span class="tag merged">merged</span><a href="https://github.com/Apicurio/apicurio-registry/pull/7602">Catch <code>SchemaException</code> in <code>ProtobufSchemaParser.parseSchema()</code></a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="proj-name">protobuf4j<span class="host">roastedroot · merged</span></div>
+                        <div class="proj-body">
+                            <p>
+                                Memory-safety and diagnostics work on this JVM Protobuf toolkit,
+                                which runs <code>protoc</code> compiled to WebAssembly: wrapping
+                                native <code>malloc</code>/<code>free</code> in an
+                                <code>AutoCloseable</code> buffer so WASM memory can't leak, and
+                                surfacing native-plugin <code>stderr</code> in exceptions instead
+                                of swallowing it.
+                            </p>
+                            <ul class="prs">
+                                <li><span class="tag merged">merged</span><a href="https://github.com/roastedroot/protobuf4j/pull/73">Wrap WASM <code>malloc</code>/<code>free</code> in an <code>AutoCloseable</code> buffer</a></li>
+                                <li><span class="tag merged">merged</span><a href="https://github.com/roastedroot/protobuf4j/pull/72">Include native-plugin <code>stderr</code> in the thrown exception</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="proj-name">Micronaut gRPC<span class="host">Micronaut · merged</span></div>
+                        <div class="proj-body">
+                            <p>
+                                Created the <code>protobuf-json-support</code> module — a
+                                JSON ⇄ Protocol Buffers bridge that lets Micronaut gRPC services
+                                speak JSON over a standard proxy, so a gRPC API can be consumed as
+                                REST/JSON without hand-written translation. It now ships as a
+                                first-class module on the framework's 5.0.x line.
+                            </p>
+                            <ul class="prs">
+                                <li><span class="tag merged">merged</span><a href="https://github.com/micronaut-projects/micronaut-grpc/pull/1029">gRPC protobuf-JSON support</a></li>
+                                <li><span class="tag merged">merged</span><a href="https://github.com/micronaut-projects/micronaut-grpc/pull/1046">JSON Protocol Buffer proxy support</a></li>
+                                <li><span class="tag merged">merged</span><a href="https://github.com/micronaut-projects/micronaut-grpc/pull/1059">Bring protobuf-JSON support to 4.10.x</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="proj-name">Docling &amp; MarkItDown<span class="host">Docling / Microsoft · merged + open</span></div>
+                        <div class="proj-body">
+                            <p>
+                                Work toward a common gRPC document-conversion interface across the
+                                leading open document-parsing tools. In <code>docling-java</code>
+                                we implemented the <code>docling-serve-grpc</code> service client
+                                and brought the Java <code>DoclingDocument</code> model to a
+                                complete, wire-accurate match. In flight upstream: a gRPC server
+                                with PDF/PPTX streaming for MarkItDown, and native gRPC conversion
+                                plus shared protobuf definitions for Docling.
+                            </p>
+                            <ul class="prs">
+                                <li><span class="tag merged">merged</span><a href="https://github.com/docling-project/docling-java/pull/329">docling-java: implement the <code>docling-serve-grpc</code> service client</a></li>
+                                <li><span class="tag merged">merged</span><a href="https://github.com/docling-project/docling-java/pull/558">docling-java: <code>DoclingDocument</code> model with correct wire formats</a></li>
+                                <li><span class="tag open">open</span><a href="https://github.com/microsoft/markitdown/pull/2109">MarkItDown: gRPC server + PDF/PPTX streaming</a></li>
+                                <li><span class="tag open">open</span><a href="https://github.com/docling-project/docling-core/pull/546">Docling: gRPC protobuf definitions + conversion utility</a></li>
+                                <li><span class="tag open">open</span><a href="https://github.com/docling-project/docling-serve/pull/504">Docling-serve: native gRPC converter</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+                <p class="note">
+                    Dedicated pages for OpenNLP, document parsing, gRPC, Quarkus, the Jandex
+                    Gradle plugin, and Apicurio are in progress.
+                </p>
+            </div>
+        </section>
+
+        <section class="block" id="research">
+            <div class="wrap">
+                <h2>Pipestream AI Public Research</h2>
+                <p class="lede">
+                    Open research on distributed vector search. We publish the work so it can
+                    be reviewed, reproduced, and improved on.
+                </p>
+                <div class="research">
+                    <h3>Collaborative distributed HNSW search</h3>
+                    <p>
+                        HNSW graphs give excellent approximate nearest-neighbour recall on a
+                        single node, but a naïve distributed search queries every shard to full
+                        depth and merges afterward — paying the full cost on every shard. We are
+                        investigating a collaborative approach where shards share a running
+                        floor value, letting each shard prune candidates that cannot enter the
+                        global top-k. The Lucene
+                        <a href="https://github.com/apache/lucene/pull/16357">shared-floor kNN
+                        collector</a> is the first upstream piece of this work.
+                    </p>
+                    <ul>
+                        <li><strong>distributed-search</strong> — reference engine for collaborative KNN across shards.</li>
+                        <li><strong>Shared-floor kNN collection</strong> — proposed to Apache Lucene (sandbox module).</li>
+                        <li><strong>Distributed Lucene index</strong> — a shard-native index format, in progress.</li>
+                    </ul>
+                    <p style="margin-top: 18px;">
+                        <button class="btn" data-modal="hnsw-modal">Read the technical write-up →</button>
+                    </p>
                 </div>
+            </div>
+        </section>
+
+        <section class="block" id="background">
+            <div class="wrap">
+                <h2>Background</h2>
+                <p class="lede">
+                    The mission — software that assists with human understanding — has a
+                    long root.
+                </p>
+                <p style="color: var(--ink-soft); max-width: 46em;">
+                    Pipestream AI's founder began in open source on Linux desktop
+                    accessibility: the
+                    <a href="https://www.ucdenver.edu/center-for-innovative-design-and-engineering/community-engagement/colorado-assistive-technology-act-program/technology-and-transition-to-employment/linux-accessibility">AccessX</a>
+                    keyboard and pointer features — StickyKeys, SlowKeys, BounceKeys, and
+                    MouseKeys — that let someone operate a computer without a conventional
+                    keyboard or mouse. That work was done around 1999 through the
+                    rehabilitation-services program at the University of Illinois at
+                    Urbana&#8209;Champaign, with Ralph Johnson. Making information usable by
+                    people has been the point ever since.
+                </p>
+                <p style="color: var(--ink-soft); max-width: 46em; margin-top: 16px;">
+                    The through-line since then has been search: an NLP search engine in
+                    1999, and later production work on relevance and live-updating indexes —
+                    rebuilding Etsy's search in 2010 for live updates and modernized
+                    relevance, and the search at Adorama. <a href="#projects">distributed-search</a>
+                    and the collaborative-HNSW <a href="#research">research</a> are the
+                    current chapter of the same problem.
+                </p>
             </div>
         </section>
     </main>
 
     <footer>
-        <section class="section-container" style="padding: 40px 20px;">
-            <h3 style="color: var(--text-muted); margin-bottom: 20px;">Project Special Thanks</h3>
-            <div style="display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap; margin-bottom: 30px;">
-                <a href="https://opennlp.apache.org/" target="_blank" style="color: var(--text-muted); text-decoration: none;">OpenNLP</a>
-                <a href="https://quarkus.io/" target="_blank" style="color: var(--text-muted); text-decoration: none;">Quarkus</a>
-                <a href="https://tika.apache.org/" target="_blank" style="color: var(--text-muted); text-decoration: none;">Apache Tika</a>
-                <a href="https://www.docling.ai/" target="_blank" style="color: var(--text-muted); text-decoration: none;">Docling</a>
+        <div class="wrap">
+            <div class="footer-cols">
+                <div>
+                    <h4>Project</h4>
+                    <a href="#contributions">Contributions</a>
+                    <a href="#projects">Projects</a>
+                    <a href="#research">Research</a>
+                    <a href="#background">Background</a>
+                    <a href="docs/">Documentation</a>
+                </div>
+                <div>
+                    <h4>Source</h4>
+                    <a href="https://github.com/ai-pipestream">GitHub organization</a>
+                    <a href="https://github.com/ai-pipestream/distributed-search">distributed-search</a>
+                    <a href="https://github.com/ai-pipestream/.github/issues">Issues</a>
+                </div>
+                <div>
+                    <h4>Built on</h4>
+                    <a href="https://opennlp.apache.org/">Apache OpenNLP</a>
+                    <a href="https://tika.apache.org/">Apache Tika</a>
+                    <a href="https://lucene.apache.org/">Apache Lucene</a>
+                    <a href="https://quarkus.io/">Quarkus</a>
+                </div>
             </div>
-            <div style="margin-top: 20px;">
-                <a href="https://www.yourkit.com/" target="_blank" rel="noopener">
-                    <img src="yklogo.png" alt="YourKit" style="height: 40px; vertical-align: middle;">
-                </a>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 15px;">
-                    We gladly use <a href="https://www.yourkit.com/" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">YourKit</a> tools. 
-                    YourKit supports open source projects with innovative and intelligent tools for monitoring and profiling Java and .NET applications.
-                </p>
-            </div>
-        </section>
 
-        <div class="footer-links">
-            <a href="https://github.com/ai-pipestream">GitHub Organization</a>
-            <a href="docs/">Documentation</a>
-            <a href="https://github.com/ai-pipestream/.github/issues">Support</a>
-        </div>
-        <div class="copyright">
-            &copy; 2025 Pipestream AI. Open Source under MIT License.
+            <p class="yourkit">
+                <a href="https://www.yourkit.com/" target="_blank" rel="noopener"><img src="yklogo.png" alt="YourKit"></a>
+                Profiling generously supported by <a href="https://www.yourkit.com/">YourKit</a>,
+                which provides its Java and .NET profilers to open-source projects.
+            </p>
+
+            <p class="license">
+                © 2026 Pipestream AI. Released under the Apache License 2.0 and the MIT
+                License — see each repository for its terms.
+            </p>
         </div>
     </footer>
+
+    <div class="modal-backdrop" id="hnsw-modal" role="dialog" aria-modal="true" aria-labelledby="hnsw-title">
+        <div class="modal">
+            <button class="modal-close" data-close aria-label="Close">&times;</button>
+            <div class="eyebrow">Apache Lucene · sandbox · PR&nbsp;#16357 · open</div>
+            <h2 id="hnsw-title">Shared-floor kNN collection for multi-shard HNSW search</h2>
+
+            <p>
+                The mechanism behind <code>distributed-search</code>, proposed to Apache Lucene.
+                This is a faithful summary of
+                <a href="https://github.com/apache/lucene/pull/16357">PR&nbsp;#16357</a> —
+                2,951 lines across 12 files in <code>lucene/sandbox</code>, with zero changes to
+                <code>lucene/core</code>.
+            </p>
+
+            <h3>The problem</h3>
+            <p>
+                Distributed HNSW search wastes most of its work today. A large <code>k</code>
+                forces every shard to compute the same full <code>k</code> candidates; a
+                coordinator then joins the results and throws away roughly
+                <code>(s−1)/s</code> of them, where <code>s</code> is the shard count.
+            </p>
+            <p>
+                A 16-shard cluster at <code>k=10,000</code> computes 160,000 candidates, ships
+                them to the coordinator, and discards 150,000 — 94% of the work wasted, and it
+                gets worse as <code>k</code> and shard count grow. Every shard searches as if it
+                were alone, because Lucene has no way to tell a running search that the rest of
+                the cluster already holds better results than the ones it is still chasing.
+            </p>
+
+            <h3>What it adds</h3>
+            <p>
+                Four classes in <code>org.apache.lucene.sandbox.search.knn</code>. Nothing
+                touches <code>HnswGraphSearcher</code>; everything works through the existing
+                <code>minCompetitiveSimilarity()</code> hook and the
+                <code>KnnCollector.Decorator</code> pattern.
+            </p>
+            <ul>
+                <li><strong>GlobalKnnFloor</strong> — tracks the k-th best similarity across all
+                    participating searches. Monotonic, updated in batches, with an
+                    <code>advertise()</code> method so a bound computed elsewhere (another JVM,
+                    another machine) can be pushed in from an outside thread.</li>
+                <li><strong>FloorAwareKnnCollector</strong> — a decorator that folds the global
+                    floor into <code>minCompetitiveSimilarity()</code>. An <em>ascent gate</em>
+                    stops a search from being pruned before it has collected enough locally to
+                    know the floor applies to it; a <em>greediness clamp</em> bounds how much
+                    exploration the floor can take away.</li>
+                <li><strong>SharedFloorKnnCollectorManager</strong> — wires this into the
+                    existing collector-manager seam. It reports <code>isOptimistic() == true</code>,
+                    so it composes with Lucene's optimistic multi-segment strategy instead of
+                    competing with it.</li>
+                <li><strong>BlockingFloatHeap</strong> — a bounded concurrent min-heap the floor
+                    needs, restored from git history (it had been removed with
+                    <code>MultiLeafKnnCollector</code>).</li>
+            </ul>
+            <p>
+                Everything is opt-in. Stock searches are untouched, all tuning values are
+                constructor parameters with documented defaults, and an activation threshold
+                keeps small-k searches from engaging the floor at all.
+            </p>
+
+            <h3>Why the fan-in shrinks</h3>
+            <p>
+                If shards are random samples of the corpus (hash or round-robin sharding both
+                give this), the number of global top-k hits in a shard of share <code>p</code>
+                is <code>Binomial(k, p)</code>, and Lucene's optimistic quota formula (with
+                <code>λ = 16</code>) sizes each shard accordingly:
+            </p>
+            <div class="eq">perShardK(k, p) = k·p + λ·√( k·p·(1−p) )</div>
+            <p>
+                For <code>s</code> equal shards the total collected telescopes to
+                <code>k + λ·√(k·(s−1))</code>, so the fan-in reduction versus today's
+                "every shard returns k" contract is:
+            </p>
+            <div class="eq">R(k, s) = s / ( 1 + λ·√((s−1)/k) )   →   s   as k → ∞</div>
+            <p>
+                The large-k case that hurts most today is exactly where the math is most
+                favorable. At <code>s = 16</code>:
+            </p>
+            <table>
+                <thead><tr><th>k</th><th>per-shard&nbsp;K</th><th>total collected</th><th>vs k·s today</th><th>reduction</th></tr></thead>
+                <tbody>
+                    <tr><td>100</td><td>44</td><td>704</td><td>1,600</td><td>2.3×</td></tr>
+                    <tr><td>1,000</td><td>184</td><td>2,944</td><td>16,000</td><td>5.4×</td></tr>
+                    <tr><td>10,000</td><td>1,012</td><td>16,192</td><td>160,000</td><td>9.9×</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Why pruning on the floor can't cost recall</h3>
+            <p>
+                Let <code>s*</code> be the k-th best similarity over the final merged result.
+                The floor at any moment is the k-th best over the hits seen so far — a subset of
+                all hits that will ever exist — so <code>floor(t) ≤ s*</code> always, and the
+                floor only rises. Any candidate whose reachable score is below the floor is
+                below <code>s*</code> and can never enter the final top-k, so pruning it is
+                loss-free. The same holds for externally advertised bounds, as long as a sender
+                only advertises the scores of real hits.
+            </p>
+            <p>
+                The one caveat is the one stock HNSW already lives with: a path through a
+                low-scoring bridge node can reach a better cluster. The greediness clamp bounds
+                exactly this — the effective bar never rises past the
+                <code>((1−g)·gateK)</code>-th best the shard has seen, so a
+                <code>(1−g)</code>-deep exploration frontier always survives. <code>g = 0</code>
+                is bit-identical to stock search; the default is <code>0.5</code>.
+            </p>
+
+            <h3>Measured so far</h3>
+            <p>
+                On 247M Cohere embeddings (1024-dim, dot product) sharded round-robin into 16,
+                each force-merged to a single segment and joined so one leaf stands in for one
+                remote shard:
+            </p>
+            <ul>
+                <li>Against the <strong>distributed contract</strong> (every shard returns full
+                    k, coordinator merges): <strong>−24% vector comparisons at k=1,000</strong>
+                    within 0.003 recall; at k=10,000, <strong>−88% to −91%</strong> at a recall
+                    cost of 0.02–0.04.</li>
+                <li>Against a single JVM's <strong>optimistic</strong> baseline: only low single
+                    digits — because optimistic search already avoids most redundant work inside
+                    one process. This is why it belongs in sandbox, not core.</li>
+            </ul>
+            <p>
+                An earlier version running on a Raspberry&nbsp;Pi cluster showed roughly 50%
+                savings; that setup existed to watch the floor behave on live, staggered nodes
+                rather than to be a rigorous benchmark, so it is cited only as a direction
+                check, not a number to lean on.
+            </p>
+
+            <h3>Why sandbox, not core</h3>
+            <p>
+                Because the numbers say "promising," not "proven." The regime the mechanism is
+                built for — separate JVMs per shard, where each would otherwise run to
+                completion and ship its full k — is the hardest to benchmark honestly, and
+                reproducing that distributed result properly is the main open work. Sandbox keeps
+                the API free to move while that measurement happens; graduation to core would
+                require a much larger body of evidence.
+            </p>
+
+            <p style="margin-top: 22px;">
+                <a href="https://github.com/apache/lucene/pull/16357">Read PR&nbsp;#16357 on GitHub →</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            function open(id) {
+                var m = document.getElementById(id);
+                if (!m) return;
+                m.classList.add('open');
+                document.body.classList.add('modal-open');
+            }
+            function close(m) {
+                m.classList.remove('open');
+                document.body.classList.remove('modal-open');
+            }
+            document.querySelectorAll('[data-modal]').forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    open(btn.getAttribute('data-modal'));
+                });
+            });
+            document.querySelectorAll('.modal-backdrop').forEach(function (bd) {
+                bd.addEventListener('click', function (e) { if (e.target === bd) close(bd); });
+                bd.querySelectorAll('[data-close]').forEach(function (c) {
+                    c.addEventListener('click', function () { close(bd); });
+                });
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.modal-backdrop.open').forEach(close);
+                }
+            });
+        })();
+    </script>
 </body>
 </html>

@@ -1,11 +1,19 @@
-# Welcome to Pipestream AI
+# Pipestream AI
 
-**Open Source Document Processing Platform for Intelligent Search and Indexing**
+**Open-source software that assists with human understanding.**
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License: Apache 2.0 / MIT](https://img.shields.io/badge/license-Apache--2.0%20%2F%20MIT-blue.svg)](#-license)
 [![Website](https://img.shields.io/badge/website-pipestream.ai-blue)](https://pipestream.ai)
 
-Pipestream AI is an open-source platform that transforms documents into searchable knowledge using AI-powered processing. It provides a flexible, network-based architecture for ingesting, parsing, chunking, and embedding documents for intelligent search and indexing.
+Pipestream AI is a small collaboration of engineers working on distributed
+semantic search, document understanding, and the open infrastructure that
+connects them. We build in the open and contribute upstream — to Apache OpenNLP,
+Tika, and Lucene, to Quarkus, and to the gRPC and Docling ecosystems.
+
+The platform itself is a flexible, network-based architecture for ingesting,
+parsing, chunking, and embedding documents for search and indexing. See our
+[Public Research](docs/research/README.md) for the collaborative distributed
+HNSW work.
 
 ## 📚 Documentation
 
