@@ -317,6 +317,7 @@
         <div class="header-inner">
             <a href="../" class="brand">Pipestream AI <span style="color: var(--ink-faint); font-weight: 400;">/ ProtoMolt</span></a>
             <nav class="top">
+                <a href="#run">Run it</a>
                 <a href="#features">Features</a>
                 <a href="#examples">Examples</a>
                 <a href="#agents">Agents</a>
@@ -351,6 +352,30 @@
                     <span class="pill">MCP</span>
                     <span class="pill">MIT</span>
                 </div>
+            </div>
+        </section>
+
+        <section class="block" id="run">
+            <div class="wrap">
+                <h2>Run it now</h2>
+                <p class="lede">One container is the whole thing: gRPC with reflection, JSON/REST
+                    with Swagger UI, an MCP endpoint, and a schema registry &mdash; with a sample
+                    schema seeded so every verb has something to say immediately.</p>
+                <pre class="code"><code>docker run -p 8080:8080 -p 9090:9090 ghcr.io/ai-pipestream/protomolt-serve --demo</code></pre>
+                <pre class="code"><code><span style="color: var(--ink-faint);"># Validate a message against the demo schema's declared rules:</span>
+curl -s -H 'content-type: application/json' \
+  -d '{"schema": {"type": "demo.shop.v1.Order"}, "message": {"id": "not-a-uuid"}}' \
+  http://localhost:8080/grpc-json/ProtoMoltService/ValidateMessage
+
+<span style="color: var(--ink-faint);"># Any gRPC client sees a real, reflectable service:</span>
+grpcurl -plaintext localhost:9090 list
+
+<span style="color: var(--ink-faint);"># Make an AI agent gRPC-aware with one command:</span>
+claude mcp add --transport http protomolt http://localhost:8080/mcp</code></pre>
+                <p class="proj-desc">Swagger UI lives at <code style="font-family: var(--mono); font-size: 0.92em;">localhost:8080/docs</code>.
+                    Releases also attach runnable zips (JRE 21+ only). Then take a tutorial:
+                    <a href="python/">Python clients without protoc</a> or
+                    <a href="openvino/">operating an OpenVINO server from an AI agent</a>.</p>
             </div>
         </section>
 
