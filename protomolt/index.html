@@ -317,7 +317,7 @@
         <div class="header-inner">
             <a href="../" class="brand">Pipestream AI <span style="color: var(--ink-faint); font-weight: 400;">/ ProtoMolt</span></a>
             <nav class="top">
-                <a href="#run">Run it</a>
+                <a href="#run">Run it</a>\n                <a href="#console">Console</a>
                 <a href="#features">Features</a>
                 <a href="#examples">Examples</a>
                 <a href="#agents">Agents</a>
@@ -444,6 +444,22 @@ var result  = checker.check(oldSources, newSources, CompatibilityMode.BACKWARD);
     implementation 'ai.pipestream:protomolt-compat'
 }</code></pre>
                 <p class="proj-desc">One BOM aligns all forty-two modules. Pick the two you need today; the rest are there when you need them.</p>
+            </div>
+        </section>
+
+        <section class="block" id="console">
+            <div class="wrap">
+                <h2>The console</h2>
+                <p class="lede">A schema-registry console ships in the repo: browse subjects and
+                    versions, explore every type's fields, diff versions, check compatibility
+                    before registering, and try messages against declared rules &mdash; all
+                    against any Confluent-compatible registry.</p>
+                <p><a href="img/console-subjects.png"><img src="img/console-subjects.png" alt="ProtoMolt console: subjects view" style="max-width: 100%; border: 1px solid var(--rule); border-radius: 8px;"></a></p>
+                <p><a href="img/console-types.png"><img src="img/console-types.png" alt="ProtoMolt console: type explorer with field tables" style="max-width: 100%; border: 1px solid var(--rule); border-radius: 8px;"></a></p>
+                <div class="actions">
+                    <a class="btn" href="https://github.com/ai-pipestream/protomolt/tree/main/console">Run the console →</a>
+                    <a class="repo-link" href="img/console-subject-detail.png">the schema view</a>
+                </div>
             </div>
         </section>
 
