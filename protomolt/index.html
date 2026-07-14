@@ -339,7 +339,7 @@
                     the Confluent protocol your serializers already use.
                 </p>
                 <p class="sub">
-                    Forty-five focused modules under one BOM, MIT-licensed, artifacts under
+                    Forty-seven focused modules under one BOM, MIT-licensed, artifacts under
                     <code style="font-family: var(--mono); font-size: 0.92em;">ai.pipestream</code> on Maven Central.
                     Every claim on this page is enforced by CI, not asserted.
                 </p>
@@ -464,24 +464,30 @@ var result  = checker.check(oldSources, newSources, CompatibilityMode.BACKWARD);
                     gRPC is defined in protobuf. So is ProtoMolt&rsquo;s future API surface.
                 </p>
                 <p class="project-body">
-                    Today, every operation &mdash; compile, validate, diff, check compatibility,
-                    render schemas, evaluate CEL, reflect, invoke, generate &mdash; is a named
-                    action with a machine-readable input schema, mounted on the registry server
-                    and served over MCP. Consoles and LLM tools drive the entire toolkit through
-                    thirteen verbs, and every result is machine-verified: compiled,
-                    compatibility-gated, conformance-tested.
+                    Every operation &mdash; compile, validate, diff, check compatibility, render
+                    schemas, evaluate CEL, reflect, invoke, generate &mdash; is a named action
+                    with a machine-readable input schema, and the catalog is now literally a gRPC
+                    service: <code style="font-family: var(--mono); font-size: 0.92em;">ai.pipestream.protomolt.v1.ProtoMoltService</code>,
+                    thirteen typed RPCs defined in <code style="font-family: var(--mono); font-size: 0.92em;">.proto</code>.
+                    The server compiles its own definition at startup and serves it over dynamic
+                    messages &mdash; no generated stubs anywhere &mdash; with server reflection
+                    on, so grpcurl, any gRPC client, or ProtoMolt&rsquo;s own
+                    <code style="font-family: var(--mono); font-size: 0.92em;">reflect</code> verb
+                    discovers it. The tool that manages the format is spoken in the format.
                 </p>
                 <p class="project-body">
-                    Next, the action envelopes become protobuf messages and the catalog becomes a
-                    gRPC service &mdash; defined in <code style="font-family: var(--mono); font-size: 0.92em;">.proto</code>,
-                    registered in the registry it runs on, serving its own descriptor set. Point any
-                    language&rsquo;s protoc at the registry and you have a native client for the
-                    system that governs your protos. The tool that manages the format is spoken in
-                    the format.
+                    One launcher, <code style="font-family: var(--mono); font-size: 0.92em;">protomolt-serve</code>,
+                    mounts the same thirteen verbs everywhere at once: gRPC with reflection, the
+                    JSON/REST gateway with a generated OpenAPI document, Swagger UI at
+                    <code style="font-family: var(--mono); font-size: 0.92em;">/docs</code>, and
+                    optionally the git-backed registry &mdash; every envelope identical across
+                    gRPC, REST, and MCP. The test suite pins the punchline: ProtoMolt operates a
+                    second live instance of itself through its own invoke verb.
                 </p>
                 <div class="actions">
-                    <a class="btn" href="https://github.com/ai-pipestream/protomolt/blob/main/docs/roadmap.md">Read the roadmap →</a>
+                    <a class="btn" href="https://github.com/ai-pipestream/protomolt/blob/main/docs/grpc-service.md">The gRPC service →</a>
                     <a class="repo-link" href="https://github.com/ai-pipestream/protomolt/blob/main/docs/actions.md">the actions catalog</a>
+                    <a class="repo-link" href="https://github.com/ai-pipestream/protomolt/blob/main/docs/roadmap.md">roadmap</a>
                 </div>
             </div>
         </section>
