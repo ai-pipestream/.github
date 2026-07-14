@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ProtoMolt - a modular Java toolkit for Protocol Buffers at runtime and a schema registry that stores versions in Git behind the Confluent protocol.">
+    <title>ProtoMolt: Protocol Buffers at Runtime | Pipestream AI</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-dark: #0a0e27;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.7);
+            --accent: #667eea;
+            --success: #48bb78;
+            --danger: #f56565;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            background: var(--bg-dark);
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 50%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(180deg); }
+        }
+
+        /* Header */
+        header {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-left: 30px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 60px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 25px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .lead {
+            font-size: 1.35rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Buttons */
+        .cta-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Tech Stack Badges */
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 80px;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .badge:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: rgba(102, 126, 234, 0.3);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* Standard Section Styles */
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 60px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 40px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-card h3 {
+            color: var(--text-main);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        /* Comparison Table */
+        .comparison-table-wrapper {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--text-muted);
+            min-width: 800px;
+        }
+
+        th, td {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        th {
+            color: var(--accent);
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .highlight-col {
+            background: rgba(102, 126, 234, 0.1);
+            color: white;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+        
+        td.highlight-col {
+            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        /* Architecture Steps */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .step-card {
+            text-align: left;
+            padding: 25px;
+            border-left: 3px solid var(--accent);
+            background: linear-gradient(90deg, rgba(102,126,234,0.05) 0%, transparent 100%);
+            border-radius: 0 10px 10px 0;
+        }
+
+        .step-card h4 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .step-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 80px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .copyright {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.8rem; }
+            .hero { padding-top: 60px; }
+            .cta-group { flex-direction: column; }
+            header { flex-direction: column; gap: 20px; }
+            nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+            nav a { margin: 0; }
+        }
+
+        /* ProtoMolt page: code examples */
+        .code-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 28px 32px;
+            margin: 24px auto;
+            max-width: 860px;
+            text-align: left;
+            overflow-x: auto;
+        }
+        .code-card h4 {
+            color: var(--text-main);
+            margin-bottom: 14px;
+            font-size: 1.05rem;
+        }
+        .code-card pre {
+            font-family: 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #c3cdf5;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .code-card .code-note {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            margin: 14px 0 10px;
+        }
+        .code-card pre + .code-note { margin-top: 16px; }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <header>
+        <div class="logo"><a href="../" style="color: inherit; text-decoration: none;">Pipestream AI</a> <span style="color: var(--text-muted); font-weight: 400;">/ ProtoMolt</span></div>
+        <nav>
+            <a href="https://github.com/ai-pipestream/protomolt/tree/main/docs" target="_blank">Documentation</a>
+            <a href="https://central.sonatype.com/search?namespace=ai.pipestream" target="_blank">Maven Central</a>
+            <a href="https://github.com/ai-pipestream/protomolt" target="_blank">GitHub</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <img src="protomolt-logo.svg" alt="" width="132" height="132" style="margin-bottom: 8px;">
+            <h1>Protocol Buffers at Runtime.<br>A Schema Registry on Git.</h1>
+            <p class="lead">
+                ProtoMolt is a modular Java toolkit that loads, validates, reshapes, indexes, and serves
+                protobuf messages from <strong>descriptors, not generated classes</strong> &mdash; and a schema
+                registry that stores every version as a <strong>Git commit</strong> while speaking the
+                Confluent protocol your serializers already use.
+            </p>
+
+            <div class="cta-group">
+                <a href="https://github.com/ai-pipestream/protomolt" class="btn btn-primary">View on GitHub</a>
+                <a href="https://github.com/ai-pipestream/protomolt/tree/main/docs" class="btn btn-secondary">Read the Docs</a>
+            </div>
+
+            <div class="tech-stack">
+                <span class="badge">☕ JDK 21 baseline</span>
+                <span class="badge">📦 ai.pipestream:protomolt-*</span>
+                <span class="badge">✅ protovalidate 2872/2872</span>
+                <span class="badge">🧪 1,800+ tests per build</span>
+                <span class="badge">⚖️ MIT</span>
+            </div>
+        </section>
+
+        <section class="section-container" id="features">
+            <h2 class="section-title">What It Does</h2>
+            <p class="section-subtitle">Forty-two focused modules under one BOM. Use one, or use the whole loop: gather &rarr; validate &rarr; register &rarr; serve &rarr; index.</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🧬</span>
+                    <h3>Descriptor-Native Core</h3>
+                    <p>Every code path works on <strong>Descriptor / FileDescriptor</strong>. A <strong>DynamicMessage</strong> resolved from a registry at runtime behaves exactly like a compiled-in type, so no module is coupled to any generated class.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📥</span>
+                    <h3>Gather from Anywhere</h3>
+                    <p>Filesystem trees, jars on the classpath, Git repositories (monorepo layouts, auth, clone caching), Maven coordinates, Confluent and Apicurio registries. Text sources compile to descriptors at runtime, no protoc required.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🗄️</span>
+                    <h3>A Registry That Is a Git Repo</h3>
+                    <p>One commit per schema registration. History, review, branching, and disaster recovery are just Git, while clients see the <strong>Confluent subjects API</strong> and gRPC consumers fetch compiled <strong>binary descriptor sets</strong> directly.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🧯</span>
+                    <h3>Compatibility-Gated Writes</h3>
+                    <p>A typed diff engine with 35 named rules classifies every change by <strong>wire, JSON, and source impact</strong>, evaluated under backward / forward / full modes and their transitive variants. Breaking registrations are rejected with the exact rule, path, and version.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">✅</span>
+                    <h3>Validation on the Schema</h3>
+                    <p>Rules travel as descriptor options, so validation follows the schema everywhere. The protovalidate dialect passes the complete conformance suite &mdash; <strong>2,872 of 2,872 cases</strong>, re-scored by buf&rsquo;s own runner in CI on every push.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📤</span>
+                    <h3>Publish to Existing Registries</h3>
+                    <p>Confluent and Apicurio publishers with reverse-topological reference registration, idempotent re-publish, and dry runs. Federate: keep Git as the source of truth and mirror subjects to the registries your Kafka estate already runs.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🔎</span>
+                    <h3>Search Indexing Hints</h3>
+                    <p>A descriptor-option standard for how fields come to rest in an index: text vs keyword, analyzers, numeric and date ranges, kNN vector parameters, map policies. Generators emit <strong>Lucene, OpenSearch, and Solr</strong> schemas from the same hints.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🔀</span>
+                    <h3>Mapping, Metadata, CEL</h3>
+                    <p>Text mapping rules for reshaping messages, CEL filters and selectors where expressions matter, and a metadata standard for extracting declared facts from any type at runtime.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🌐</span>
+                    <h3>JSON Kept at the Edge</h3>
+                    <p>A framework-agnostic REST gateway with JSON transcoding, OpenAPI 3, and JSON Schema generation, hosted on any of six servers (JDK, Vert.x, Netty, Spring, Micronaut, Quarkus). Inside the toolkit, everything stays binary.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-container">
+            <h2 class="section-title">Concrete Examples</h2>
+            <p class="section-subtitle">The same four steps a team actually takes, in the order they take them.</p>
+
+            <div class="code-card">
+                <h4>1 &mdash; Gather protos from a Git repo and compile them at runtime</h4>
+                <pre>ProtoGatherer gatherer = GitProtoGatherer.builder()
+        .repo("https://github.com/acme/schemas.git")
+        .ref("main")
+        .subdir("proto")
+        .build();
+
+CompiledProtos compiled = ProtoSourceCompiler.compile(gatherer.gather());
+DescriptorRegistry registry = DescriptorRegistry.create();
+registry.addLoader(new GatheringDescriptorLoader(gatherer));</pre>
+            </div>
+
+            <div class="code-card">
+                <h4>2 &mdash; Run a schema registry over a bare Git repository</h4>
+                <pre>var store  = GitSchemaRegistryStore.open(Path.of("/srv/schemas.git"));
+var server = new SchemaRegistryServer(config, store,
+        ActionCatalog.defaults(ActionContext.create()));
+server.start();</pre>
+                <p class="code-note">Any Confluent-compatible client now works against it, and every registration is a commit:</p>
+                <pre>curl -s -X POST localhost:8081/subjects/orders-value/versions \
+     -H 'Content-Type: application/vnd.schemaregistry.v1+json' \
+     -d @order.json
+# gRPC consumers skip JSON entirely:
+curl -s localhost:8081/protomolt/subjects/orders-value/descriptor-set -o orders.dsc</pre>
+            </div>
+
+            <div class="code-card">
+                <h4>3 &mdash; Gate a change before it ships</h4>
+                <pre>var checker = CompatibilityChecker.builder().build();
+var result  = checker.check(oldSources, newSources, CompatibilityMode.BACKWARD);
+
+// A removed field surfaces as a typed change, not a diff hunk:
+// FIELD_REMOVED at orders.Order.discount_code
+//   impacts: [WIRE_BACKWARD, JSON_BACKWARD]</pre>
+                <p class="code-note">The registry runs the same engine on every write, so what passes locally registers cleanly.</p>
+            </div>
+
+            <div class="code-card">
+                <h4>4 &mdash; Depend on it</h4>
+                <pre>dependencies {
+    implementation platform('ai.pipestream:protomolt-bom:&lt;version&gt;')
+    implementation 'ai.pipestream:protomolt-registry-server'
+    implementation 'ai.pipestream:protomolt-compat'
+}</pre>
+                <p class="code-note">One BOM aligns all forty-two modules. Pick the two you need today; the rest are there when you need them.</p>
+            </div>
+        </section>
+
+        <section class="section-container">
+            <h2 class="section-title">Meta for Meta: the gRPC Service of Itself</h2>
+            <p class="section-subtitle">gRPC is defined in protobuf. So is ProtoMolt&rsquo;s future API surface.</p>
+            <div class="features-grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="feature-card">
+                    <h3>🧰 Today: a self-describing verb catalog</h3>
+                    <p>Every operation &mdash; compile, validate, diff, check compatibility, render schemas, evaluate CEL &mdash; is already a named action with a machine-readable input schema, mounted on the registry server. Consoles and LLM tools drive the entire toolkit through ten verbs, and every result is machine-verified: compiled, compatibility-gated, conformance-tested.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🌀 Next: the same verbs as a gRPC service</h3>
+                    <p>The action envelopes become protobuf messages and the catalog becomes a gRPC service &mdash; defined in <code>.proto</code>, registered in the registry it runs on, serving its own descriptor set. Point any language&rsquo;s protoc at the registry and you have a native client for the system that governs your protos. The tool that manages the format is spoken in the format.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-container" style="text-align: center; padding-bottom: 80px;">
+            <h2 class="section-title">Built Like It Has Been Here a While</h2>
+            <p class="section-subtitle">
+                Every claim on this page is enforced by CI, not asserted: 1,800+ tests in the standard build,
+                the full protovalidate conformance suite re-scored with buf&rsquo;s runner on every push, and
+                live-registry integration suites that run against real Apicurio and Confluent registries &mdash;
+                and fail the build if they silently skip.
+            </p>
+            <div class="cta-group">
+                <a href="https://github.com/ai-pipestream/protomolt" class="btn btn-primary">Clone It</a>
+                <a href="https://github.com/ai-pipestream/protomolt/blob/main/docs/roadmap.md" class="btn btn-secondary">Read the Roadmap</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>ProtoMolt is MIT-licensed open source from <a href="../">Pipestream AI</a>.</p>
+        <div style="margin-top: 10px;">
+            <a href="https://github.com/ai-pipestream/protomolt">GitHub</a>
+            <a href="https://github.com/ai-pipestream/protomolt/tree/main/docs">Documentation</a>
+            <a href="https://central.sonatype.com/search?namespace=ai.pipestream">Maven Central</a>
+        </div>
+    </footer>
+</body>
+</html>

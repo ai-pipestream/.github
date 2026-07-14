@@ -363,6 +363,7 @@
         <div class="logo">Pipestream AI</div>
         <nav>
             <a href="docs/#/architecture/system-overview">Architecture</a>
+            <a href="protomolt/">ProtoMolt</a>
             <a href="https://buf.build/pipestreamai/platform" target="_blank">Proto Registry</a>
             <a href="docs/">Documentation</a>
             <a href="https://github.com/ai-pipestream" target="_blank">GitHub</a>
@@ -503,6 +504,19 @@
                 <div class="step-card">
                     <h4>4. Strict Indexing</h4>
                     <p>The Engine maps the result to the <strong>OpenSearch</strong> schema. Decryption happens only at the last mile for indexing, ensuring security in transit.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-container">
+            <h2 class="section-title">ProtoMolt: The Schema Layer, Open Sourced</h2>
+            <p class="section-subtitle">The protobuf machinery underneath Pipestream is its own project.</p>
+            <div class="features-grid" style="grid-template-columns: 1fr;">
+                <div class="feature-card" style="max-width: 860px; margin: 0 auto;">
+                    <span class="feature-icon">🧬</span>
+                    <h3>A Protobuf Toolkit and a Schema Registry on Git</h3>
+                    <p>ProtoMolt gathers <code>.proto</code> sources from Git, Maven, jars, and other registries, validates and diffs them with a typed compatibility engine, and serves them from a registry whose storage is a plain Git repository behind the Confluent protocol. It passes the complete protovalidate conformance suite and every claim is enforced in CI.</p>
+                    <p style="margin-top: 16px;"><a href="protomolt/" class="btn btn-primary" style="padding: 10px 24px;">Explore ProtoMolt</a></p>
                 </div>
             </div>
         </section>
