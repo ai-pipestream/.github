@@ -444,7 +444,7 @@ var result  = checker.check(oldSources, newSources, CompatibilityMode.BACKWARD);
     implementation 'ai.pipestream:protomolt-registry-server'
     implementation 'ai.pipestream:protomolt-compat'
 }</code></pre>
-                <p class="proj-desc">One BOM aligns all fifty-one modules. Pick the two you need today; the rest are there when you need them.</p>
+                <p class="proj-desc">One BOM aligns all fifty-two modules. Pick the two you need today; the rest are there when you need them.</p>
             </div>
         </section>
 
@@ -455,12 +455,13 @@ var result  = checker.check(oldSources, newSources, CompatibilityMode.BACKWARD);
                     <code style="font-family: var(--mono); font-size: 0.92em;">docker run ghcr.io/ai-pipestream/protomolt-serve --demo</code>
                     and open <code style="font-family: var(--mono); font-size: 0.92em;">/console</code>.
                     Browse subjects and versions, explore every type's fields, diff versions,
-                    check compatibility before registering, try messages against declared
+                    check compatibility before registering, merge two schemas into a governed new one (clashes decided in the UI, join and union mappings for free), try messages against declared
                     rules, and point it at a live gRPC service to leave with working
                     directions for agents and Kafka Connect &mdash; all against any
                     Confluent-compatible registry.</p>
                 <p><a href="img/console-subjects.png"><img src="img/console-subjects.png" alt="ProtoMolt console: subjects view" style="max-width: 100%; border: 1px solid var(--rule); border-radius: 8px;"></a></p>
                 <p><a href="img/console-subject-detail.png"><img src="img/console-subject-detail.png" alt="ProtoMolt console: schema view with references and declared options" style="max-width: 100%; border: 1px solid var(--rule); border-radius: 8px;"></a></p>
+                <p><a href="img/console-merge.png"><img src="img/console-merge.png" alt="ProtoMolt console: the merge workbench - clash analysis, merged proto, join and union rules" style="max-width: 100%; border: 1px solid var(--rule); border-radius: 8px;"></a></p>
                 <p><a href="img/console-connect.png"><img src="img/console-connect.png" alt="ProtoMolt console: connect-a-service wizard" style="max-width: 100%; border: 1px solid var(--rule); border-radius: 8px;"></a></p>
                 <div class="actions">
                     <a class="btn" href="https://github.com/ai-pipestream/protomolt/tree/main/console">The console in the repo →</a>
@@ -478,7 +479,7 @@ var result  = checker.check(oldSources, newSources, CompatibilityMode.BACKWARD);
                 </p>
                 <p class="project-body">
                     <code style="font-family: var(--mono); font-size: 0.92em;">protomolt-mcp</code>
-                    serves the whole toolkit over the Model Context Protocol: seventeen tools on
+                    serves the whole toolkit over the Model Context Protocol: twenty tools on
                     plain-Java stdio, or over streamable HTTP from a running
                     <code style="font-family: var(--mono); font-size: 0.92em;">protomolt-serve</code>
                     &mdash; one process makes every agent on the network gRPC-aware, no local
@@ -520,7 +521,7 @@ var result  = checker.check(oldSources, newSources, CompatibilityMode.BACKWARD);
                     schemas, evaluate CEL, reflect, invoke, generate &mdash; is a named action
                     with a machine-readable input schema, and the catalog is now literally a gRPC
                     service: <code style="font-family: var(--mono); font-size: 0.92em;">ai.pipestream.protomolt.v1.ProtoMoltService</code>,
-                    seventeen typed RPCs defined in <code style="font-family: var(--mono); font-size: 0.92em;">.proto</code>.
+                    twenty typed RPCs defined in <code style="font-family: var(--mono); font-size: 0.92em;">.proto</code>.
                     The server compiles its own definition at startup and serves it over dynamic
                     messages &mdash; no generated stubs anywhere &mdash; with server reflection
                     on, so grpcurl, any gRPC client, or ProtoMolt&rsquo;s own
@@ -529,7 +530,7 @@ var result  = checker.check(oldSources, newSources, CompatibilityMode.BACKWARD);
                 </p>
                 <p class="project-body">
                     One launcher, <code style="font-family: var(--mono); font-size: 0.92em;">protomolt-serve</code>,
-                    mounts the same seventeen verbs everywhere at once: gRPC with reflection, the
+                    mounts the same twenty verbs everywhere at once: gRPC with reflection, the
                     JSON/REST gateway with a generated OpenAPI document, Swagger UI at
                     <code style="font-family: var(--mono); font-size: 0.92em;">/docs</code>, and
                     optionally the git-backed registry &mdash; every envelope identical across
