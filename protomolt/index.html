@@ -203,6 +203,16 @@
             overflow: hidden;
         }
         .pkg { background: var(--surface); padding: 16px 18px; }
+        .matrix { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; }
+        .matrix table { width: 100%; border-collapse: collapse; font-size: 0.88rem; background: var(--surface); }
+        .matrix th, .matrix td { padding: 9px 12px; border-bottom: 1px solid var(--rule); text-align: center; white-space: nowrap; }
+        .matrix th { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-soft); }
+        .matrix td:first-child, .matrix th:first-child { text-align: left; }
+        .matrix td:first-child { font-weight: 600; color: var(--ink); }
+        .matrix td:first-child span { display: block; font-weight: 400; font-size: 0.8rem; color: var(--ink-soft); white-space: normal; }
+        .matrix tr:last-child td { border-bottom: none; }
+        .matrix .y { color: var(--accent, #2f6f4f); font-weight: 700; }
+        .matrix .n { color: var(--ink-faint); }
         .pkg a.name { font-family: var(--mono); font-size: 0.9rem; color: var(--ink); font-weight: 600; }
         .pkg p { font-size: 0.85rem; color: var(--ink-soft); margin-top: 5px; }
 
@@ -380,6 +390,21 @@ claude mcp add --transport http protomolt http://localhost:8080/mcp</code></pre>
             </div>
         </section>
 
+        <section class="block" id="why">
+            <div class="wrap">
+                <h2>What people come for</h2>
+                <p class="lede">The shortest paths from &ldquo;interesting&rdquo; to running in your stack.</p>
+                <div class="pkg-grid">
+                    <div class="pkg"><a class="name" href="#agents">your AI agent operates any gRPC service</a><p>One command adds twenty-two tools over MCP. The agent reflects a live server, reads the real contract, and calls it &mdash; no stubs, no plugins, no glue code. Proven against a production OpenVINO model server.</p></div>
+                    <div class="pkg"><a class="name" href="https://github.com/ai-pipestream/protomolt/blob/main/docs/validation.md">rules live in the schema, enforced everywhere</a><p>Validation (full protovalidate conformance, re-scored by buf&rsquo;s own runner in CI), sensitivity classes with real AES-GCM field encryption, indexing hints, JSON names: declare once in the proto, and REST, Kafka, search, and agents all honor it.</p></div>
+                    <div class="pkg"><a class="name" href="https://github.com/ai-pipestream/protomolt/blob/main/docs/registry.md">a schema registry that is just Git</a><p>The Confluent subjects API over a repository you already run. Every registration is a commit; history, review, and rollback are Git. Compatibility-gated writes, binary descriptor sets for gRPC consumers.</p></div>
+                    <div class="pkg"><a class="name" href="https://github.com/ai-pipestream/protomolt/blob/main/docs/kafka-connect.md">Kafka &#8646; gRPC, both directions</a><p>A source that turns any server stream into a topic (CEL resume tokens survive restarts), a sink that drives any method, and protobuf-aware transforms &mdash; validate, reshape, filter, redact &mdash; that drop into pipelines you already run.</p></div>
+                    <div class="pkg"><a class="name" href="https://github.com/ai-pipestream/protomolt/blob/main/docs/design/join-shapes.md">schemas you can compute with</a><p>Merge two protos with clash resolution and get the join and union mappings free. Infer a schema from JSON samples. Join two live gRPC streams by key. Chain services into one type-checked call, verified before anything runs.</p></div>
+                    <div class="pkg"><a class="name" href="https://github.com/ai-pipestream/protomolt/blob/main/docs/building.md">no codegen, no toolchain, no disk</a><p>Proto text compiles to descriptors in memory at runtime. Stubs for eight languages come from libprotoc compiled to WebAssembly, in-process. Message data never touches disk; the two schema stores that do are paths you choose.</p></div>
+                </div>
+            </div>
+        </section>
+
         <section class="block" id="features">
             <div class="wrap">
                 <h2>What it does</h2>
@@ -398,6 +423,37 @@ claude mcp add --transport http protomolt http://localhost:8080/mcp</code></pre>
                     <div class="pkg"><a class="name" href="https://github.com/ai-pipestream/protomolt/blob/main/docs/mapping.md">mapping &amp; CEL</a><p>Text mapping rules for reshaping messages, CEL filters and selectors where expressions matter, plus declared-metadata extraction.</p></div>
                     <div class="pkg"><a class="name" href="https://github.com/ai-pipestream/protomolt/blob/main/docs/rest-gateway.md">JSON at the edge</a><p>A framework-agnostic REST gateway with OpenAPI 3 and JSON Schema generation, hosted on any of six servers. Inside the toolkit, everything stays binary.</p></div>
                 </div>
+            </div>
+        </section>
+
+        <section class="block" id="matrix">
+            <div class="wrap">
+                <h2>Every capability, every surface</h2>
+                <p class="lede">One implementation behind identical envelopes: the same call works as a Java
+                    API, a typed gRPC RPC, a REST operation with OpenAPI, an MCP tool for agents, a Kafka
+                    Connect plugin, or a console screen.</p>
+                <div class="matrix">
+                    <table>
+                        <thead>
+                            <tr><th>Capability</th><th>Java</th><th>gRPC</th><th>REST</th><th>MCP&nbsp;(agents)</th><th>Kafka&nbsp;Connect</th><th>Console</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Validation<span>rules declared on the schema</span></td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td></tr>
+                            <tr><td>Mapping &amp; CEL<span>reshape, filter, select</span></td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="n">&mdash;</td></tr>
+                            <tr><td>Masking &amp; encryption<span>sensitivity classes, AES-GCM</span></td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="n">&mdash;</td></tr>
+                            <tr><td>Compatibility &amp; diff<span>35 rules, all registry modes</span></td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="n">&mdash;</td><td class="y">&#9679;</td></tr>
+                            <tr><td>Schema registry<span>Confluent protocol over Git</span></td><td class="y">&#9679;</td><td class="n">&mdash;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td></tr>
+                            <tr><td>Merge, join, infer<span>clash resolution, struct&rarr;proto</span></td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="n">&mdash;</td><td class="y">&#9679;</td></tr>
+                            <tr><td>Chains<span>typed service compositions</span></td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="n">&mdash;</td><td class="n">&mdash;</td></tr>
+                            <tr><td>Reflect &amp; invoke<span>operate live services, no stubs</span></td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="n">&mdash;</td><td class="y">&#9679;</td></tr>
+                            <tr><td>Search mappings<span>OpenSearch, Solr, Lucene, kNN</span></td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="n">&mdash;</td><td class="n">&mdash;</td></tr>
+                            <tr><td>Code generation<span>8 languages, WASM protoc in-JVM</span></td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="y">&#9679;</td><td class="n">&mdash;</td><td class="n">&mdash;</td></tr>
+                            <tr><td>Streaming<span>gRPC stream joins; topics &#8646; streams</span></td><td class="y">&#9679;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="y">&#9679;</td><td class="n">&mdash;</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="proj-desc" style="margin-top: 12px;">Registry over gRPC means binary descriptor sets served per subject;
+                    the subjects API itself is HTTP by protocol. Kafka cells are the Connect plugin: source, sink, and transforms.</p>
             </div>
         </section>
 
