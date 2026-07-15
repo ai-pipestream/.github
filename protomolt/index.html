@@ -357,6 +357,51 @@
             font-size: 0.94rem;
         }
 
+        .proofs {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 42px;
+        }
+
+        .proof {
+            display: block;
+            padding: 24px 26px;
+            color: var(--ink);
+            background: var(--surface);
+            border: 1px solid var(--rule);
+            border-radius: 7px;
+        }
+
+        .proof:hover {
+            border-color: #bdc8cd;
+            text-decoration: none;
+        }
+
+        .proof-label {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--accent);
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+        }
+
+        .proof strong {
+            display: block;
+            margin-bottom: 7px;
+            font-family: var(--serif);
+            font-size: 1.16rem;
+            font-weight: 600;
+        }
+
+        .proof p {
+            color: var(--ink-soft);
+            font-size: 0.9rem;
+        }
+
         .capabilities {
             background: var(--surface);
         }
@@ -602,7 +647,8 @@
 
             .after-run,
             .examples-grid,
-            .surface-list {
+            .surface-list,
+            .proofs {
                 grid-template-columns: 1fr;
             }
 
@@ -664,8 +710,8 @@
                     <div class="facts" aria-label="Project facts">
                         <span>Java 21+</span>
                         <span>Apache-2.0</span>
-                        <span>Published on Maven Central</span>
-                        <span>Modular by design</span>
+                        <span>Full protovalidate conformance</span>
+                        <span>Lucene, OpenSearch, and Solr</span>
                     </div>
                 </div>
                 <img class="hero-logo" src="protomolt-logo.svg" alt="ProtoMolt">
@@ -743,6 +789,18 @@
                         </p>
                     </article>
                 </div>
+                <div class="proofs" aria-label="Compatibility and integration highlights">
+                    <a class="proof" href="https://github.com/ai-pipestream/protomolt/blob/main/docs/validation.md#protovalidate-interoperability">
+                        <span class="proof-label">Measured compatibility</span>
+                        <strong>Full protovalidate conformance</strong>
+                        <p>The complete v1.2.2 suite passes, 2,872 of 2,872 cases, and CI re-scores it with Buf's own conformance runner.</p>
+                    </a>
+                    <a class="proof" href="https://github.com/ai-pipestream/protomolt/blob/main/docs/indexing.md">
+                        <span class="proof-label">Included integration</span>
+                        <strong>Protobuf-native search indexing</strong>
+                        <p>Descriptor hints drive documents and schema artifacts for Lucene, OpenSearch, and Solr, including vector and HNSW configuration.</p>
+                    </a>
+                </div>
             </div>
         </section>
 
@@ -767,7 +825,7 @@
                     </article>
                     <article class="capability">
                         <h3><a href="https://github.com/ai-pipestream/protomolt/blob/main/docs/validation.md">Validation and metadata</a></h3>
-                        <p>Evaluate rules carried on descriptors, including the protovalidate dialect. Read declared metadata for sensitivity, mapping, JSON representation, and downstream indexing policy.</p>
+                        <p>Validate protovalidate-annotated schemas unchanged, with the complete upstream conformance suite passing. Read declared metadata for sensitivity, mapping, JSON representation, and downstream indexing policy.</p>
                     </article>
                     <article class="capability">
                         <h3><a href="https://github.com/ai-pipestream/protomolt/blob/main/docs/mapping.md">Mapping, shapes, and chains</a></h3>
@@ -775,7 +833,7 @@
                     </article>
                     <article class="capability">
                         <h3><a href="https://github.com/ai-pipestream/protomolt/blob/main/docs/indexing.md">Search and streaming integration</a></h3>
-                        <p>Generate plans for Lucene, OpenSearch, and Solr. Connect Kafka topics to dynamic gRPC methods and apply protobuf-aware validation, mapping, and filtering in the pipeline.</p>
+                        <p>Map protobuf messages directly for Lucene, OpenSearch, and Solr, or emit engine-neutral NDJSON. Connect Kafka topics to dynamic gRPC methods and apply protobuf-aware validation, mapping, and filtering in the pipeline.</p>
                     </article>
                     <article class="capability">
                         <h3><a href="https://github.com/ai-pipestream/protomolt/blob/main/docs/grpc-service.md">Dynamic APIs and code generation</a></h3>
