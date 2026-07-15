@@ -31,9 +31,21 @@ tmp/
 temp/
 *.tmp
 
+# Local environment and credential stores
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.truststore
+deploy-configs/**/secrets/
+deploy-configs/**/credentials/
+
 # SSL certificates (keep these private if stored locally)
 *.key
 *.crt
 *.pem
 *.p12
 *.pfx
+
+deploy-configs
