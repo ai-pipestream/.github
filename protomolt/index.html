@@ -711,7 +711,7 @@
                         <span>Java 21+</span>
                         <span>Apache-2.0</span>
                         <span>Full protovalidate conformance</span>
-                        <span>Lucene, OpenSearch, and Solr</span>
+                        <span>Lucene, OpenSearch, Solr, Microsoft Graph</span>
                     </div>
                 </div>
                 <img class="hero-logo" src="protomolt-logo.svg" alt="ProtoMolt">
@@ -798,7 +798,7 @@
                     <a class="proof" href="https://github.com/ai-pipestream/protomolt/blob/main/docs/indexing.md">
                         <span class="proof-label">Included integration</span>
                         <strong>Protobuf-native search indexing</strong>
-                        <p>Descriptor hints drive documents and schema artifacts for Lucene, OpenSearch, and Solr, including vector and HNSW configuration.</p>
+                        <p>Descriptor hints drive documents and schema artifacts for Lucene, OpenSearch, Solr, and Microsoft Graph search, including vector and HNSW configuration.</p>
                     </a>
                 </div>
             </div>
@@ -825,15 +825,27 @@
                     </article>
                     <article class="capability">
                         <h3><a href="https://github.com/ai-pipestream/protomolt/blob/main/docs/validation.md">Validation and metadata</a></h3>
-                        <p>Validate protovalidate-annotated schemas unchanged, with the complete upstream conformance suite passing. Read declared metadata for sensitivity, mapping, JSON representation, and downstream indexing policy.</p>
+                        <p>Validate protovalidate-annotated schemas unchanged, with the complete upstream conformance suite passing. Read declared metadata for sensitivity, mapping, JSON representation, and downstream indexing policy, and act on it — masking fields by sensitivity class, whether removed, redacted, or AES-GCM encrypted.</p>
                     </article>
                     <article class="capability">
                         <h3><a href="https://github.com/ai-pipestream/protomolt/blob/main/docs/mapping.md">Mapping, shapes, and chains</a></h3>
-                        <p>Reshape messages with text rules and CEL, derive and merge message shapes, infer schemas from structured data, and verify typed compositions of gRPC calls before execution.</p>
+                        <p>Reshape messages with text rules and CEL, derive and merge message shapes, infer schemas from structured data, and verify typed compositions of gRPC calls — including keyed joins over two live streams — before execution.</p>
                     </article>
                     <article class="capability">
                         <h3><a href="https://github.com/ai-pipestream/protomolt/blob/main/docs/indexing.md">Search and streaming integration</a></h3>
-                        <p>Map protobuf messages directly for Lucene, OpenSearch, and Solr, or emit engine-neutral NDJSON. Connect Kafka topics to dynamic gRPC methods and apply protobuf-aware validation, mapping, and filtering in the pipeline.</p>
+                        <p>Map protobuf messages directly for Lucene, OpenSearch, Solr, and Microsoft Graph search, or emit engine-neutral NDJSON. Drive dynamic gRPC methods from Kafka topics and feed topics from server streams, with protobuf-aware validation, mapping, and filtering as in-pipeline transforms.</p>
+                    </article>
+                    <article class="capability">
+                        <h3><a href="https://github.com/ai-pipestream/protomolt/blob/main/docs/iceberg.md">Apache Iceberg tables</a></h3>
+                        <p>Convert descriptors to Iceberg table schemas and back, and commit batches of messages as real table snapshots written by ProtoMolt's own Hadoop-free Parquet emitter. Per-file column metrics let engines prune scans; tables can partition by identity, time, bucket, or truncate; an S3FileIO path reaches any S3-compatible store; and a Kafka Connect sink lands topics as snapshots.</p>
+                    </article>
+                    <article class="capability">
+                        <h3><a href="https://github.com/ai-pipestream/protomolt/blob/main/docs/msgraph.md">Microsoft Graph</a></h3>
+                        <p>Read and write OneDrive and SharePoint files and list-item metadata, and register agentless Copilot connectors — all over the public Microsoft Graph REST API, with no Microsoft SDK and no Windows agent. Graph search is the fourth target for the same indexing hints.</p>
+                    </article>
+                    <article class="capability">
+                        <h3><a href="https://github.com/ai-pipestream/protomolt/blob/main/docs/emitting.md">Emit bundles and columnar files</a></h3>
+                        <p>Render schemas into file bundles delivered to a caller-named sink — a directory, a Git commit, or an in-memory zip — including an Open Knowledge Format renderer for agent-consumable documentation and a descriptor-driven Parquet emitter that carries zero Hadoop jars.</p>
                     </article>
                     <article class="capability">
                         <h3><a href="https://github.com/ai-pipestream/protomolt/blob/main/docs/grpc-service.md">Dynamic APIs and code generation</a></h3>
@@ -849,9 +861,10 @@
                     <p class="eyebrow">A shared capability model</p>
                     <h2>Choose the interface, not a separate implementation.</h2>
                     <p class="lede" style="margin-top: 18px;">
-                        Core operations are described as typed actions with machine-readable input
-                        and output schemas. Hosts adapt that catalog to the interface that fits
-                        the caller, while the descriptor-driven implementation stays the same.
+                        Twenty-three verbs are described as typed actions with machine-readable
+                        input and output schemas. Hosts adapt that one catalog to the interface
+                        that fits the caller, while the descriptor-driven implementation stays
+                        the same.
                     </p>
                     <div class="actions">
                         <a class="text-link" href="https://github.com/ai-pipestream/protomolt/blob/main/docs/actions.md">Read about the action catalog</a>
