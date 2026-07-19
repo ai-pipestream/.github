@@ -45,6 +45,19 @@ than a layer bolted on top.
 
 ---
 
+## Short-lived pipelines
+
+**Status:** vision, with working components
+
+The broader frame this search work sits in: pipelines that are assembled per
+research question and deleted at the answer — schema, embeddings, distributed
+retrieval, reranking, and NLP annotation composed as data, with an assistant
+that proposes and the code that executes.
+
+- [Short-lived pipelines: a research assistant for documents](ephemeral-pipelines.md)
+
+---
+
 ## Related engineering notes
 
 - [The Log-Structured Data Flow Engine](log-structured-data-flow-whitepaper.md) —

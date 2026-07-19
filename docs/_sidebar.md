@@ -26,4 +26,5 @@
 - **[Research](research/README)**
   - [Public Research Overview](research/README)
   - [Collaborative Distributed HNSW](research/README?id=collaborative-distributed-hnsw-search)
+  - [Short Lived Pipelines](research/ephemeral-pipelines)
   - [Log Structured Data Flow Whitepaper](research/log-structured-data-flow-whitepaper)
