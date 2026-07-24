@@ -150,20 +150,20 @@
                     <pre class="mermaid">
 flowchart LR
   main([apache main, 3.0.0-M5])
-  merged["Merged into apache main, July 2026:<br/>case folding, emoji normalization, emoji annotations,<br/>UCD whitespace, de-regex normalizers, hot-path performance,<br/>stemmer factory, loading hardening, pattern precompile"]
+  merged["Merged into apache main, July 2026:<br/>OPENNLP-1868 case folding · OPENNLP-1869 emoji normalization<br/>OPENNLP-1870 emoji annotations · OPENNLP-1875 UCD whitespace<br/>OPENNLP-1876 de-regex normalizers · OPENNLP-1878 hot-path performance<br/>OPENNLP-1883 stemmer factory · OPENNLP-1890/1891 loading hardening<br/>OPENNLP-1892 pattern precompile"]
   main --- merged
 
-  main --> p1182["#1182 document container (foundation)"]
-  main --> d1154["#1154 gazetteer + geocoder"]
-  main --> d1155["#1155 wordnet knowledge base"]
-  main --> d1167["#1167 lexical expansion"]
-  main --> d1166["#1166 light stemmers"]
-  main --> d1165["#1165 SentencePiece"]
-  d1165 --> d1152["#1152 static embeddings"]
-  main --> huns["#1190 hunspell stemmer"]
-  main --> cjk["#1191 CJK lattice tokenization"]
+  main --> p1182["#1182 · OPENNLP-1888<br/>document container (foundation)"]
+  main --> d1154["#1154 · OPENNLP-1879<br/>gazetteer + geocoder"]
+  main --> d1155["#1155 · OPENNLP-1880<br/>wordnet knowledge base"]
+  main --> d1167["#1167 · OPENNLP-1887<br/>lexical expansion"]
+  main --> d1166["#1166 · OPENNLP-1886<br/>light stemmers"]
+  main --> d1165["#1165 · OPENNLP-1885<br/>SentencePiece"]
+  d1165 --> d1152["#1152 · OPENNLP-1877<br/>static embeddings"]
+  main --> huns["#1190 · OPENNLP-1893<br/>hunspell stemmer"]
+  main --> cjk["#1191 · OPENNLP-1894<br/>CJK lattice tokenization"]
 
-  d1152 --> tq["OPENNLP-1895 quantized embedding tables"]
+  d1152 --> tq["OPENNLP-1895<br/>quantized embedding tables"]
 
   main --> depp["depparse (neural tier)"]
   main --> fftag["ff-postagger"]
@@ -202,9 +202,11 @@ flowchart LR
                     review. Blue is the document container that the annotators build on. Amber is
                     an open draft. Purple is filed with the project but its pull request is
                     deliberately held until the work it builds on moves. White is a research
-                    branch staged on the fork, tested at its tip, not yet proposed. Every open
-                    pull request above sits directly on the current apache main. The full, dated
-                    map lives in the research fork.
+                    branch staged on the fork, tested at its tip, not yet proposed. Every merged
+                    change and every open pull request carries its Apache JIRA key; the white
+                    research branches carry no key yet, which is what not-yet-proposed means. Every
+                    open pull request above sits directly on the current apache main. The full,
+                    dated map lives in the research fork.
                 </p>
             </div>
         </section>
