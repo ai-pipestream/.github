@@ -168,6 +168,8 @@ flowchart LR
   main --> depp["depparse (neural tier)"]
   main --> fftag["ff-postagger"]
   main --> bilstm["bilstm-tagger"]
+  main --> inst["resource installer"]
+  main --> morf["morfologik CFSA2/FSA5 readers"]
 
   p1182 --> glos["glossary"]
   p1182 --> pii["pii"]
@@ -194,7 +196,7 @@ flowchart LR
   class d1152,d1154,d1155,d1166,d1167 draft;
   class p1182 foundation;
   class tq filed;
-  class depp,fftag,bilstm,glos,pii,coref,num,tart,asset,noiz,deppa,rel,geo,hier,rvote,emb staged;
+  class depp,fftag,bilstm,inst,morf,glos,pii,coref,num,tart,asset,noiz,deppa,rel,geo,hier,rvote,emb staged;
                     </pre>
                 </div>
                 <p class="legend">
