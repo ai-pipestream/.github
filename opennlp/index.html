@@ -49,6 +49,7 @@
         .tag.review { color: var(--open); border: 1px solid #e6dcc9; background: #faf6ee; }
         .tag.draft { color: var(--draft); border: 1px solid #e4dcbc; background: #faf7ea; }
         .tag.staged { color: var(--ink-faint); border: 1px solid var(--rule); background: var(--surface); }
+        .tag.filed { color: #6b4c93; border: 1px solid #ddd0ec; background: #f7f2fb; }
         .feature .refs { font-family: var(--mono); font-size: 0.8rem; color: var(--ink-faint); }
         .feature p { margin-bottom: 0; }
         .measure { font-size: 0.92rem; color: var(--ink-faint); margin-top: 8px; }
@@ -99,7 +100,7 @@
                     came from, and then building the annotation, tokenization, and lexical
                     features a modern search and NLP pipeline needs on top of that foundation.
                 </p>
-                <p class="updated">Last updated 2026-07-21.</p>
+                <p class="updated">Last updated 2026-07-24, against the <code>3.0.0-M5</code> release cut that morning.</p>
                 <p class="attribution">
                     All of this work belongs to the Apache OpenNLP project and lands through its
                     normal review process. It is described here in the third person because that
@@ -148,24 +149,25 @@
                 <div class="mermaid-holder">
                     <pre class="mermaid">
 flowchart LR
-  main([apache main])
-  merged["Merged into apache main, July 2026:<br/>case folding, emoji normalization, UCD whitespace,<br/>de-regex normalizers, hot-path performance, stemmer factory,<br/>loading hardening, pattern precompile"]
+  main([apache main, 3.0.0-M5])
+  merged["Merged into apache main, July 2026:<br/>case folding, emoji normalization, emoji annotations,<br/>UCD whitespace, de-regex normalizers, hot-path performance,<br/>stemmer factory, loading hardening, pattern precompile"]
   main --- merged
 
-  main --> p1177["#1177 emoji annotations"]
   main --> p1182["#1182 document container (foundation)"]
   main --> d1154["#1154 gazetteer + geocoder"]
   main --> d1155["#1155 wordnet knowledge base"]
-  d1155 --> d1167["#1167 lexical expansion"]
+  main --> d1167["#1167 lexical expansion"]
   main --> d1166["#1166 light stemmers"]
   main --> d1165["#1165 SentencePiece"]
   d1165 --> d1152["#1152 static embeddings"]
+  main --> huns["#1190 hunspell stemmer"]
+  main --> cjk["#1191 CJK lattice tokenization"]
+
+  d1152 --> tq["OPENNLP-1895 quantized embedding tables"]
 
   main --> depp["depparse (neural tier)"]
   main --> fftag["ff-postagger"]
   main --> bilstm["bilstm-tagger"]
-  main --> cjk["#1191 CJK lattice tokenization"]
-  main --> huns["#1190 hunspell stemmer"]
 
   p1182 --> glos["glossary"]
   p1182 --> pii["pii"]
@@ -186,18 +188,23 @@ flowchart LR
   classDef draft fill:#faf7ea,stroke:#b8860b,color:#1c1e23;
   classDef foundation fill:#eef1f4,stroke:#34495e,color:#1c1e23,stroke-width:3px;
   classDef staged fill:#ffffff,stroke:#c8c8c2,color:#43474f;
+  classDef filed fill:#f4eefa,stroke:#6b4c93,color:#1c1e23,stroke-width:2px;
   class merged mergedC;
-  class p1177,d1165 ready;
-  class d1152,d1154,d1155,d1166,d1167,huns,cjk draft;
+  class d1165,huns,cjk ready;
+  class d1152,d1154,d1155,d1166,d1167 draft;
   class p1182 foundation;
+  class tq filed;
   class depp,fftag,bilstm,glos,pii,coref,num,tart,asset,noiz,deppa,rel,geo,hier,rvote,emb staged;
                     </pre>
                 </div>
                 <p class="legend">
-                    Green is merged into apache main. Blue is the document container that the
-                    annotators build on. Amber is an open draft. White is a research branch staged
-                    on the fork, tested at its tip, not yet proposed. The full, dated map lives in
-                    the research fork.
+                    Green is either merged into apache main or a pull request marked ready for
+                    review. Blue is the document container that the annotators build on. Amber is
+                    an open draft. Purple is filed with the project but its pull request is
+                    deliberately held until the work it builds on moves. White is a research
+                    branch staged on the fork, tested at its tip, not yet proposed. Every open
+                    pull request above sits directly on the current apache main. The full, dated
+                    map lives in the research fork.
                 </p>
             </div>
         </section>
@@ -206,14 +213,16 @@ flowchart LR
             <div class="wrap">
                 <h2>New features being proposed for 3.x.</h2>
                 <p class="lede">
-                    Each of these is a distinct new capability. Some are ready for review, some
-                    are open drafts, and some are staged on the research fork and tested at their
-                    tips before being proposed. The status is marked on each. The measured numbers
-                    are the project's own figures from its manuals and tests.
+                    Each of these is a distinct new capability. The status marked on each is the
+                    project's own signal: <em>in review</em> means the pull request is open and
+                    marked ready, <em>draft</em> means it is proposed but still marked a draft
+                    while the review queue works through what is ahead of it, and <em>staged</em>
+                    means it lives on the research fork, tested at its tip, not yet proposed. The
+                    measured numbers are the project's own figures from its manuals and tests.
                 </p>
 
                 <div class="feature">
-                    <div class="meta"><span class="tag review">in review</span><span class="refs">PR #1182 · OPENNLP-1888</span></div>
+                    <div class="meta"><span class="tag draft">draft</span><span class="refs">PR #1182 · OPENNLP-1888</span></div>
                     <h3>A document annotation container</h3>
                     <p>
                         An immutable document that holds typed annotation layers anchored to the
@@ -221,19 +230,8 @@ flowchart LR
                         scope, their keys are namespaced so different tools do not collide, and
                         adapters bridge the classic OpenNLP tools onto it. This is the foundation
                         the annotator stack below is built on, which is why it leads. Its
-                        thread-safety comes from being immutable rather than from locks.
-                    </p>
-                </div>
-
-                <div class="feature">
-                    <div class="meta"><span class="tag review">in review</span><span class="refs">PR #1177 · OPENNLP-1870</span></div>
-                    <h3>Emoji as first-class annotations</h3>
-                    <p>
-                        An opt-in emoji annotation layer for the name finder, document
-                        categorizer, and sentiment components, built in strictly separated tiers so
-                        no third-party data enters the project: a project-authored attribute table
-                        with per-value provenance and an audit test, then facts derived from it such
-                        as decoding a flag emoji into an ISO country region.
+                        thread-safety comes from being immutable rather than from locks. The branch
+                        itself is finished and waiting on the project's review queue.
                     </p>
                 </div>
 
@@ -280,6 +278,26 @@ flowchart LR
                 </div>
 
                 <div class="feature">
+                    <div class="meta"><span class="tag filed">filed, pull request held</span><span class="refs">OPENNLP-1895</span></div>
+                    <h3>Quantized embedding tables</h3>
+                    <p>
+                        The embedding table above, stored at two to four bits per dimension instead
+                        of a float each. A seeded random rotation makes the coordinates behave like
+                        independent Gaussians, which lets one optimal scalar grid, solved at build
+                        time, quantize every dimension well; because the rotation is orthonormal,
+                        pooling and scoring never have to leave the rotated space. The file format
+                        describes itself and is deterministic, and the converter verifies its own
+                        output by reading it back from disk.
+                    </p>
+                    <p class="measure">
+                        Filed with the project and announced on its developer list on 2026-07-23.
+                        The pull request is deliberately held until the SentencePiece and static
+                        embedding changes it builds on have moved, so the review queue is not asked
+                        to hold a third stacked change.
+                    </p>
+                </div>
+
+                <div class="feature">
                     <div class="meta"><span class="tag draft">draft</span><span class="refs">PR #1155 · #1167 · OPENNLP-1880 · OPENNLP-1887</span></div>
                     <h3>A WordNet knowledge-base seam</h3>
                     <p>
@@ -312,7 +330,7 @@ flowchart LR
                 </div>
 
                 <div class="feature">
-                    <div class="meta"><span class="tag draft">draft</span><span class="refs">PR #1190 · OPENNLP-1893</span></div>
+                    <div class="meta"><span class="tag review">in review</span><span class="refs">PR #1190 · OPENNLP-1893</span></div>
                     <h3>A Hunspell affix stemmer</h3>
                     <p>
                         A stemmer that reads Hunspell dictionary and affix files a user supplies,
@@ -323,7 +341,7 @@ flowchart LR
                 </div>
 
                 <div class="feature">
-                    <div class="meta"><span class="tag draft">draft</span><span class="refs">PR #1191 · OPENNLP-1894</span></div>
+                    <div class="meta"><span class="tag review">in review</span><span class="refs">PR #1191 · OPENNLP-1894</span></div>
                     <h3>Dictionary tokenization for CJK</h3>
                     <p>
                         A tokenizer that scores Viterbi paths over a user-supplied MeCab-format
@@ -411,10 +429,15 @@ flowchart LR
                 <h3>Emoji, and a long-open bug</h3>
                 <p>
                     Emoji and emoticons became reversible, offset-aware normalization steps driven
-                    by a project-authored mapping table with per-row provenance. Separately, a
-                    sentence-detector bug open since 2011 was closed by moving the mapping from
-                    end-of-sentence positions to spans out of the detection loop, fixing a latent
-                    misalignment when whitespace-only candidates were dropped.
+                    by a project-authored mapping table with per-row provenance. Emoji then became
+                    first-class annotations as well: an opt-in layer for the name finder, document
+                    categorizer, and sentiment components, built in strictly separated tiers so no
+                    third-party data enters the project. A project-authored attribute table carries
+                    per-value provenance and an audit test, and the facts derived from it, such as
+                    decoding a flag emoji into an ISO country region, sit in a tier above it.
+                    Separately, a sentence-detector bug open since 2011 was closed by moving the
+                    mapping from end-of-sentence positions to spans out of the detection loop,
+                    fixing a latent misalignment when whitespace-only candidates were dropped.
                 </p>
 
                 <h3>Build, test, and licensing hygiene</h3>
