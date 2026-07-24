@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="gRParse is a C++ gRPC service that turns PDF pages and images into page-streamed protobuf with OCR, layout, tables, and reading order, running ONNX models on NVIDIA or Intel GPUs. It also coordinates the parser suite.">
+    <title>gRParse | gRPC document parsers</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header>
+        <div class="wrap header-inner">
+            <a class="brand" href="../">Pipestream AI <span>/ Parsers</span></a>
+            <nav aria-label="Primary">
+                <a href="../grpc-libreoffice/">LibreOffice</a>
+                <a href="../grpoic/">grPOIc</a>
+                <a href="../grpc-calamine/">calamine</a>
+                <a href="../">All parsers</a>
+                <a href="https://github.com/ai-pipestream/gRParse">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero">
+            <div class="wrap">
+                <p class="eyebrow">Scanned and image documents · C++ · ONNX Runtime</p>
+                <h1>PDFs and images, read a page at a time.</h1>
+                <p class="hero-copy">
+                    gRParse turns PDF pages and scanned images into structured protobuf. It
+                    runs OCR, finds the layout, reads tables, and works out reading order,
+                    then streams each page as it finishes. The models run on the GPU, and if
+                    a model is missing or the GPU will not start, the server stops instead of
+                    quietly falling back to something slower and worse.
+                </p>
+                <div class="actions">
+                    <a class="button" href="#pipeline">See the pipeline</a>
+                    <a class="text-link" href="https://github.com/ai-pipestream/gRParse">View the source</a>
+                </div>
+                <div class="facts" aria-label="Facts">
+                    <span>PDF and raster images</span>
+                    <span>NVIDIA CUDA or Intel OpenVINO</span>
+                    <span>Text carries boxes and offsets</span>
+                    <span>Also the suite coordinator</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="pipeline">
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>A page becomes text, boxes, and structure.</h2>
+                    <p>
+                        Each page runs through OCR and a set of layout models, and the
+                        result comes back as typed items rather than a wall of text.
+                    </p>
+                </div>
+                <div class="prose">
+                    <p>
+                        OCR comes from RapidOCR, and the layout, table, and figure work comes
+                        from a set of models run through ONNX Runtime. A page turns into text
+                        items with their bounding boxes, layout regions, tables with cells
+                        whose geometry is worked out from the grid, and picture items. Every
+                        piece of text carries a stable offset and a confidence, and it says
+                        whether it came from OCR or from a digital PDF's own text layer, so a
+                        caller can tell a scanned word from a born-digital one.
+                    </p>
+                    <p>
+                        Reading order is not left to chance. For multi-column pages the
+                        service runs a recursive cut over the layout regions to put the text
+                        back in the order a person would read it, rather than the order the
+                        boxes happened to be found.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="quickstart">
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>Pages stream as they finish.</h2>
+                    <p>
+                        A long document does not wait for its last page. Each page goes out
+                        the moment it is done, in page order, and then a final event closes
+                        the stream.
+                    </p>
+                </div>
+                <div class="prose">
+                    <p>
+                        The document shape is the same one the rest of the suite uses. The
+                        stream is just a way to deliver it incrementally, one page of text,
+                        tables, and pictures at a time. Each outgoing page is built in a
+                        short lived memory arena that is released as soon as it has been
+                        written, so a thousand-page scan does not pile up in memory.
+                    </p>
+                    <p>
+                        The work is kept bounded end to end. There are limits on how many
+                        documents are in flight, how many pages a single document can run
+                        ahead, and how deep each internal queue can get. A client that stops
+                        reading stops getting page credits, so its document pauses while
+                        everyone else's keeps moving.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>Turn on only the work you need.</h2>
+                    <p>
+                        Layout, tables, figure classification, and barcodes are each
+                        switchable, so a job that only needs text does not pay for the rest.
+                    </p>
+                </div>
+                <div class="prose">
+                    <p>
+                        Layout detection, table structure, figure classification, and barcode
+                        reading are separate stages that can each be on, off, or automatic.
+                        Layout finds the regions of a page. Table structure turns a detected
+                        table into a real cell grid. Figure classification sorts pictures into
+                        kinds. Barcode reading needs no model at all. Reading of embedded
+                        picture bytes is off by default, since most callers want the text and
+                        the geometry rather than the pixels.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="capabilities">
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>It runs on the GPU, and says so.</h2>
+                    <p>
+                        The execution provider is a deliberate choice, not a silent
+                        fallback.
+                    </p>
+                </div>
+                <div class="prose">
+                    <p>
+                        gRParse runs its models on an NVIDIA GPU through CUDA by default, and
+                        there is a separate build that targets Intel GPUs through OpenVINO. If
+                        a caller asks for a provider that is not available, or a required model
+                        is missing, the server fails at startup and tells you what it actually
+                        has, rather than starting up and running slow CPU OCR that looks fine
+                        until the bill or the latency arrives. That single decision is the
+                        difference between a service you can trust in a pipeline and one that
+                        degrades in ways you only notice later.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>It also runs the suite.</h2>
+                    <p>
+                        gRParse is the coordinator. Hand it a mixed document and it sends each
+                        part to the right service and merges the results.
+                    </p>
+                </div>
+                <div class="prose">
+                    <p>
+                        Beyond its own computer-vision path, gRParse can fan a document out to
+                        collectors and stitch their output back together. It does the OCR and
+                        layout work itself, sends office documents to
+                        <a href="../grpc-libreoffice/">grpc-libreoffice</a> for rendering, and
+                        holds reserved slots in its contract for the
+                        <a href="../grpoic/">Apache POI</a> and
+                        <a href="../grpc-calamine/">spreadsheet</a> collectors. It never turns
+                        an office file into a PDF just to read it. Native formats go to the
+                        service that understands them, and only real images take the OCR path.
+                        If one collector fails, the others still return, and the failure is
+                        reported rather than swallowed.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="verification">
+            <div class="wrap verification-inner">
+                <div>
+                    <h2>Read the code and run it.</h2>
+                    <p>
+                        The protobuf contract, the C++ server, and the CUDA and OpenVINO
+                        container builds are all in the repository. Uploaded documents are
+                        capped and refused past the limit, and nothing is written to disk on
+                        the parsing path.
+                    </p>
+                </div>
+                <div class="actions">
+                    <a class="button" href="https://github.com/ai-pipestream/gRParse">Open the repository</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="wrap footer-inner">
+            <span>Pipestream AI. Apache-2.0 licensed.</span>
+            <div class="footer-links">
+                <a href="../">All parsers</a>
+                <a href="../grpc-libreoffice/">grpc-libreoffice</a>
+                <a href="../grpoic/">grPOIc</a>
+                <a href="../grpc-calamine/">grpc-calamine</a>
+                <a href="https://github.com/ai-pipestream/gRParse">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

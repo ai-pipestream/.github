@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="grpc-libreoffice is a C++ gRPC server that renders office documents to PNG pages or PDF through LibreOfficeKit, and in the same pass extracts a wide typed content stream from the live document model. Every document is rendered in its own isolated worker process.">
+    <title>grpc-libreoffice | gRPC document parsers</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header>
+        <div class="wrap header-inner">
+            <a class="brand" href="../">Pipestream AI <span>/ Parsers</span></a>
+            <nav aria-label="Primary">
+                <a href="../grparse/">gRParse</a>
+                <a href="../grpoic/">grPOIc</a>
+                <a href="../grpc-calamine/">calamine</a>
+                <a href="../">All parsers</a>
+                <a href="https://github.com/ai-pipestream/grpc-libreoffice">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero">
+            <div class="wrap">
+                <p class="eyebrow">Rendering and extraction · C++ · LibreOfficeKit</p>
+                <h1>Render the page and read the document at once.</h1>
+                <p class="hero-copy">
+                    grpc-libreoffice runs office documents through LibreOfficeKit. A client
+                    streams a file in and gets back either every page as a PNG or the whole
+                    document as a PDF. In the same pass it reads a wide, typed content stream
+                    from the live document model, so a caller can be laying out page images
+                    while the paragraphs, tables, comments, and tracked changes are still
+                    arriving.
+                </p>
+                <div class="actions">
+                    <a class="button" href="#extract">What it extracts</a>
+                    <a class="text-link" href="https://github.com/ai-pipestream/grpc-libreoffice">View the source</a>
+                </div>
+                <div class="facts" aria-label="Facts">
+                    <span>Office, OpenDocument, RTF, CSV, HTML, PDF</span>
+                    <span>PNG pages or PDF</span>
+                    <span>One isolated process per document</span>
+                    <span>Apache-2.0</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="extract">
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>The widest read in the suite.</h2>
+                    <p>
+                        Because it works from LibreOffice's own live model, it can see parts
+                        of a document most parsers never surface.
+                    </p>
+                </div>
+                <div class="prose">
+                    <p>
+                        The typed stream goes well past text and tables. It reaches comments,
+                        tracked changes, bookmarks, form fields, headers and footers,
+                        footnotes, drawing shapes, text frames, embedded objects, and, in
+                        spreadsheets, named ranges, cell comments, pivot tables, and embedded
+                        charts with their numeric series. Each event carries geometry measured
+                        from the same layout the pages were painted from, so a caption sits
+                        where it sits on the page, not where a re-flow guessed it might go.
+                    </p>
+                    <p>
+                        Text runs carry code-point offsets in a documented coordinate space, so
+                        an annotation made downstream can point back to an exact span in the
+                        document. That is what lets NLP output line up with the rendered page
+                        rather than floating loose next to it.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="quickstart">
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>One document, one throwaway process.</h2>
+                    <p>
+                        LibreOffice is powerful and occasionally temperamental, so each
+                        document is rendered in its own short-lived worker.
+                    </p>
+                </div>
+                <div class="prose">
+                    <p>
+                        Every document runs in a separate worker process that starts, does its
+                        one job, and exits. If a document trips a crash or a hang inside the
+                        office core, it takes down that one worker and nothing else. The server
+                        maps the failure to a gRPC status and moves on to the next request. A
+                        document that simply cannot be loaded is reported as a client error,
+                        while a genuine crash is reported as a server error, so the two are
+                        never confused.
+                    </p>
+                    <p>
+                        Nothing is spooled to disk. The writable paths the office core needs
+                        sit on a memory-backed filesystem, and the root filesystem is read
+                        only. Page images render straight from the tile painter, so there is no
+                        intermediate PDF sitting on disk on the way to a PNG.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>Ask for the parts you want.</h2>
+                    <p>
+                        Part selection does not just filter what is sent. It decides what work
+                        is done.
+                    </p>
+                </div>
+                <div class="prose">
+                    <p>
+                        A request can name the parts it cares about, and the parts it leaves
+                        out are never computed, not just never emitted. That matters for the
+                        expensive pieces, like per-cell rectangles in a large spreadsheet,
+                        which are only produced when a caller actually asks for them. Every
+                        event is sent the moment it exists, so page images and typed content
+                        interleave as they are ready. When an extraction detail cannot be
+                        recovered, it becomes a warning on the stream rather than a failed
+                        render, so a caller still gets the pages and everything else that did
+                        parse.
+                    </p>
+                    <p>
+                        The formats are broad: Word, Excel, and PowerPoint in modern and
+                        legacy forms, the OpenDocument family, RTF, CSV, HTML, plain text, and
+                        PDF read back in through Draw. The service ships a companion mapper that
+                        folds the whole event stream into a single document in the suite's
+                        shared shape, and that mapper builds a valid document from any part
+                        selection, so partial reads still compose.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="verification">
+            <div class="wrap verification-inner">
+                <div>
+                    <h2>Read it and run it.</h2>
+                    <p>
+                        The protobuf contract is linted with buf and documented field by
+                        field, the C++ server and its worker are in the repository, and
+                        uploads are capped, with a per-document timeout that turns a hung
+                        render into a clean deadline rather than a stuck request.
+                    </p>
+                </div>
+                <div class="actions">
+                    <a class="button" href="https://github.com/ai-pipestream/grpc-libreoffice">Open the repository</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="wrap footer-inner">
+            <span>Pipestream AI. Apache-2.0 licensed.</span>
+            <div class="footer-links">
+                <a href="../">All parsers</a>
+                <a href="../grparse/">gRParse</a>
+                <a href="../grpoic/">grPOIc</a>
+                <a href="../grpc-calamine/">grpc-calamine</a>
+                <a href="https://github.com/ai-pipestream/grpc-libreoffice">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

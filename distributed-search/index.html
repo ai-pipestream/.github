@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Collaborative shared-floor distributed HNSW search: letting shards share a running lower bound so each can stop chasing candidates the rest of the cluster has already beaten. An open research write-up, with the mechanism, the math, what has been measured, and what has not.">
+    <title>Collaborative distributed HNSW search | Pipestream AI Research</title>
+    <style>
+        :root {
+            --bg: #fbfbf9;
+            --surface: #ffffff;
+            --ink: #1c1e23;
+            --ink-soft: #43474f;
+            --ink-faint: #767b85;
+            --rule: #e4e3de;
+            --accent: #34495e;
+            --accent-soft: #eef1f4;
+            --link: #2f5d78;
+            --warn-bg: #faf6ee;
+            --warn-rule: #e6dcc9;
+            --warn-ink: #7a5a2a;
+            --code: #172027;
+            --code-ink: #e8eef1;
+            --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+            --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--serif);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--ink);
+            background: var(--bg);
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+        a { color: var(--link); text-decoration: none; }
+        a:hover { text-decoration: underline; text-underline-offset: 2px; }
+        code { font-family: var(--mono); font-size: 0.86em; }
+
+        header {
+            border-bottom: 1px solid var(--rule);
+            background: var(--bg);
+            position: sticky; top: 0; z-index: 10;
+        }
+        .header-inner {
+            max-width: 820px; margin: 0 auto; padding: 15px 28px;
+            display: flex; justify-content: space-between; align-items: baseline;
+            gap: 16px; font-family: var(--sans);
+        }
+        .brand { font-weight: 600; color: var(--ink); font-size: 1.02rem; }
+        .brand span { color: var(--ink-faint); font-weight: 400; }
+        .header-inner nav a { color: var(--ink-soft); font-size: 0.88rem; margin-left: 18px; }
+
+        .paper { max-width: 720px; margin: 0 auto; padding: 0 28px; }
+
+        .titleblock { padding: 60px 0 34px; border-bottom: 1px solid var(--rule); }
+        .eyebrow {
+            font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.08em;
+            text-transform: uppercase; color: var(--accent); margin-bottom: 18px;
+        }
+        h1 { font-size: 2.5rem; line-height: 1.12; letter-spacing: -0.02em; font-weight: 600; margin-bottom: 18px; }
+        .byline { font-family: var(--sans); font-size: 0.92rem; color: var(--ink-faint); }
+        .byline a { color: var(--link); }
+
+        .status-note {
+            font-family: var(--sans);
+            background: var(--warn-bg); border: 1px solid var(--warn-rule); border-radius: 8px;
+            padding: 18px 22px; margin: 30px 0; color: var(--warn-ink); font-size: 0.95rem; line-height: 1.6;
+        }
+        .status-note strong { color: #5e4315; }
+
+        .abstract { padding: 30px 0; border-bottom: 1px solid var(--rule); }
+        .abstract .label {
+            font-family: var(--sans); font-size: 0.74rem; letter-spacing: 0.08em;
+            text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px;
+        }
+        .abstract p { font-size: 1.08rem; color: var(--ink-soft); }
+
+        section { padding: 40px 0; border-bottom: 1px solid var(--rule); }
+        h2 {
+            font-family: var(--sans); font-size: 1.4rem; font-weight: 650; letter-spacing: -0.01em;
+            margin-bottom: 16px; color: var(--ink);
+        }
+        h2 .sec { color: var(--ink-faint); font-weight: 500; margin-right: 12px; }
+        h3 { font-family: var(--sans); font-size: 1.05rem; font-weight: 650; margin: 26px 0 8px; }
+        p { margin-bottom: 16px; color: var(--ink-soft); }
+        p.body-ink { color: var(--ink); }
+
+        .eq {
+            font-family: var(--mono); font-size: 0.92rem; line-height: 1.6;
+            background: var(--accent-soft); color: var(--ink);
+            padding: 14px 18px; border-radius: 6px; margin: 18px 0; overflow-x: auto;
+        }
+        .eq .where { display: block; margin-top: 8px; color: var(--ink-faint); font-size: 0.82rem; }
+
+        table.data { width: 100%; border-collapse: collapse; font-family: var(--sans); font-size: 0.9rem; margin: 18px 0; }
+        table.data th, table.data td { padding: 8px 12px; border-bottom: 1px solid var(--rule); text-align: right; color: var(--ink-soft); }
+        table.data th:first-child, table.data td:first-child { text-align: left; }
+        table.data th { color: var(--ink); font-weight: 650; }
+        table.data caption { font-family: var(--sans); font-size: 0.82rem; color: var(--ink-faint); text-align: left; margin-bottom: 8px; }
+
+        figure { margin: 26px 0; }
+        figure svg { width: 100%; height: auto; display: block; }
+        figcaption { font-family: var(--sans); font-size: 0.85rem; color: var(--ink-faint); margin-top: 10px; line-height: 1.5; }
+
+        .lemma {
+            border-left: 3px solid var(--accent); background: var(--surface);
+            padding: 14px 20px; margin: 20px 0; border-radius: 0 6px 6px 0;
+        }
+        .lemma .name { font-family: var(--sans); font-size: 0.8rem; font-weight: 650; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); margin-bottom: 6px; }
+
+        .open-work { background: var(--warn-bg); border: 1px solid var(--warn-rule); border-radius: 8px; padding: 8px 26px 26px; }
+        .open-work h2 { color: var(--warn-ink); margin-top: 22px; }
+
+        ul { margin: 0 0 16px 1.2em; color: var(--ink-soft); }
+        li { margin: 7px 0; }
+
+        footer { font-family: var(--sans); padding: 36px 0 60px; color: var(--ink-faint); font-size: 0.86rem; }
+        footer a { color: var(--link); margin-right: 18px; }
+
+        @media (max-width: 620px) {
+            h1 { font-size: 1.9rem; }
+            .header-inner nav a:not(:last-child) { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="../" class="brand">Pipestream AI <span>/ Research</span></a>
+            <nav>
+                <a href="#mechanism">Mechanism</a>
+                <a href="#scout">Scout</a>
+                <a href="#measured">Measured</a>
+                <a href="#open">Open work</a>
+                <a href="https://github.com/apache/lucene/pull/16357">PR&nbsp;#16357</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="paper">
+            <div class="titleblock">
+                <p class="eyebrow">Open research · distributed vector search</p>
+                <h1>Collaborative shared-floor distributed HNSW search</h1>
+                <p class="byline">
+                    A running write-up of work in progress. The first upstream piece is
+                    <a href="https://github.com/apache/lucene/pull/16357">Apache Lucene PR&nbsp;#16357</a>,
+                    a shared-floor kNN collector in the Lucene sandbox. The reference engine is
+                    <a href="https://github.com/ai-pipestream/distributed-search">distributed-search</a>.
+                </p>
+            </div>
+
+            <div class="status-note">
+                <strong>Status: early and unproven.</strong> The mechanism is promising in the
+                cases measured so far, and the recall it produces matches an ordinary Lucene
+                search rather than beating it. It is not yet proven at the scale and topology it
+                is built for. The honest distributed benchmark, on separate machines rather than
+                one process standing in for many, is the main piece of open work, and the
+                adaptivity result on skewed shards is not finished. This is why the collector
+                lives in Lucene's sandbox and not its core. The numbers below say promising, not
+                settled, and every one of them needs more measurement before it means more than
+                that.
+            </div>
+
+            <div class="abstract">
+                <p class="label">Abstract</p>
+                <p>
+                    A vector index too large for one machine is split across shards. The usual
+                    way to search it makes every shard run its search to full depth and hands a
+                    coordinator far more candidates than the query asked for, most of which are
+                    thrown away. This work asks whether shards can instead share a single running
+                    number, a floor equal to the score of the weakest result still good enough to
+                    make the global answer, so that a shard which can prove it cannot beat that
+                    floor stops early. The floor is a valid lower bound on the final cutoff at
+                    every moment, so pruning on it does not change which results come back. The
+                    open question is how much work it actually saves once the floor has to travel
+                    between real machines, and whether a small in-memory sample searched first can
+                    seed the floor early enough to matter.
+                </p>
+            </div>
+
+            <section id="problem">
+                <h2><span class="sec">1</span>The waste in distributed vector search</h2>
+                <p>
+                    HNSW gives good approximate nearest-neighbour recall on a single node. Splitting
+                    the index across shards is where the cost comes back. The common contract asks
+                    every shard for a full local top-<code>k</code>, ships all of it to a
+                    coordinator, and merges. The coordinator keeps <code>k</code> results out of the
+                    <code>k·s</code> it received and discards the rest.
+                </p>
+                <p>
+                    At sixteen shards and <code>k = 10,000</code> that is 160,000 candidates
+                    computed and shipped so that 10,000 can be kept. The other 150,000, about 94
+                    percent, are wasted. It gets worse as <code>k</code> and the shard count grow.
+                    The reason is simple: nothing tells a running search that the rest of the
+                    cluster already holds better results than the ones it is still chasing. Each
+                    shard searches as if it were alone.
+                </p>
+            </section>
+
+            <section id="mechanism">
+                <h2><span class="sec">2</span>The mechanism: one shared number</h2>
+                <p>
+                    The whole idea is a single per-query scalar called the global floor. It is the
+                    <code>k</code>-th best similarity among every hit seen so far across every
+                    shard, held in a bounded min-heap of size <code>k</code>. Because the hits seen
+                    so far are always a subset of the hits that will ever exist, the
+                    <code>k</code>-th best of the subset can never sit above the
+                    <code>k</code>-th best of the whole. The floor is therefore a lower bound on the
+                    final cutoff, and it only rises.
+                </p>
+                <div class="lemma">
+                    <div class="name">Why pruning on the floor is loss-free</div>
+                    <p style="margin-bottom:0">
+                        Let <code>s*</code> be the <code>k</code>-th best similarity over the final
+                        merged result. At any time <code>t</code> the floor is the
+                        <code>k</code>-th best over the hits observed so far, a subset of all hits,
+                        so <code>floor(t) ≤ s*</code> always, and the floor is monotone
+                        non-decreasing. Any candidate whose reachable score is below the floor is
+                        below <code>s*</code>, so it can never enter the final top-<code>k</code>.
+                        Dropping it changes nothing about the answer.
+                    </p>
+                </div>
+                <p>
+                    HNSW already has the hook this needs. Its graph walk keeps re-reading a minimum
+                    competitive similarity from the collector after each accepted hit and stops
+                    when it can no longer clear that bar. A thin decorator that folds the shared
+                    floor into that value raises the bar through machinery that is already there.
+                    The graph search code itself is not touched. That is the entire footprint of
+                    the idea inside Lucene: a floor object, one method to push an externally
+                    computed bound in, and a collector decorator that reads it.
+                </p>
+            </section>
+
+            <section id="math">
+                <h2><span class="sec">3</span>How much less work, in principle</h2>
+                <p>
+                    There are two separate savings. The first does not even need the floor. If
+                    shards are random samples of the corpus, which hash or round-robin sharding
+                    both give, then the number of true global top-<code>k</code> hits that land in a
+                    shard holding a fraction <code>p</code> of the data follows a binomial
+                    distribution with mean <code>k·p</code>. A shard almost never owes more than a
+                    little above that mean, so each shard can be asked for a quota rather than the
+                    full <code>k</code>:
+                </p>
+                <div class="eq">
+                    perShardK(k, p) = k·p + λ·√( k·p·(1 − p) ),  λ = 16
+                    <span class="where">The quota sits λ standard deviations above the expected count. At λ = 16 the chance a shard truly owes more than its quota is negligible.</span>
+                </div>
+                <p>
+                    For <code>s</code> equal shards, where <code>p = 1/s</code>, the quotas add up to
+                    a total that grows with the square root of the shard count rather than linearly:
+                </p>
+                <div class="eq">
+                    total collected = k + λ·√( k·(s − 1) )
+                </div>
+                <p>
+                    Compared against the old "every shard returns <code>k</code>" contract, the
+                    fan-in shrinks by
+                </p>
+                <div class="eq">
+                    R(k, s) = s / ( 1 + λ·√( (s − 1) / k ) )   →   s   as k → ∞
+                </div>
+                <p>
+                    The limit is the point worth sitting with. The large-<code>k</code> case that
+                    hurts most today is exactly where the reduction approaches the full
+                    <code>s</code>-fold. At sixteen shards, using the integer quotas the code
+                    actually computes:
+                </p>
+                <table class="data">
+                    <caption>Fan-in at s = 16, integer quotas as computed at runtime.</caption>
+                    <thead>
+                        <tr><th>k</th><th>per-shard quota</th><th>total collected</th><th>vs k·s today</th><th>reduction</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>100</td><td>44</td><td>704</td><td>1,600</td><td>2.3&times;</td></tr>
+                        <tr><td>1,000</td><td>184</td><td>2,944</td><td>16,000</td><td>5.4&times;</td></tr>
+                        <tr><td>10,000</td><td>1,012</td><td>16,192</td><td>160,000</td><td>9.9&times;</td></tr>
+                    </tbody>
+                </table>
+                <p>
+                    The second saving is the floor itself, and it acts on a different quantity.
+                    Fan-in is about how many results cross the wire. The floor is about how many
+                    vectors each shard has to compare on the way to its results. The visit count of
+                    an HNSW search splits into a small graph-descent term and a term proportional to
+                    the exploration width, and on the measured corpus the width term is about 99
+                    percent of the visits:
+                </p>
+                <div class="eq">
+                    V(ef, N) ≈ c₁·ln N + d_eff·ef,   with d_eff ≈ 26 measured
+                    <span class="where">Calibrated on the 247M-vector run: about 2,600 visits per segment at the operating width, roughly 26 visits per unit of exploration width, and the descent term lost in the noise.</span>
+                </div>
+                <p>
+                    Because that term dominates, cutting how far each shard explores translates
+                    almost directly into fewer comparisons. A converged floor lets a shard stop
+                    refining once it can prove the rest cannot beat what the cluster already holds,
+                    and under random sharding only about one in <code>s</code> of a shard's results
+                    survive the merge anyway, so most of that refinement was destined for the bin.
+                    The catch, and it is a real one, is the word converged. The floor only helps to
+                    the extent it has risen while the search is still running.
+                </p>
+            </section>
+
+            <section id="scout">
+                <h2><span class="sec">4</span>The scout: a floor that arrives early</h2>
+                <p>
+                    A floor that only reaches its useful value at the end of the search saves
+                    nothing, because by then every shard has already done the work. The floor has to
+                    be high while searches are still deciding what to explore. That is what the
+                    scout is for.
+                </p>
+                <p class="body-ink">
+                    The scout is one extra shard that holds a small in-memory sample of the whole
+                    corpus, quantized so it is cheap to search. It is searched at the same time as
+                    the real shards, not before them, but because it is small and in memory it
+                    finishes first and merges its results first. The mental model is a cache. A cache
+                    does not sit in a separate phase ahead of the database; it answers in parallel
+                    and simply returns sooner, and its answer shapes what the slower path does next.
+                    The scout is a cache for the floor.
+                </p>
+
+                <figure>
+                    <svg viewBox="0 0 640 300" role="img" aria-label="Diagram: a scout shard and the real shards are searched concurrently, but the scout merges first and seeds the floor the real shards read while still running.">
+                        <defs>
+                            <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                                <path d="M0,0 L6,3 L0,6 Z" fill="#767b85"></path>
+                            </marker>
+                            <marker id="arrowAccent" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                                <path d="M0,0 L6,3 L0,6 Z" fill="#34495e"></path>
+                            </marker>
+                        </defs>
+                        <!-- coordinator -->
+                        <rect x="250" y="18" width="140" height="44" rx="7" fill="#34495e"></rect>
+                        <text x="320" y="45" text-anchor="middle" fill="#fff" font-family="var(--sans)" font-size="14" font-weight="600">coordinator</text>
+                        <!-- scout -->
+                        <rect x="40" y="118" width="150" height="64" rx="7" fill="#eef1f4" stroke="#34495e" stroke-width="1.5"></rect>
+                        <text x="115" y="143" text-anchor="middle" fill="#1c1e23" font-family="var(--sans)" font-size="13" font-weight="650">scout</text>
+                        <text x="115" y="161" text-anchor="middle" fill="#43474f" font-family="var(--sans)" font-size="10.5">in-memory sample,</text>
+                        <text x="115" y="174" text-anchor="middle" fill="#43474f" font-family="var(--sans)" font-size="10.5">quantized, returns first</text>
+                        <!-- real shards -->
+                        <rect x="250" y="118" width="115" height="64" rx="7" fill="#fff" stroke="#e4e3de" stroke-width="1.5"></rect>
+                        <text x="307" y="147" text-anchor="middle" fill="#1c1e23" font-family="var(--sans)" font-size="12" font-weight="600">shard 1</text>
+                        <text x="307" y="164" text-anchor="middle" fill="#767b85" font-family="var(--sans)" font-size="10.5">full precision</text>
+                        <rect x="385" y="118" width="115" height="64" rx="7" fill="#fff" stroke="#e4e3de" stroke-width="1.5"></rect>
+                        <text x="442" y="147" text-anchor="middle" fill="#1c1e23" font-family="var(--sans)" font-size="12" font-weight="600">shard 2</text>
+                        <text x="442" y="164" text-anchor="middle" fill="#767b85" font-family="var(--sans)" font-size="10.5">full precision</text>
+                        <rect x="520" y="118" width="80" height="64" rx="7" fill="#fff" stroke="#e4e3de" stroke-width="1.5"></rect>
+                        <text x="560" y="154" text-anchor="middle" fill="#767b85" font-family="var(--sans)" font-size="12">…</text>
+                        <!-- concurrent search arrows down -->
+                        <line x1="300" y1="62" x2="140" y2="114" stroke="#767b85" stroke-width="1.3" marker-end="url(#arrow)"></line>
+                        <line x1="315" y1="62" x2="307" y2="114" stroke="#767b85" stroke-width="1.3" marker-end="url(#arrow)"></line>
+                        <line x1="330" y1="62" x2="442" y2="114" stroke="#767b85" stroke-width="1.3" marker-end="url(#arrow)"></line>
+                        <text x="150" y="95" fill="#767b85" font-family="var(--sans)" font-size="10">searched concurrently</text>
+                        <!-- scout seeds floor -->
+                        <rect x="230" y="228" width="180" height="40" rx="7" fill="#eef1f4" stroke="#34495e" stroke-width="1.5"></rect>
+                        <text x="320" y="252" text-anchor="middle" fill="#34495e" font-family="var(--sans)" font-size="12" font-weight="650">global floor</text>
+                        <path d="M115,182 Q115,248 226,248" fill="none" stroke="#34495e" stroke-width="1.6" marker-end="url(#arrowAccent)"></path>
+                        <text x="120" y="212" fill="#34495e" font-family="var(--sans)" font-size="10">seeds first</text>
+                        <!-- floor read by shards while running -->
+                        <path d="M414,248 Q470,248 460,186" fill="none" stroke="#34495e" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#arrowAccent)"></path>
+                        <path d="M320,228 Q320,205 310,186" fill="none" stroke="#34495e" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#arrowAccent)"></path>
+                        <text x="330" y="215" fill="#34495e" font-family="var(--sans)" font-size="10">read while still running</text>
+                    </svg>
+                    <figcaption>
+                        The scout searches at the same time as the real shards but returns first,
+                        so its results seed the floor that the still-running full-precision shards
+                        read. Its top results are re-scored at full precision before they are
+                        allowed to set the floor, so the bound stays valid.
+                    </figcaption>
+                </figure>
+
+                <h3>Why a sample seeds a tight floor</h3>
+                <p>
+                    The reason the scout can seed a useful floor from a sample, rather than a weak
+                    one, is a ranking argument. Suppose the scout holds a fraction <code>ρ</code> of
+                    the corpus, drawn uniformly. Ask it for its own top-<code>k</code>. Its
+                    <code>k</code>-th result sits, in expectation, at the position in the full corpus
+                    where <code>k</code> of the sampled points fall above it, which is global rank
+                    <code>k/ρ</code>:
+                </p>
+                <div class="eq">
+                    floor_scout ≈ score at global rank k / ρ
+                </div>
+                <p>
+                    Now set <code>ρ = 1/s</code>, a sample the size of one shard. The scout's floor
+                    lands at global rank <code>k·s</code>. That is the same score a real shard only
+                    advertises once it has fully converged and knows its share of the global answer.
+                    In other words, at the very start of the search the scout hands the cluster a
+                    floor as tight as the one it would otherwise have to wait for every shard to
+                    finish to obtain. The tighter the floor early, the more exploration the real
+                    shards can skip. The scout's own top results are re-scored in full precision
+                    before they set the floor, so the quantization that makes it fast never makes the
+                    bound invalid, and no calibration constant is needed.
+                </p>
+                <p>
+                    Whether this holds up outside the derivation is one of the things that still
+                    needs measuring, particularly when the sample is not a clean uniform draw.
+                </p>
+            </section>
+
+            <section id="recall">
+                <h2><span class="sec">5</span>Recall, honestly</h2>
+                <p>
+                    The floor validity lemma protects the answer only against pruning candidates
+                    whose current frontier score is already below the floor. HNSW is a greedy
+                    approximation to begin with, and a stock search can still reach a good cluster
+                    through a low-scoring bridge node. Raising the bar toward the true cutoff prunes
+                    in exactly the band where those bridges live. So the design is not recall-safe by
+                    construction. It is the same greedy approximation stock HNSW already makes, at a
+                    tighter bar, with two explicit guards to keep the tighter bar from costing recall.
+                </p>
+                <p>
+                    The first guard is an ascent gate: a shard ignores the global floor until it has
+                    collected enough of its own hits to have reached its query's neighbourhood, so
+                    the bound never applies before the search has arrived where it is going. The
+                    second is a greediness dial <code>g</code>. At <code>g = 0</code> the collector
+                    is bit-for-bit identical to stock search and the floor has no effect. At the
+                    default of <code>0.5</code> the effective bar can never rise past a fixed
+                    fraction of what the shard has already seen, so a fixed depth of exploration
+                    always survives. Below a small <code>k</code> the mechanism switches itself off
+                    entirely and runs the plain collector, because the savings grow with <code>k</code>
+                    while the risk to recall concentrates at small <code>k</code>.
+                </p>
+                <p class="body-ink">
+                    The important claim is the modest one. In the runs measured so far, the
+                    collaborative search returns the same results an ordinary Lucene search returns.
+                    Recall does not improve, and it is not meant to. It holds at the level Lucene
+                    already produces while the search does less work to get there. Any suggestion of
+                    perfect or near-perfect recall would be wrong: HNSW is approximate, the baseline
+                    is approximate, and the goal is to match the baseline, not to exceed it. Recall
+                    parity is an empirical result on specific corpora and specific settings, not a
+                    theorem, and it needs to be shown across more of them.
+                </p>
+            </section>
+
+            <section id="measured">
+                <h2><span class="sec">6</span>What has been measured</h2>
+                <p>
+                    Two kinds of measurement exist so far. Neither is the real thing, which is
+                    separate machines under load, and both are reported as direction, not proof.
+                </p>
+                <h3>Single process standing in for a cluster</h3>
+                <p>
+                    On 247 million Cohere embeddings, 1024 dimensions, dot product, sharded
+                    round-robin into sixteen and joined so that one Lucene segment stands in for one
+                    remote shard, the floor is measured against the two baselines that matter.
+                    Against the wasteful distributed contract, where every shard returns a full
+                    <code>k</code> and the coordinator merges, the floor cuts vector comparisons by
+                    about 24 percent at <code>k = 1,000</code> while recall moves by 0.003, and by
+                    roughly 88 to 91 percent at <code>k = 10,000</code> at a recall cost of 0.02 to
+                    0.04. Against a single JVM's own optimistic multi-segment search, which already
+                    avoids most of the redundant work inside one process, the gain is only low single
+                    digits. That second comparison is the honest one for a single machine, and it is
+                    the reason this belongs in the sandbox rather than the core: inside one process,
+                    Lucene already does most of what the floor would do.
+                </p>
+                <h3>A real, if small, cluster</h3>
+                <p>
+                    A nine-node cluster, one fast workstation and eight Raspberry Pi 5 boards, was
+                    run less to produce a headline number than to watch the floor behave on slow,
+                    staggered nodes, which is precisely the setting the single-process harness cannot
+                    show. There the scout configuration, with the fast node seeding the floor first,
+                    cut visits by roughly 53 to 58 percent at <code>k</code> from 50 to 1,000,
+                    tapering to about 38 percent at <code>k = 5,000</code>, and the collaborative run
+                    returned the same result set as the standard run at every tested point. That last
+                    part is the recall result, and it is a parity result: same answers, less work,
+                    not better answers. It is the clearest evidence so far that the floor arrives
+                    early enough to matter when nodes are slow, and it is still a small cluster on a
+                    bench, not a benchmark to lean on.
+                </p>
+            </section>
+
+            <section id="engine">
+                <h2><span class="sec">7</span>What makes it distributed</h2>
+                <p>
+                    The Lucene collector is only the in-process primitive: the floor object and one
+                    method to push a bound in from outside. Everything that turns it into a
+                    distributed search lives in the reference engine. A shard runs its Lucene search
+                    as a server stream, emitting each accepted hit as it is found rather than waiting
+                    for a final top-<code>k</code>. A second, bidirectional stream carries floor
+                    updates: the shard pushes its local contribution up, the coordinator pushes the
+                    global floor back down, and because floor updates are a monotone maximum they are
+                    safe to apply out of order or more than once, with no sequence numbers. The
+                    coordinator merges over distinct global document ids, which is where the
+                    lemma's requirement that advertised scores come from real, distinct hits is
+                    enforced. Cluster membership, shard routing by stable hash, and per-peer channel
+                    reuse round out the engine. The per-shard quota from section 3 is applied here
+                    too, independently of the floor, so the fan-in reduction and the exploration
+                    reduction stack.
+                </p>
+                <p>
+                    The same shared-floor idea has also been extended to block-join vector search,
+                    where results are parent documents scored by their best child, by tracking the
+                    floor over parents rather than raw child scores. That extension lives in Lucene's
+                    join module. Across all of it, nothing in Lucene's core is changed.
+                </p>
+            </section>
+
+            <section id="open" class="open-work">
+                <h2><span class="sec">8</span>What is not done</h2>
+                <p>
+                    This is the part that matters most, and it is deliberately long.
+                </p>
+                <ul>
+                    <li>
+                        The distributed benchmark on real, separate machines under load is the main
+                        open work. The single-process harness proves the arithmetic, not the
+                        systems behaviour, and the Pi cluster is a bench toy. Until the floor is
+                        measured travelling between machines that are actually busy, the savings are
+                        a projection.
+                    </li>
+                    <li>
+                        The adaptivity claim is unfinished. The interesting case is shards that are
+                        not random samples but semantic clusters, where a static per-shard quota
+                        would be wrong and the floor should adapt. The test corpus for that exists,
+                        but the run was stopped partway and never completed. Without it, the claim
+                        that the floor beats a static quota on skewed shards is unsupported.
+                    </li>
+                    <li>
+                        Recall parity has been shown on a handful of corpora and settings. It needs
+                        to be shown across many more before it is safe to describe as a property
+                        rather than an observation.
+                    </li>
+                    <li>
+                        The scout's tight-floor argument assumes a clean uniform sample. Real
+                        samples are not clean, and the degradation under skew is not characterized.
+                    </li>
+                </ul>
+                <p style="margin-bottom:0">
+                    The prior attempt at this idea, a collaborative collector that compared each
+                    shard's best-found score against the floor during its ascent, was closed because
+                    it pruned before a search had reached its neighbourhood and lost recall. The
+                    gate and the clamp above are the direct answer to that failure. Keeping that
+                    history visible is part of the point: the current design is a correction, not a
+                    finished result.
+                </p>
+            </section>
+
+            <section id="links" style="border-bottom:none">
+                <h2><span class="sec">9</span>Read the work</h2>
+                <p>
+                    The Lucene collector, its tests, and the block-join extension are in
+                    <a href="https://github.com/apache/lucene/pull/16357">PR&nbsp;#16357</a>. The
+                    distributed engine, the coordination protocol, and the benchmark harness are in
+                    <a href="https://github.com/ai-pipestream/distributed-search">distributed-search</a>.
+                    The broader research context, including this work and the pipelines around it, is
+                    on the <a href="../docs/research/">research page</a>.
+                </p>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="paper">
+            <a href="../">Pipestream AI</a>
+            <a href="https://github.com/apache/lucene/pull/16357">Lucene PR #16357</a>
+            <a href="https://github.com/ai-pipestream/distributed-search">distributed-search</a>
+            <a href="../docs/research/">Research</a>
+        </div>
+    </footer>
+</body>
+</html>

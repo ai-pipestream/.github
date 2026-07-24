@@ -302,11 +302,11 @@
         <div class="header-inner">
             <a href="#top" class="brand">Pipestream AI</a>
             <nav class="top">
-                <a href="#packages">Packages</a>
-                <a href="#distributed-search">Projects</a>
+                <a href="#distributed-search">Search</a>
+                <a href="parsers/">Parsers</a>
                 <a href="protomolt/">ProtoMolt</a>
+                <a href="opennlp/">OpenNLP</a>
                 <a href="#contributions">Contributions</a>
-                <a href="#research">Research</a>
                 <a href="https://github.com/ai-pipestream">GitHub</a>
             </nav>
         </div>
@@ -315,17 +315,17 @@
     <main id="top">
         <section class="hero">
             <div class="wrap">
-                <h1>Open-source software that assists with human understanding.</h1>
+                <h1>Open-source infrastructure for semantic search and document parsing.</h1>
                 <p class="mission">
-                    Pipestream AI is a small collaboration of engineers working on
-                    distributed semantic search, document understanding, and the open
-                    infrastructure that connects them.
+                    Pipestream AI is a small group of engineers building distributed semantic
+                    search, a set of document parsers, and the protobuf and gRPC plumbing that
+                    connects them.
                 </p>
                 <p class="sub">
-                    We build in the open and contribute upstream. Everything we release is
-                    licensed under Apache&nbsp;2.0 or MIT. Where we can make an existing
-                    project faster, safer, or more capable, we send the work back to it
-                    rather than fork away.
+                    The work is public and licensed under Apache&nbsp;2.0 or MIT. When a fix or
+                    a feature belongs in an existing project, it goes back upstream instead of
+                    into a fork. The contributions below each link to the pull request, so the
+                    claim can be read against the code.
                 </p>
                 <div class="pillrow">
                     <span class="pill">Apache OpenNLP</span>
@@ -379,8 +379,32 @@
                     Apache Lucene as a sandbox collector.
                 </p>
                 <div class="actions">
-                    <button class="btn" data-modal="hnsw-modal">Read the technical write-up →</button>
+                    <a class="btn" href="distributed-search/">Read the research write-up →</a>
                     <a class="repo-link" href="https://github.com/ai-pipestream/distributed-search">github.com/ai-pipestream/distributed-search</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="block" id="parsers">
+            <div class="wrap">
+                <h2>gRPC document parsers</h2>
+                <p class="project-lead">
+                    Four services that turn documents into structured protobuf and stream the
+                    results back as they parse, without writing anything to disk.
+                </p>
+                <p class="project-body">
+                    A real pipeline runs into every format at once: scanned PDFs and images, Word
+                    and PowerPoint and their OpenDocument cousins, and spreadsheets in every Excel
+                    flavour. Rather than force all of them through one engine, each service wraps
+                    the library that already handles its format well and puts it behind the same
+                    protobuf contract. gRParse runs OCR and layout on the GPU and also coordinates
+                    the others, grpc-libreoffice renders and reads office documents through
+                    LibreOffice, grPOIc pulls content and metadata with Apache POI, and
+                    grpc-calamine streams spreadsheets cell by cell in Rust.
+                </p>
+                <div class="actions">
+                    <a class="btn" href="parsers/">Visit the parser suite →</a>
+                    <a class="repo-link" href="https://github.com/ai-pipestream">github.com/ai-pipestream</a>
                 </div>
             </div>
         </section>
@@ -488,10 +512,10 @@
                             <ul class="prs">
                                 <li><span class="tag merged">merged</span><a href="https://github.com/apache/opennlp/pull/1163">Thread-safe stemmers, <code>StemmerFactory</code>, per-thread stem caching</a></li>
                                 <li><span class="tag merged">merged</span><a href="https://github.com/apache/opennlp/pull/1161">Non-breaking normalization &amp; tokenization hot-path speedups</a></li>
-                                <li><span class="tag merged">merged</span><a href="https://github.com/apache/opennlp/pull/1155">Lexical knowledge-base seam — WN-LMF/WNDB readers, Morphy lemmatizer</a></li>
-                                <li><span class="tag merged">merged</span><a href="https://github.com/apache/opennlp/pull/1154">Gazetteer &amp; geocoder API with a bundled Natural Earth implementation</a></li>
-                                <li><span class="tag merged">merged</span><a href="https://github.com/apache/opennlp/pull/1152">Static embedding engine for distilled embedding tables</a></li>
-                                <li><a href="https://github.com/apache/opennlp/pulls?q=is%3Apr+author%3Akrickert">…and more — full history on GitHub</a></li>
+                                <li><span class="tag open">open</span><a href="https://github.com/apache/opennlp/pull/1155">Lexical knowledge-base seam: WN-LMF and WNDB readers, Morphy lemmatizer</a></li>
+                                <li><span class="tag open">open</span><a href="https://github.com/apache/opennlp/pull/1154">Gazetteer and geocoder API with a bundled Natural Earth implementation</a></li>
+                                <li><span class="tag open">open</span><a href="https://github.com/apache/opennlp/pull/1152">Static embedding engine for distilled embedding tables</a></li>
+                                <li><a href="opennlp/">Read the full OpenNLP write-up, merged work and new features →</a></li>
                             </ul>
                         </div>
                     </li>
@@ -665,7 +689,8 @@
                 </ul>
 
                 <p class="note">
-                    Dedicated pages for OpenNLP, document parsing, gRPC, Quarkus, the Jandex
+                    Dedicated write-ups: <a href="opennlp/">the OpenNLP work</a> and the
+                    <a href="parsers/">gRPC document parsers</a>. Pages for Quarkus, the Jandex
                     Gradle plugin, and Apicurio are in progress.
                 </p>
             </div>
@@ -696,7 +721,7 @@
                         <li><strong>Distributed Lucene index</strong> — a shard-native index format, in progress.</li>
                     </ul>
                     <p style="margin-top: 18px;">
-                        <button class="btn" data-modal="hnsw-modal">Read the technical write-up →</button>
+                        <a class="btn" href="distributed-search/">Read the research write-up →</a>
                     </p>
                 </div>
             </div>
@@ -705,28 +730,22 @@
         <section class="block" id="background">
             <div class="wrap">
                 <h2>Background</h2>
-                <p class="lede">
-                    The mission — software that assists with human understanding — has a
-                    long root.
-                </p>
                 <p style="color: var(--ink-soft); max-width: 46em;">
-                    Pipestream AI's founder began in open source on Linux desktop
-                    accessibility: the
-                    <a href="https://www.ucdenver.edu/center-for-innovative-design-and-engineering/community-engagement/colorado-assistive-technology-act-program/technology-and-transition-to-employment/linux-accessibility">AccessX</a>
-                    keyboard and pointer features — StickyKeys, SlowKeys, BounceKeys, and
-                    MouseKeys — that let someone operate a computer without a conventional
-                    keyboard or mouse. That work was done around 1999 through the
-                    rehabilitation-services program at the University of Illinois at
-                    Urbana&#8209;Champaign, with Ralph Johnson. Making information usable by
-                    people has been the point ever since.
+                    The through-line is search. An NLP search engine in 1999, then production
+                    work on relevance and live-updating indexes, including rebuilding Etsy's
+                    search in 2010 for live updates and modernized relevance, and the search at
+                    Adorama. The <a href="distributed-search/">distributed-search</a> engine and
+                    the collaborative-HNSW <a href="#research">research</a> are the current
+                    chapter of the same problem.
                 </p>
                 <p style="color: var(--ink-soft); max-width: 46em; margin-top: 16px;">
-                    The through-line since then has been search: an NLP search engine in
-                    1999, and later production work on relevance and live-updating indexes —
-                    rebuilding Etsy's search in 2010 for live updates and modernized
-                    relevance, and the search at Adorama. <a href="#projects">distributed-search</a>
-                    and the collaborative-HNSW <a href="#research">research</a> are the
-                    current chapter of the same problem.
+                    Further back, the same hands wrote the
+                    <a href="https://www.ucdenver.edu/center-for-innovative-design-and-engineering/community-engagement/colorado-assistive-technology-act-program/technology-and-transition-to-employment/linux-accessibility">AccessX</a>
+                    keyboard and pointer features for Linux in 1999 (StickyKeys, SlowKeys,
+                    BounceKeys, and MouseKeys), the first time those accessibility features
+                    shipped on the platform, where they went out across the Linux desktops. It
+                    was freeware, so the attribution sits in the dark corners of the internet,
+                    but AccessX still gets referenced.
                 </p>
             </div>
         </section>

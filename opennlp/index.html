@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A body of work in Apache OpenNLP: thread-safe inference, an offset-preserving Unicode text foundation, and a stack of new annotation, tokenization, and lexical-knowledge features being proposed for the 3.x line.">
+    <title>Apache OpenNLP work | Pipestream AI</title>
+    <style>
+        :root {
+            --bg: #fbfbf9; --surface: #ffffff; --ink: #1c1e23; --ink-soft: #43474f;
+            --ink-faint: #767b85; --rule: #e4e3de; --accent: #34495e; --accent-soft: #eef1f4;
+            --link: #2f5d78; --merged: #4a7c59; --open: #9a6a3a; --draft: #8a7320;
+            --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+            --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--sans); line-height: 1.65; color: var(--ink); background: var(--bg); -webkit-font-smoothing: antialiased; }
+        a { color: var(--link); text-decoration: none; }
+        a:hover { text-decoration: underline; text-underline-offset: 2px; }
+        code { font-family: var(--mono); font-size: 0.85em; background: var(--accent-soft); padding: 1px 4px; border-radius: 3px; }
+        .wrap { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+        header { border-bottom: 1px solid var(--rule); background: var(--bg); position: sticky; top: 0; z-index: 10; }
+        .header-inner { max-width: 860px; margin: 0 auto; padding: 15px 24px; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+        .brand { font-family: var(--serif); font-size: 1.15rem; font-weight: 600; color: var(--ink); }
+        .brand span { color: var(--ink-faint); font-weight: 400; }
+        nav.top a { color: var(--ink-soft); font-size: 0.88rem; margin-left: 18px; }
+        nav.top a:hover { color: var(--ink); }
+
+        .hero { padding: 66px 0 38px; border-bottom: 1px solid var(--rule); }
+        .eyebrow { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+        h1 { font-family: var(--serif); font-size: 2.4rem; line-height: 1.14; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 20px; }
+        .hero p { font-size: 1.12rem; color: var(--ink-soft); max-width: 44em; }
+        .updated { font-family: var(--sans); font-size: 0.85rem; color: var(--ink-faint); margin-top: 20px; }
+        .attribution { font-size: 0.9rem; color: var(--ink-faint); margin-top: 14px; max-width: 44em; font-style: italic; }
+
+        section { padding: 46px 0; border-bottom: 1px solid var(--rule); }
+        h2 { font-family: var(--serif); font-size: 1.65rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 12px; }
+        .lede { color: var(--ink-soft); margin-bottom: 24px; max-width: 46em; }
+        p { color: var(--ink-soft); margin-bottom: 14px; max-width: 46em; }
+        h3 { font-family: var(--serif); font-size: 1.2rem; font-weight: 600; margin-bottom: 4px; color: var(--ink); }
+
+        .feature { padding: 26px 0; border-top: 1px solid var(--rule); }
+        .feature:first-of-type { border-top: none; }
+        .feature .meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+        .tag { font-family: var(--mono); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 2px 7px; border-radius: 3px; }
+        .tag.merged { color: var(--merged); border: 1px solid #cfe0d4; background: #f3f8f4; }
+        .tag.review { color: var(--open); border: 1px solid #e6dcc9; background: #faf6ee; }
+        .tag.draft { color: var(--draft); border: 1px solid #e4dcbc; background: #faf7ea; }
+        .tag.staged { color: var(--ink-faint); border: 1px solid var(--rule); background: var(--surface); }
+        .feature .refs { font-family: var(--mono); font-size: 0.8rem; color: var(--ink-faint); }
+        .feature p { margin-bottom: 0; }
+        .measure { font-size: 0.92rem; color: var(--ink-faint); margin-top: 8px; }
+
+        .mermaid-holder { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 20px; overflow-x: auto; }
+        .mermaid { min-width: 640px; }
+        .legend { font-size: 0.85rem; color: var(--ink-faint); margin-top: 12px; }
+
+        .chart { margin: 14px 0 2px; max-width: 460px; }
+        .chart svg { width: 100%; height: auto; }
+        .chart-note { font-size: 0.85rem; color: var(--ink-faint); margin-top: 6px; }
+
+        .callout { background: var(--accent-soft); border: 1px solid #dbe2e8; border-radius: 8px; padding: 22px 26px; }
+        .callout h3 { font-size: 1.1rem; margin-bottom: 8px; }
+        .callout p { color: var(--ink-soft); font-size: 0.96rem; }
+        .callout p:last-child { margin-bottom: 0; }
+
+        footer { padding: 40px 0 56px; color: var(--ink-faint); font-size: 0.86rem; }
+        footer a { color: var(--link); margin-right: 18px; }
+
+        @media (max-width: 620px) { h1 { font-size: 1.9rem; } nav.top a { margin-left: 12px; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="../" class="brand">Pipestream AI <span>/ OpenNLP</span></a>
+            <nav class="top">
+                <a href="#map">Branch map</a>
+                <a href="#new">New features</a>
+                <a href="#merged">Merged</a>
+                <a href="#research">3.x research</a>
+                <a href="https://github.com/apache/opennlp">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="wrap">
+                <p class="eyebrow">Apache OpenNLP</p>
+                <h1>Making a mature NLP toolkit fast, correct, and ready for modern pipelines.</h1>
+                <p>
+                    Apache OpenNLP has been a dependable Java NLP toolkit for a long time. This
+                    is an account of a sustained body of work inside it: first making the
+                    existing components safe to trust under load, then giving the toolkit a
+                    Unicode-correct text foundation that never loses track of where a character
+                    came from, and then building the annotation, tokenization, and lexical
+                    features a modern search and NLP pipeline needs on top of that foundation.
+                </p>
+                <p class="updated">Last updated 2026-07-21.</p>
+                <p class="attribution">
+                    All of this work belongs to the Apache OpenNLP project and lands through its
+                    normal review process. It is described here in the third person because that
+                    is what it is: contributions to a community project, not a product.
+                </p>
+            </div>
+        </section>
+
+        <section id="arc">
+            <div class="wrap">
+                <h2>One arc, in three movements.</h2>
+                <p>
+                    The work reads as a single arc rather than a pile of unrelated patches. The
+                    first movement made the toolkit trustworthy. The inference classes were made
+                    safe to share across threads, the deep-learning components stopped leaking
+                    native memory and producing NaN scores, and error messages started naming
+                    what actually went wrong instead of throwing an opaque exception.
+                </p>
+                <p>
+                    The second movement gave OpenNLP a text foundation it did not have before: a
+                    dependency-free, offset-preserving Unicode normalization engine and a
+                    Unicode-conformant word tokenizer. The invariant that runs through it is that
+                    every normalization step is alignment-preserving, so any annotation made
+                    later can be mapped back to an exact span in the original text.
+                </p>
+                <p>
+                    The third movement builds on that foundation: emoji handled as first-class
+                    text, full Unicode case folding, per-language normalization profiles, and the
+                    stack of new features below. Read end to end, it is the NLP layer a
+                    distributed semantic search engine needs, built inside the project that will
+                    maintain it.
+                </p>
+            </div>
+        </section>
+
+        <section id="map">
+            <div class="wrap">
+                <h2>The research branch map.</h2>
+                <p class="lede">
+                    Work reaches Apache OpenNLP through its normal review, one pull request at a
+                    time. The map below shows the current state: what has already merged into the
+                    project's main branch, the pull requests open against it, and the research
+                    branches staged behind them. Merged work lands in <code>apache main</code> at
+                    the top and drops out of the research line once it is there.
+                </p>
+                <div class="mermaid-holder">
+                    <pre class="mermaid">
+flowchart LR
+  main([apache main])
+  merged["Merged into apache main, July 2026:<br/>case folding, emoji normalization, UCD whitespace,<br/>de-regex normalizers, hot-path performance, stemmer factory,<br/>loading hardening, pattern precompile"]
+  main --- merged
+
+  main --> p1177["#1177 emoji annotations"]
+  main --> p1182["#1182 document container (foundation)"]
+  main --> d1154["#1154 gazetteer + geocoder"]
+  main --> d1155["#1155 wordnet knowledge base"]
+  d1155 --> d1167["#1167 lexical expansion"]
+  main --> d1166["#1166 light stemmers"]
+  main --> d1165["#1165 SentencePiece"]
+  d1165 --> d1152["#1152 static embeddings"]
+
+  main --> depp["depparse (neural tier)"]
+  main --> fftag["ff-postagger"]
+  main --> bilstm["bilstm-tagger"]
+  main --> cjk["#1191 CJK lattice tokenization"]
+  main --> huns["#1190 hunspell stemmer"]
+
+  p1182 --> glos["glossary"]
+  p1182 --> pii["pii"]
+  p1182 --> coref["coref"]
+  p1182 --> num["numeric"]
+  p1182 --> tart["text-artifacts"]
+  p1182 --> asset["embedded-assets"]
+  asset --> noiz["noise scoring"]
+  depp --> deppa["depparse-annotator"]
+  deppa --> rel["relation"]
+  d1152 --> emb["embedding-annotator"]
+  num --> rvote["region-vote"]
+  rvote --> geo["geocode-annotator"]
+  geo --> hier["hierarchy-annotator"]
+
+  classDef mergedC fill:#f3f8f4,stroke:#4a7c59,color:#1c1e23;
+  classDef ready fill:#eef4ee,stroke:#4a7c59,color:#1c1e23,stroke-width:2px;
+  classDef draft fill:#faf7ea,stroke:#b8860b,color:#1c1e23;
+  classDef foundation fill:#eef1f4,stroke:#34495e,color:#1c1e23,stroke-width:3px;
+  classDef staged fill:#ffffff,stroke:#c8c8c2,color:#43474f;
+  class merged mergedC;
+  class p1177,d1165 ready;
+  class d1152,d1154,d1155,d1166,d1167,huns,cjk draft;
+  class p1182 foundation;
+  class depp,fftag,bilstm,glos,pii,coref,num,tart,asset,noiz,deppa,rel,geo,hier,rvote,emb staged;
+                    </pre>
+                </div>
+                <p class="legend">
+                    Green is merged into apache main. Blue is the document container that the
+                    annotators build on. Amber is an open draft. White is a research branch staged
+                    on the fork, tested at its tip, not yet proposed. The full, dated map lives in
+                    the research fork.
+                </p>
+            </div>
+        </section>
+
+        <section id="new">
+            <div class="wrap">
+                <h2>New features being proposed for 3.x.</h2>
+                <p class="lede">
+                    Each of these is a distinct new capability. Some are ready for review, some
+                    are open drafts, and some are staged on the research fork and tested at their
+                    tips before being proposed. The status is marked on each. The measured numbers
+                    are the project's own figures from its manuals and tests.
+                </p>
+
+                <div class="feature">
+                    <div class="meta"><span class="tag review">in review</span><span class="refs">PR #1182 · OPENNLP-1888</span></div>
+                    <h3>A document annotation container</h3>
+                    <p>
+                        An immutable document that holds typed annotation layers anchored to the
+                        original text by offset. Layers carry either a position or a document-wide
+                        scope, their keys are namespaced so different tools do not collide, and
+                        adapters bridge the classic OpenNLP tools onto it. This is the foundation
+                        the annotator stack below is built on, which is why it leads. Its
+                        thread-safety comes from being immutable rather than from locks.
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <div class="meta"><span class="tag review">in review</span><span class="refs">PR #1177 · OPENNLP-1870</span></div>
+                    <h3>Emoji as first-class annotations</h3>
+                    <p>
+                        An opt-in emoji annotation layer for the name finder, document
+                        categorizer, and sentiment components, built in strictly separated tiers so
+                        no third-party data enters the project: a project-authored attribute table
+                        with per-value provenance and an audit test, then facts derived from it such
+                        as decoding a flag emoji into an ISO country region.
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <div class="meta"><span class="tag review">in review</span><span class="refs">PR #1165 · OPENNLP-1885</span></div>
+                    <h3>Pure-Java SentencePiece and WordPiece</h3>
+                    <p>
+                        SentencePiece inference written in plain Java that produces exact spans back
+                        into the original text, alongside a WordPiece encoder. It gives the toolkit
+                        subword tokenization without a native dependency.
+                    </p>
+                    <p class="measure">
+                        Tests measured it at 6.47 million pieces per second on a single thread over
+                        the T5-small vocabulary, about 1.42 times the C++ reference measured through
+                        its Python binding.
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <div class="meta"><span class="tag draft">draft</span><span class="refs">PR #1152 · OPENNLP-1877</span></div>
+                    <h3>Static text embeddings on the JVM</h3>
+                    <p>
+                        A pure-JVM engine for distilled static embedding tables, so a pipeline can
+                        turn text into vectors without a model server or a GPU. Output parity with
+                        the reference was asserted before any performance was measured.
+                    </p>
+                    <div class="chart" aria-label="Static embedding throughput on a CPU core, compared with the Python reference.">
+                        <svg viewBox="0 0 460 84" role="img">
+                            <text x="0" y="16" font-family="var(--sans)" font-size="11" fill="#767b85">Embeddings per second, single CPU core</text>
+                            <!-- reference bar -->
+                            <text x="0" y="42" font-family="var(--sans)" font-size="11" fill="#43474f">Python reference</text>
+                            <rect x="120" y="32" width="26" height="13" rx="2" fill="#c8cdd2"></rect>
+                            <!-- opennlp bar -->
+                            <text x="0" y="66" font-family="var(--sans)" font-size="11" fill="#43474f">OpenNLP, JVM</text>
+                            <rect x="120" y="56" width="335" height="13" rx="2" fill="#4a7c59"></rect>
+                            <text x="452" y="66" font-family="var(--sans)" font-size="10" fill="#4a7c59" text-anchor="end" dy="-16">~200k/s</text>
+                        </svg>
+                    </div>
+                    <p class="chart-note">
+                        Measured at roughly 200,000 embeddings per second on one CPU core, several
+                        times the Python static-embedding reference it was checked against, at about
+                        a fifth of the memory.
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <div class="meta"><span class="tag draft">draft</span><span class="refs">PR #1155 · #1167 · OPENNLP-1880 · OPENNLP-1887</span></div>
+                    <h3>A WordNet knowledge-base seam</h3>
+                    <p>
+                        A lexical knowledge-base seam with WN-LMF and WNDB readers and a Morphy
+                        lemmatizer, and on top of it weighted lexical expansion, synset similarity,
+                        and hypernym-anchored typing. It gives the toolkit a place to reason about
+                        word meaning, not just word shape.
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <div class="meta"><span class="tag draft">draft</span><span class="refs">PR #1154 · OPENNLP-1879</span></div>
+                    <h3>A gazetteer and geocoder seam</h3>
+                    <p>
+                        A place-name seam with a bundled Natural Earth table, loaders for GeoNames
+                        and Overture, a place hierarchy, and a user-supplied overlay that can add
+                        places, suppress them, or bound them to a box. A pipeline can start with the
+                        bundled data and bring its own gazetteer when it needs to.
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <div class="meta"><span class="tag draft">draft</span><span class="refs">PR #1166 · OPENNLP-1886</span></div>
+                    <h3>Light stemmer tiers</h3>
+                    <p>
+                        Sixteen UniNE light and minimal stemmer tiers, with parity fixtures
+                        regenerated from the original implementations so the behaviour matches the
+                        reference rather than approximating it.
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <div class="meta"><span class="tag draft">draft</span><span class="refs">PR #1190 · OPENNLP-1893</span></div>
+                    <h3>A Hunspell affix stemmer</h3>
+                    <p>
+                        A stemmer that reads Hunspell dictionary and affix files a user supplies,
+                        without regular expressions and failing closed on anything it cannot parse.
+                        It handles affix aliases, the common Hunspell flags, and compound word
+                        positioning including German linking forms.
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <div class="meta"><span class="tag draft">draft</span><span class="refs">PR #1191 · OPENNLP-1894</span></div>
+                    <h3>Dictionary tokenization for CJK</h3>
+                    <p>
+                        A tokenizer that scores Viterbi paths over a user-supplied MeCab-format
+                        dictionary for Japanese and Korean, plus a Chinese unigram segmenter. It
+                        gives OpenNLP a path into languages that do not put spaces between words.
+                    </p>
+                    <p class="measure">
+                        Tests measured it at about 5 million characters per second on a real IPADIC
+                        dictionary, which loads its 392,000 entries in under a second, and its
+                        segmentation matches the reference on the cost-sensitive test sentences.
+                    </p>
+                </div>
+
+                <div class="feature">
+                    <div class="meta"><span class="tag staged">staged research</span><span class="refs">depparse · ff-postagger · bilstm-tagger</span></div>
+                    <h3>Neural tagging and dependency parsing</h3>
+                    <p>
+                        A set of neural components staged on the research fork: a feedforward POS
+                        tagger, a transition-based dependency parser with a neural tier and beam
+                        decoding, and an experimental bidirectional LSTM tagger. These are honest
+                        about where they stand. The dependency parser reaches 86.78 UAS and 84.61
+                        LAS on the UD English treebank at beam four, which is not yet at the 88.90
+                        and 86.77 of the published Stanza reference on the same data, and the tagger
+                        is named as the gap. The feedforward tagger reaches 94.68 percent, rising to
+                        95.51 with an opt-in pretrained vector block. The LSTM tagger is behind an
+                        accuracy gate it has not yet cleared. Every layer is gradient-checked against
+                        finite differences.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="merged">
+            <div class="wrap">
+                <h2>Merged into Apache OpenNLP.</h2>
+                <p class="lede">
+                    The work already in the project's main branch, grouped by what it set out to
+                    fix. The full history, with line counts and dates, is on the project's pull
+                    request list.
+                </p>
+
+                <h3>Thread safety across the toolkit</h3>
+                <p>
+                    The major inference classes were made safe to share across threads, so one
+                    loaded model can serve concurrent requests instead of being duplicated per
+                    call. That covers the maxent tokenizer, sentence detector, tagger, and
+                    lemmatizer, the ONNX deep-learning components, and the stemmers, which also
+                    gained a factory and per-thread caching. Existing single-threaded use is
+                    unchanged; high-throughput pipelines can now reuse instances.
+                </p>
+
+                <h3>The deep-learning components, from demo to production</h3>
+                <p>
+                    A run of fixes took the ONNX components from fragile to dependable. The
+                    sentence-vectors component had been sending an all-zero attention mask, so the
+                    encoder attended to nothing; that and inverted token-type ids were corrected to
+                    the standard BERT convention. Tensors that leaked native memory on every call
+                    now release deterministically. A softmax that overflowed to infinity and
+                    produced NaN scores was replaced with the numerically stable form. The name
+                    finder, which had only ever decoded person tags, was generalized to every label
+                    a model emits. A proper BERT tokenizer replaced the ad-hoc one, with
+                    Unicode-aware punctuation splitting that matches the reference.
+                </p>
+
+                <h3>A Unicode-correct, offset-preserving text foundation</h3>
+                <p>
+                    The largest piece of merged work is a text-normalization engine and a
+                    Unicode-conformant word tokenizer, delivered as a review-split stack. The
+                    engine classifies characters from the Unicode Character Database with a
+                    cursor rather than regular expressions, and every normalization step keeps a
+                    bidirectional alignment so an offset in the cleaned text maps back to an exact
+                    span in the original. The tokenizer passes the official Unicode word-break
+                    conformance suite in full. On top of it sits a layered term model that projects
+                    a single token through an ordered stack of forms, from the original through
+                    normalization, case folding, accent folding, and on to stem and lemma, keeping
+                    every intermediate form and its source span. Full Unicode case folding was added
+                    as an offset-aware step, catching the expansions plain lower-casing misses. A
+                    separate pass audited every whitespace test in the codebase and either moved it
+                    onto the Unicode property or froze it with a documented reason. The four legacy
+                    regex normalizers were rewritten as single forward scans, byte-for-byte
+                    identical to the originals, each change guarded by characterization tests and
+                    randomized differential checks first.
+                </p>
+
+                <h3>Emoji, and a long-open bug</h3>
+                <p>
+                    Emoji and emoticons became reversible, offset-aware normalization steps driven
+                    by a project-authored mapping table with per-row provenance. Separately, a
+                    sentence-detector bug open since 2011 was closed by moving the mapping from
+                    end-of-sentence positions to spans out of the detection loop, fixing a latent
+                    misalignment when whitespace-only candidates were dropped.
+                </p>
+
+                <h3>Build, test, and licensing hygiene</h3>
+                <p>
+                    Some of the most useful fixes were unglamorous. An evaluation-tests module had
+                    been compiling its sources and silently running zero tests; two lines made it
+                    execute again. Stemmer tests that had been excluded from the build were turned
+                    back on and their stale expectations corrected. A missing license section for
+                    the bundled stopword lists was added to the binary distribution.
+                </p>
+            </div>
+        </section>
+
+        <section id="research">
+            <div class="wrap">
+                <h2>The current 3.x research.</h2>
+                <div class="callout">
+                    <h3>Where the ongoing work lives</h3>
+                    <p>
+                        The features above are being consolidated for the 3.x line in the Apache
+                        OpenNLP sandbox, on the
+                        <a href="https://github.com/apache/opennlp-sandbox/tree/OPENNLP-1833-grpc-expansion">OPENNLP-1833 gRPC expansion branch</a>,
+                        which gathers the NLP capabilities behind a gRPC surface: entity
+                        recognition, tagging, sentence detection and tokenization, coreference, word
+                        sense disambiguation, summarization, and similarity.
+                    </p>
+                    <p>
+                        The research fork keeps a clean base that mirrors Apache OpenNLP exactly and
+                        never diverges, with a separate research line that integrates every open pull
+                        request and admitted feature branch and records its exact inputs on each
+                        build. Nothing merges out of the research line into the project; work only
+                        ever flows the other way, through review, one pull request at a time.
+                    </p>
+                </div>
+                <p style="margin-top:20px;">
+                    This sits alongside the broader
+                    <a href="../docs/research/">Pipestream AI research</a> on distributed semantic
+                    search. The NLP features here are the annotation and tokenization layer that
+                    search pipeline draws on.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="wrap">
+            <a href="../">Pipestream AI</a>
+            <a href="https://github.com/apache/opennlp">Apache OpenNLP</a>
+            <a href="https://github.com/apache/opennlp-sandbox/tree/OPENNLP-1833-grpc-expansion">3.x gRPC expansion</a>
+            <a href="../docs/research/">Research</a>
+        </div>
+    </footer>
+
+    <script type="module">
+        import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+        mermaid.initialize({ startOnLoad: true, theme: "neutral", flowchart: { curve: "basis" } });
+    </script>
+</body>
+</html>

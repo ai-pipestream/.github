@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="grpc-calamine is a Rust gRPC server that reads Excel and OpenDocument workbooks with the calamine crate and streams cells back as they are parsed, without writing anything to disk.">
+    <title>grpc-calamine | gRPC document parsers</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header>
+        <div class="wrap header-inner">
+            <a class="brand" href="../">Pipestream AI <span>/ Parsers</span></a>
+            <nav aria-label="Primary">
+                <a href="../grparse/">gRParse</a>
+                <a href="../grpc-libreoffice/">LibreOffice</a>
+                <a href="../grpoic/">grPOIc</a>
+                <a href="../">All parsers</a>
+                <a href="https://github.com/ai-pipestream/grpc-calamine">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero">
+            <div class="wrap">
+                <p class="eyebrow">Spreadsheets · Rust · calamine</p>
+                <h1>Workbooks that stream out cell by cell.</h1>
+                <p class="hero-copy">
+                    grpc-calamine reads Excel and OpenDocument workbooks with the Rust
+                    calamine crate and sends the cells back as they are parsed. You upload a
+                    workbook once and then run as many reads against it as you like. The
+                    bytes stay in memory the whole time and never touch the disk.
+                </p>
+                <div class="actions">
+                    <a class="button" href="#streaming">Watch it stream</a>
+                    <a class="text-link" href="https://github.com/ai-pipestream/grpc-calamine">View the source</a>
+                </div>
+                <div class="facts" aria-label="Facts">
+                    <span>xls, xlsx, xlsm, xlsb, ods</span>
+                    <span>Rust and tonic</span>
+                    <span>Nothing written to disk</span>
+                    <span>Apache-2.0</span>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>Upload once, read many times.</h2>
+                    <p>
+                        The service is handle based. One upload returns a workbook id and
+                        its metadata, and every read after that works against the id.
+                    </p>
+                </div>
+                <div class="prose">
+                    <p>
+                        A client streams the file up in chunks. The server parses it in
+                        memory, hands back the id, the format it detected, and the list of
+                        sheets and defined names. From there a caller can stream a sheet's
+                        values, stream its formulas, pull the VBA project, or fetch embedded
+                        pictures, and it can do several of those at once against the same
+                        workbook.
+                    </p>
+                    <p>
+                        Reads do not block each other. Each one builds its own calamine
+                        reader over the same shared, reference counted bytes, so many
+                        clients can stream the same workbook in parallel with no lock on the
+                        read path. The cost of that choice is honest and stated in the code:
+                        each reader re-reads the workbook's shared structures, which is the
+                        price of keeping reads lock free.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="streaming" class="console">
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>See a sheet fill in as it parses.</h2>
+                    <p>
+                        The Node demo puts a browser in front of the service. Drop a
+                        workbook and the rows appear as the Rust server reads them, straight
+                        from gRPC through server-sent events into the page.
+                    </p>
+                </div>
+                <div class="video-frame">
+                    <span class="vp-eyebrow">Video · coming soon</span>
+                    <strong>Live xls streaming in the browser</strong>
+                    <p>
+                        A walk through the web viewer: upload a spreadsheet and watch the
+                        grid populate row by row while the progress bar tracks the parse,
+                        with dates, durations, and error cells rendered as they arrive.
+                    </p>
+                </div>
+                <p class="note">
+                    The demo bridge streams the upload straight into the gRPC call and holds
+                    no copy of the file. The same repository ships command line clients in
+                    Node, Python, and Java against the identical contract.
+                </p>
+            </div>
+        </section>
+
+        <section class="quickstart">
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>Two parse paths, one wire contract.</h2>
+                    <p>
+                        How a sheet streams depends on what calamine can do with the format,
+                        but the events a client sees are the same either way.
+                    </p>
+                </div>
+                <div class="prose">
+                    <p>
+                        For xlsx and xlsb, calamine exposes an incremental cell reader, so
+                        rows go out as the parser walks the sheet. For xls and ods, calamine
+                        only offers whole-range parsing, so the range is parsed and then
+                        streamed row by row. A caller cannot tell the two apart from the
+                        events. Both send one header describing the sheet and its
+                        dimensions, then one row at a time, densely filled from the first
+                        column.
+                    </p>
+                    <p>
+                        Backpressure is real here. The parser pushes rows into a small
+                        bounded channel, so a client that reads slowly slows the parser down
+                        instead of making the server buffer the whole sheet.
+                    </p>
+                </div>
+                <ul class="events">
+                    <li>
+                        <span class="ev">RangeStarted</span>
+                        <span class="desc">Sent once, first. Carries the resolved sheet name, the range dimensions, and the total cell count so a client can size a grid before any row arrives.</span>
+                    </li>
+                    <li>
+                        <span class="ev">WorksheetRow</span>
+                        <span class="desc">One per row, in order, with the absolute row index and its dense cell values.</span>
+                    </li>
+                    <li>
+                        <span class="ev">StreamError</span>
+                        <span class="desc">An in-band, typed error for a recoverable problem, so one bad sheet does not kill the rest of the stream.</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>The protobuf model mirrors calamine exactly.</h2>
+                    <p>
+                        The contract was drawn one to one against calamine's own public
+                        types, so nothing is guessed and nothing is lost.
+                    </p>
+                </div>
+                <div class="prose">
+                    <p>
+                        A cell value is a protobuf oneof with the same shape as calamine's
+                        own value type: integers, floats, strings, shared strings, booleans,
+                        dates, ISO date and duration text, typed error values, and an
+                        explicit empty. An empty cell is its own case, never a missing
+                        field, so a client never has to guess whether a blank was intended.
+                    </p>
+                    <p>
+                        Dates carry the detail spreadsheets usually lose. Excel stores a date
+                        as a serial number counting from one of two epochs, and the choice of
+                        epoch is a property of the workbook rather than the cell. The service
+                        reads that epoch once when the workbook opens and stamps it onto
+                        every date it streams, so a client can convert a serial to a real
+                        date without guessing which calendar it came from. That value comes
+                        straight from calamine's own workbook level reader, so the build runs
+                        against the published crate with no fork.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="capabilities">
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>More than values.</h2>
+                    <p>
+                        The same handle reaches the parts of a workbook a plain cell reader
+                        skips.
+                    </p>
+                </div>
+                <div class="capability-list">
+                    <article class="capability">
+                        <h3>Formulas</h3>
+                        <p>Stream a sheet's formula strings with the same header-then-rows shape as values. A sheet with no formulas says so rather than returning an empty grid.</p>
+                    </article>
+                    <article class="capability">
+                        <h3>VBA projects</h3>
+                        <p>Stream the macro project as a header of references and module names, then one module at a time. The raw module bytes are delivered as calamine returns them, so decoding stays a client choice.</p>
+                    </article>
+                    <article class="capability">
+                        <h3>Embedded pictures</h3>
+                        <p>Stream the images embedded in a workbook, each with its anchor position and file type, one event per picture.</p>
+                    </article>
+                    <article class="capability">
+                        <h3>Metadata and defined names</h3>
+                        <p>Read the sheet list, sheet visibility and type, and the workbook's defined names from the open response or on demand later.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>Bounded on purpose.</h2>
+                    <p>
+                        The limits are compile-time constants, chosen so a hostile or
+                        oversized upload fails cleanly.
+                    </p>
+                </div>
+                <table class="spec">
+                    <tbody>
+                        <tr><td>Max workbook upload</td><td>512 MiB, refused with a resource-exhausted status past that</td></tr>
+                        <tr><td>Max gRPC frame</td><td>32 MiB, on both send and receive</td></tr>
+                        <tr><td>Stream channel</td><td>64 events of backpressure between the parser and the client</td></tr>
+                        <tr><td>Runtime</td><td>Multi-threaded tokio, with all calamine parsing on the blocking pool</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="verification">
+            <div class="wrap verification-inner">
+                <div>
+                    <h2>Read it, run it, test it.</h2>
+                    <p>
+                        The tests spin up a real server on an ephemeral port and stream real
+                        workbook files, comparing every streamed cell against calamine's own
+                        output. The repository carries the protobuf contract, the server, and
+                        the Node, Python, and Java demos.
+                    </p>
+                </div>
+                <div class="actions">
+                    <a class="button" href="https://github.com/ai-pipestream/grpc-calamine">Open the repository</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="wrap footer-inner">
+            <span>Pipestream AI. Apache-2.0 licensed.</span>
+            <div class="footer-links">
+                <a href="../">All parsers</a>
+                <a href="../grparse/">gRParse</a>
+                <a href="../grpc-libreoffice/">grpc-libreoffice</a>
+                <a href="../grpoic/">grPOIc</a>
+                <a href="https://github.com/ai-pipestream/grpc-calamine">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

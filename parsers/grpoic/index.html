@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="grPOIc is a Java gRPC server that wraps Apache POI. Clients stream office document bytes in and receive typed structure events back: metadata, paragraphs, tables, sheets, and slides. It extracts content and metadata and does not render.">
+    <title>grPOIc | gRPC document parsers</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header>
+        <div class="wrap header-inner">
+            <a class="brand" href="../">Pipestream AI <span>/ Parsers</span></a>
+            <nav aria-label="Primary">
+                <a href="../grparse/">gRParse</a>
+                <a href="../grpc-libreoffice/">LibreOffice</a>
+                <a href="../grpc-calamine/">calamine</a>
+                <a href="../">All parsers</a>
+                <a href="https://github.com/ai-pipestream/grPOIc">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="hero">
+            <div class="wrap">
+                <p class="eyebrow">Office content and metadata · Java · Apache POI</p>
+                <h1>Typed structure out of Office files.</h1>
+                <p class="hero-copy">
+                    grPOIc wraps Apache POI and puts it behind gRPC. A client streams the
+                    bytes of a Word, Excel, or PowerPoint file in, modern or legacy, and gets
+                    back typed events: the document's metadata, then its paragraphs, tables,
+                    sheets, and slides in order. It reads content and metadata. It does not
+                    render or convert anything.
+                </p>
+                <div class="actions">
+                    <a class="button" href="#events">See the events</a>
+                    <a class="text-link" href="https://github.com/ai-pipestream/grPOIc">View the source</a>
+                </div>
+                <div class="facts" aria-label="Facts">
+                    <span>docx, xlsx, pptx and their legacy forms</span>
+                    <span>Java on virtual threads</span>
+                    <span>Nothing written to disk</span>
+                    <span>Apache-2.0</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="events">
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>One event per thing, in document order.</h2>
+                    <p>
+                        The stream opens with the document's information and then delivers its
+                        content the way it appears in the file.
+                    </p>
+                </div>
+                <div class="prose">
+                    <p>
+                        The first event describes the document. After that, each paragraph,
+                        table, sheet, and slide arrives as its own typed event, in order, and
+                        a final status event closes the stream and reports whether the parse
+                        was complete or partial. A caller works with real structure rather
+                        than a flat block of text it has to pull apart again.
+                    </p>
+                    <p>
+                        Metadata is typed too. The core properties a document actually carries
+                        become first-class fields, and anything else is preserved in a
+                        lossless tail rather than dropped. Nothing is inferred from the shape
+                        of a string.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="quickstart">
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>The bytes decide the format, not the label.</h2>
+                    <p>
+                        grPOIc looks at what the file is, not what the request claims it is.
+                    </p>
+                </div>
+                <div class="prose">
+                    <p>
+                        Uploaded chunks accumulate in memory and the parse runs from that
+                        buffer. There is no temp file and no subprocess, and the container
+                        runs with a read-only root filesystem so nothing can be written even
+                        by mistake. To decide what it is holding, the service reads the file's
+                        own magic bytes and dispatches on that. An advisory content type on the
+                        request is never trusted, because a mislabelled upload is exactly the
+                        case where trusting the label goes wrong.
+                    </p>
+                    <p>
+                        Spreadsheet cells keep the type POI stored them as, so a number stays a
+                        number, a date stays a date, and a boolean stays a boolean rather than
+                        collapsing to text. Formulas are a good example of the service's
+                        restraint: it hands back the formula's source and the cached result
+                        that POI already has, and it never evaluates the formula itself.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>Bounded because POI is heavy.</h2>
+                    <p>
+                        A POI document is single threaded and holds its whole model in the
+                        heap, so the service is careful about how many it opens at once.
+                    </p>
+                </div>
+                <div class="prose">
+                    <p>
+                        Each parse runs on its own virtual thread, and a semaphore caps how
+                        many run at the same time. That keeps a burst of large uploads from
+                        exhausting the heap, since every open document is a full in-memory
+                        model until it is done. Uploads past the size limit are refused with a
+                        clear resource-exhausted status rather than being allowed to run the
+                        process out of memory, and a file that is not an Office document comes
+                        back as unimplemented rather than as a confusing internal error.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="verification">
+            <div class="wrap verification-inner">
+                <div>
+                    <h2>Read it and run it.</h2>
+                    <p>
+                        The protobuf contract and the Java server are in the repository, and
+                        the tests build their fixtures with POI itself in memory rather than
+                        committing binary sample files. The service reports the exact POI
+                        version it is running so a caller always knows what produced the
+                        output.
+                    </p>
+                </div>
+                <div class="actions">
+                    <a class="button" href="https://github.com/ai-pipestream/grPOIc">Open the repository</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="wrap footer-inner">
+            <span>Pipestream AI. Apache-2.0 licensed.</span>
+            <div class="footer-links">
+                <a href="../">All parsers</a>
+                <a href="../grparse/">gRParse</a>
+                <a href="../grpc-libreoffice/">grpc-libreoffice</a>
+                <a href="../grpc-calamine/">grpc-calamine</a>
+                <a href="https://github.com/ai-pipestream/grPOIc">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

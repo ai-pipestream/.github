@@ -849,7 +849,19 @@
                     </article>
                     <article class="capability">
                         <h3><a href="https://github.com/ai-pipestream/protomolt/blob/main/docs/grpc-service.md">Dynamic APIs and code generation</a></h3>
-                        <p>Reflect on and invoke live gRPC services without generated stubs. Serve a descriptor-native API over gRPC and REST, expose it to agents through MCP, or generate clients in process with the embedded WASM toolchain.</p>
+                        <p>Reflect on and invoke live gRPC services without generated stubs. Serve a descriptor-native API over gRPC and REST, expose it to agents through MCP, or generate clients in process. The generators run libprotoc compiled to WebAssembly, so there is no native protoc toolchain to install.</p>
+                    </article>
+                    <article class="capability">
+                        <h3><a href="https://github.com/ai-pipestream/protomolt/blob/main/docs/embeddings.md">Embeddings and reranking</a></h3>
+                        <p>Fill a message's vector field from its text field as part of the indexing plan, backed by a static engine, a Hugging Face inference server, or an OpenVINO model server, and rerank results the same way. A pairwise harness certifies that two providers of one model agree, by cosine for embeddings and by rank correlation for reranking, before either is trusted in a pipeline.</p>
+                    </article>
+                    <article class="capability">
+                        <h3><a href="https://github.com/ai-pipestream/protomolt/blob/main/docs/quality.md">Data-quality scoring</a></h3>
+                        <p>Declare quality dimensions on a message as weighted CEL expressions and get back a composite score. It is separate from validation: validation decides whether a message is admissible, quality measures how good it is, and the Kafka serde can score it on write and optionally gate on the result.</p>
+                    </article>
+                    <article class="capability">
+                        <h3><a href="https://github.com/ai-pipestream/protomolt/blob/main/docs/acp.md">Agent and command-line surfaces</a></h3>
+                        <p>The same action catalog runs as an Agent Client Protocol agent inside editors like Zed and JetBrains, and as a command-line tool with an interactive console. Streaming verbs render as they produce output, so an agent watches a long operation unfold instead of waiting for it to finish.</p>
                     </article>
                 </div>
             </div>
@@ -909,6 +921,31 @@
                     <a href="img/console-types.png">Descriptor explorer</a>
                     <a href="img/console-try.png">Message validation</a>
                 </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="wrap">
+                <div class="section-heading">
+                    <h2>Point an agent at a live gRPC server.</h2>
+                    <p>
+                        Over MCP, the gRPC verbs compose into something an agent can drive on its
+                        own. It reflects a running service, falls back to the registry when
+                        reflection is turned off, invokes methods with no generated stubs, and
+                        generates a native client when it needs one.
+                    </p>
+                </div>
+                <figure class="console-frame">
+                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:340px;padding:48px;text-align:center;">
+                        <span style="font-family:var(--mono);font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:#7f9099;margin-bottom:12px;">Video · coming soon</span>
+                        <strong style="font-family:var(--serif);font-size:1.4rem;color:#e8eef1;font-weight:600;">ProtoMolt over MCP</strong>
+                        <p style="margin-top:10px;font-size:0.94rem;color:#9fb0b9;max-width:520px;">An agent reflects a live inference server, reads its tensor contract, and runs it with no generated code, following the OpenVINO tutorial step by step.</p>
+                    </div>
+                    <figcaption class="console-caption">
+                        <span>The walkthrough runs against a real OpenVINO Model Server over the KServe gRPC API.</span>
+                        <a href="openvino/">Read the OpenVINO tutorial</a>
+                    </figcaption>
+                </figure>
             </div>
         </section>
 
