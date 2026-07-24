@@ -87,15 +87,16 @@
                         from gRPC through server-sent events into the page.
                     </p>
                 </div>
-                <div class="video-frame">
-                    <span class="vp-eyebrow">Video · coming soon</span>
-                    <strong>Live xls streaming in the browser</strong>
-                    <p>
-                        A walk through the web viewer: upload a spreadsheet and watch the
-                        grid populate row by row while the progress bar tracks the parse,
-                        with dates, durations, and error cells rendered as they arrive.
-                    </p>
-                </div>
+                <figure class="video-frame has-video">
+                    <figcaption class="vp-eyebrow">Live demo</figcaption>
+                    <video autoplay muted loop playsinline controls preload="auto"
+                           poster="demo-poster.jpg" width="2132" height="1108"
+                           aria-label="Live xls streaming in the browser">
+                        <source src="demo.mp4" type="video/mp4">
+                        Your browser can't play this video.
+                        <a href="demo.mp4">Download the MP4</a>.
+                    </video>
+                </figure>
                 <p class="note">
                     The demo bridge streams the upload straight into the gRPC call and holds
                     no copy of the file. The same repository ships command line clients in

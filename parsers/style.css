@@ -232,6 +232,9 @@ table.spec .num { text-align: right; font-variant-numeric: tabular-nums; }
 }
 .video-frame strong { font-family: var(--serif); font-size: 1.3rem; color: #e8eef1; font-weight: 600; }
 .video-frame p { margin-top: 8px; font-size: 0.9rem; color: #9fb0b9; max-width: 460px; }
+.video-frame.has-video { min-height: 0; padding: 14px; align-items: stretch; }
+.video-frame.has-video .vp-eyebrow { align-self: flex-start; }
+.video-frame video { width: 100%; height: auto; display: block; border-radius: 5px; }
 
 /* Verification */
 .verification { background: var(--accent-soft); }
