@@ -671,9 +671,9 @@
                     the same open question it is for HNSW, and deep-<code>k</code> selection
                     inside the kernel currently degrades past <code>k</code> in the low
                     thousands. Three upstream issues carry the design conversation:
-                    <a href="https://github.com/ai-pipestream/turbovec/issues/2">calibration seeding</a>,
-                    <a href="https://github.com/ai-pipestream/turbovec/issues/3">a seedable search cutoff</a>,
-                    and <a href="https://github.com/ai-pipestream/turbovec/issues/1">the large-k selection path</a>;
+                    <a href="https://github.com/RyanCodrai/turbovec/issues/202">calibration seeding</a>,
+                    <a href="https://github.com/RyanCodrai/turbovec/issues/203">a seedable search cutoff</a>,
+                    and <a href="https://github.com/RyanCodrai/turbovec/issues/201">the large-k selection path</a>;
                     the first two have working implementations with tests. The trade is explicit:
                     give up the graph's sublinear visit counts on a single node in exchange for a
                     bound that holds without guards and scores that merge without correction.
