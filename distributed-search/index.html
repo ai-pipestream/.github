@@ -136,6 +136,7 @@
                 <a href="#scout">Scout</a>
                 <a href="#measured">Measured</a>
                 <a href="#open">Open work</a>
+                <a href="#turbovec">Turbovec</a>
                 <a href="https://github.com/apache/lucene/pull/16357">PR&nbsp;#16357</a>
             </nav>
         </div>
@@ -156,9 +157,10 @@
 
             <div class="status-note">
                 <strong>Status: early and unproven.</strong> The mechanism is promising in the
-                cases measured so far, and the recall it produces matches an ordinary Lucene
-                search rather than beating it. It is not yet proven at the scale and topology it
-                is built for. The honest distributed benchmark, on separate machines rather than
+                cases measured so far, and the recall it produces tracks an ordinary Lucene
+                search rather than beating it: parity in most runs, and a cost of a few
+                hundredths at the deepest single-process setting. It is not yet proven at the scale and topology it
+                is built for. The distributed benchmark on separate machines, rather than
                 one process standing in for many, is the main piece of open work, and the
                 adaptivity result on skewed shards is not finished. This is why the collector
                 lives in Lucene's sandbox and not its core. The numbers below say promising, not
@@ -403,7 +405,7 @@
             </section>
 
             <section id="recall">
-                <h2><span class="sec">5</span>Recall, honestly</h2>
+                <h2><span class="sec">5</span>What happens to recall</h2>
                 <p>
                     The floor validity lemma protects the answer only against pruning candidates
                     whose current frontier score is already below the floor. HNSW is a greedy
@@ -426,8 +428,10 @@
                     while the risk to recall concentrates at small <code>k</code>.
                 </p>
                 <p class="body-ink">
-                    The important claim is the modest one. In the runs measured so far, the
-                    collaborative search returns the same results an ordinary Lucene search returns.
+                    The important claim is the modest one. In most runs measured so far, the
+                    collaborative search returns the same results an ordinary Lucene search
+                    returns; the deepest single-process setting, <code>k = 10,000</code>, gave up
+                    0.02 to 0.04 of recall against the full-depth baseline (section 6).
                     Recall does not improve, and it is not meant to. It holds at the level Lucene
                     already produces while the search does less work to get there. Any suggestion of
                     perfect or near-perfect recall would be wrong: HNSW is approximate, the baseline
@@ -454,7 +458,7 @@
                     roughly 88 to 91 percent at <code>k = 10,000</code> at a recall cost of 0.02 to
                     0.04. Against a single JVM's own optimistic multi-segment search, which already
                     avoids most of the redundant work inside one process, the gain is only low single
-                    digits. That second comparison is the honest one for a single machine, and it is
+                    digits. That second comparison is the right baseline for a single machine, and it is
                     the reason this belongs in the sandbox rather than the core: inside one process,
                     Lucene already does most of what the floor would do.
                 </p>
@@ -540,8 +544,146 @@
                 </p>
             </section>
 
+            <section id="turbovec">
+                <h2><span class="sec">9</span>Alternative approach in research: the Turbovec approach</h2>
+                <p>
+                    Everything above accepts HNSW as the substrate and works around its nature: the
+                    floor has to be guarded by a gate and a dial because a graph walk can be starved
+                    of the low-scoring bridge nodes it navigates through. A second line of research,
+                    earlier than this one, changes the substrate instead.
+                    <a href="https://github.com/RyanCodrai/turbovec">Turbovec</a> is a quantized
+                    exhaustive-scan index: two to four bits per dimension, SIMD kernels, every vector
+                    compared on every query. On a single machine that sounds like the expensive way
+                    around. Distributed, it removes the two hardest problems on this page.
+                </p>
+                <p>
+                    First, the floor loses its caveats. A scan that prunes on the floor skips work,
+                    never reachability - every vector still gets the block-level compare - so the
+                    validity lemma applies with no ascent gate, no greediness dial, and no small-<code>k</code>
+                    switch-off. Recall parity stops being an empirical result to defend across
+                    corpora and becomes the boring kind of true: a floor-seeded scan returns exactly
+                    what the unseeded scan returns whenever the seed is a true lower bound. The
+                    kernel already tracks the running <code>k</code>-th best with a SIMD block
+                    prefilter, so seeding it is a parameter, not a collector decorator.
+                </p>
+                <div class="eq">
+                    scan(q, k, t) = { v ∈ top_k(q) : s(q, v) ≥ t },  so  scan(q, k, t) = top_k(q)  whenever  t ≤ s*_k
+                    <span class="where">s*_k is the true k-th best score. The seed is applied one ULP below t, so ties exactly at the floor survive; the equality is exercised by tests that seed with the measured s*_k and require identical results.</span>
+                </div>
+                <p>
+                    Second, scores compare across shards. Turbovec's rotation and codebooks are
+                    corpus-independent; the one data-dependent piece is a calibration fitted on the
+                    first batch of vectors. Pin that calibration across shards and the same vector
+                    scores identically wherever it lives, so the coordinator's merge is exact. The
+                    distributed-statistics problem that lexical scoring never escapes is simply not
+                    there.
+                </p>
+                <div class="eq">
+                    s(q, v) = f( q, R, codebook, shift, scale, code(v) )
+                    <span class="where">No term depends on the rest of the corpus. R and the codebook are fixed functions of the dimension and bit width; (shift, scale) is the calibration this issue set makes pinnable. With it pinned, s(q, v) is the same number on every shard, and merging shard results is set union followed by sort - exact, not approximate.</span>
+                </div>
+                <p>
+                    Exactness changes the fan-in arithmetic from section 3 as well. The static quota
+                    needs its λ-margin because it is an estimate of what a shard might owe; a
+                    converged floor is a bound, not an estimate, so each shard ships exactly the
+                    results that survive it:
+                </p>
+                <div class="eq">
+                    total shipped, converged floor = k        vs        k + λ·√( k·(s − 1) )  for the static quota
+                    <span class="where">The same word of caution as section 3: converged. With only the scout's opening floor, at global rank k·s, per-shard survivors start near k and tighten toward k/s as the merge proceeds.</span>
+                </div>
+                <h3>Where the floor's savings land</h3>
+                <p>
+                    The floor acts on a different term here than it does for HNSW, and the split is
+                    worth writing down. A shard's query time is a scan term plus a selection term.
+                    The scan term is fixed - every vector is compared, which is the recall guarantee
+                    and the cost floor in one - and it is memory-bandwidth bound, so it is small and
+                    predictable: at two bits per dimension the whole shard streams through the SIMD
+                    kernels at whatever the machine's bandwidth allows. The selection term is where
+                    a search actually spends its time at deep <code>k</code>, and it is the term the
+                    floor cuts.
+                </p>
+                <div class="eq">
+                    T_shard ≈ (N/s)·d·b/8 ÷ BW   +   I·c(k)
+                    <span class="where">First term: bytes of quantized codes streamed, untouched by the floor. Second term: I heap insertions at c(k) each. c(k) is linear in k in the current kernel, which is the large-k issue; I is what the floor attacks.</span>
+                </div>
+                <div class="eq">
+                    I ≈ k·( 1 + ln( N / (s·k) ) )  unseeded        →        I ≈ k/s  with a converged floor
+                    <span class="where">Unseeded count assumes scan order uncorrelated with score (the running top-k record argument). On the section-6 corpus - N = 247M, s = 16, k = 10,000 - that is roughly 83,000 insertions per shard unseeded, near 10,000 from the scout's opening floor, and about 630 converged: an 8× to 130× cut in selection work, with the scan term untouched.</span>
+                </div>
+                <p>
+                    The two turbovec issues attack this same term from both sides: the floor shrinks
+                    <code>I</code>, the large-<code>k</code> selection path shrinks <code>c(k)</code>.
+                    Either alone helps; together the selection term stops mattering and the shard
+                    runs at the speed of its memory bus.
+                </p>
+
+                <figure>
+                    <svg viewBox="0 0 640 310" role="img" aria-label="Diagram: a turbovec shard's query time split into a fixed scan term and a shrinking selection term, with the coordinator's floor loop cutting only the selection term.">
+                        <!-- coordinator -->
+                        <rect x="250" y="16" width="140" height="42" rx="7" fill="#34495e"></rect>
+                        <text x="320" y="42" text-anchor="middle" fill="#fff" font-family="var(--sans)" font-size="14" font-weight="600">coordinator</text>
+                        <text x="475" y="30" fill="#767b85" font-family="var(--sans)" font-size="10.5">merge is exact:</text>
+                        <text x="475" y="44" fill="#767b85" font-family="var(--sans)" font-size="10.5">calibration pinned, s(q,v)</text>
+                        <text x="475" y="58" fill="#767b85" font-family="var(--sans)" font-size="10.5">identical on every shard</text>
+                        <!-- shard box -->
+                        <rect x="60" y="110" width="520" height="120" rx="8" fill="#fff" stroke="#e4e3de" stroke-width="1.5"></rect>
+                        <text x="78" y="134" fill="#1c1e23" font-family="var(--sans)" font-size="12.5" font-weight="650">one turbovec shard, per query</text>
+                        <!-- scan term bar -->
+                        <rect x="78" y="150" width="300" height="30" rx="4" fill="#eef1f4" stroke="#34495e" stroke-width="1.2"></rect>
+                        <text x="228" y="169" text-anchor="middle" fill="#1c1e23" font-family="var(--sans)" font-size="11.5">scan all N/s codes - fixed, bandwidth-bound</text>
+                        <!-- selection term bar: full outline + shrunk fill -->
+                        <rect x="390" y="150" width="170" height="30" rx="4" fill="none" stroke="#e4e3de" stroke-width="1.2" stroke-dasharray="4 3"></rect>
+                        <rect x="390" y="150" width="42" height="30" rx="4" fill="#34495e"></rect>
+                        <text x="475" y="145" text-anchor="middle" fill="#767b85" font-family="var(--sans)" font-size="10.5">selection: I·c(k)</text>
+                        <text x="475" y="197" text-anchor="middle" fill="#767b85" font-family="var(--sans)" font-size="10.5">dashed: unseeded · solid: with floor</text>
+                        <!-- block prefilter note -->
+                        <text x="78" y="212" fill="#767b85" font-family="var(--sans)" font-size="10.5">every 32-code block: score, compare against cutoff, insert only survivors ≥ floor</text>
+                        <!-- floor loop -->
+                        <rect x="230" y="258" width="180" height="38" rx="7" fill="#eef1f4" stroke="#34495e" stroke-width="1.5"></rect>
+                        <text x="320" y="282" text-anchor="middle" fill="#34495e" font-family="var(--sans)" font-size="12" font-weight="650">global floor</text>
+                        <path d="M300,58 Q290,88 290,106" fill="none" stroke="#767b85" stroke-width="1.3" marker-end="url(#arrow)"></path>
+                        <path d="M320,230 Q320,244 320,254" fill="none" stroke="#34495e" stroke-width="1.5" marker-end="url(#arrowAccent)"></path>
+                        <text x="330" y="246" fill="#34495e" font-family="var(--sans)" font-size="10">local k-th best up</text>
+                        <path d="M410,277 Q560,270 560,234" fill="none" stroke="#34495e" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#arrowAccent)"></path>
+                        <text x="470" y="262" fill="#34495e" font-family="var(--sans)" font-size="10">floor seeds the cutoff</text>
+                        <path d="M340,58 Q350,88 350,106" fill="none" stroke="#767b85" stroke-width="1.3" marker-end="url(#arrow)"></path>
+                    </svg>
+                    <figcaption>
+                        A turbovec shard's query splits into a fixed scan term and a selection term.
+                        The floor loop - the same monotone protocol as the HNSW engine - never
+                        touches the scan, which is why recall cannot move; it only shrinks the
+                        selection bar. The dashed outline is the unseeded selection cost, the solid
+                        fill the seeded one.
+                    </figcaption>
+                </figure>
+
+                <p>
+                    The scout gets simpler too. Turbovec is already the quantized in-memory sample
+                    the scout was built from, so the scout stops being a special component and
+                    becomes a small index like the others.
+                </p>
+                <p>
+                    Nothing limits
+                    Turbovec to one machine - a gRPC surface exists and the scatter-gather design
+                    above transfers directly, guards removed - but so far the measurements are
+                    single-node only. The cost of the floor travelling between busy machines is
+                    the same open question it is for HNSW, and deep-<code>k</code> selection
+                    inside the kernel currently degrades past <code>k</code> in the low
+                    thousands. Three upstream issues carry the design conversation:
+                    <a href="https://github.com/ai-pipestream/turbovec/issues/2">calibration seeding</a>,
+                    <a href="https://github.com/ai-pipestream/turbovec/issues/3">a seedable search cutoff</a>,
+                    and <a href="https://github.com/ai-pipestream/turbovec/issues/1">the large-k selection path</a>;
+                    the first two have working implementations with tests. The trade is explicit:
+                    give up the graph's sublinear visit counts on a single node in exchange for a
+                    bound that holds without guards and scores that merge without correction.
+                    Whether that trade wins at cluster scale is exactly what the distributed
+                    benchmark in section 8 has to show - for both substrates.
+                </p>
+            </section>
+
             <section id="links" style="border-bottom:none">
-                <h2><span class="sec">9</span>Read the work</h2>
+                <h2><span class="sec">10</span>Read the work</h2>
                 <p>
                     The Lucene collector, its tests, and the block-join extension are in
                     <a href="https://github.com/apache/lucene/pull/16357">PR&nbsp;#16357</a>. The
